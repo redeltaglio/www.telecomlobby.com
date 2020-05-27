@@ -9,3 +9,4 @@ git add ~/Work/telecomlobby.com/bin ~/Work/telecomlobby.com/cgi ~/Work/telecomlo
 git add ~/Work/telecomlobby.com/website/riccardo_giuntoli
 git commit -m "$DATE"
 git push
+pkill -9 ssh-agent
