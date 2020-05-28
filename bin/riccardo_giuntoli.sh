@@ -6,6 +6,9 @@ FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
+OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
+integer LINENUM
+ATEXT=""
 
 for markdown_file in $(ls $RGMD)
 do
@@ -31,5 +34,17 @@ do
 	done
 done
 
+unset html_file
+
+for html_file in $(ls $OUTPUT)
+do
+	LINENUM=$(cat $OUTPUT$html_file | grep "<strong>" | wc -l)
+	while [[ $LINENUM -gt 1 ]]; do
+		LINENUM=$LINENUM-1 
+		cat $OUTPUT$html_file | grep "<strong>" | head -n $LINENUM
+	done
+done 
+
 rm $TMPPAGE
 rm $TMPHTML
+
