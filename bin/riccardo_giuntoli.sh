@@ -19,6 +19,11 @@ do
 			#sed manipulation
 			cat $TMPHTML | sed -nr '/[Ee]xternal [Ll]inks/q;p' > $TMPHTML
 			cat $TMPHTML | sed -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' > $TMPHTML
+			cat $TMPHTML | sed -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' > $TMPHTML
+			cat $TMPHTML | sed -e 's/<p><em>/<p><span class="important">/' -e 's/<\/em><\/p>/<\/span><\/p>/' > $TMPHTML
+			cat $TMPHTML | sed -r 's/<\/em>[.]<\/p>/<\/span><\/p>/' > $TMPHTML
+			cat $TMPHTML | sed -r 's/<\/em> <\/p>/<\/span><\/p>/' > $TMPHTML
+			cat $TMPHTML | gsed -E 's/<strong>/\n<strong>/g' > $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
