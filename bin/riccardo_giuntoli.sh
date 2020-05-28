@@ -45,8 +45,8 @@ do
 	while [[ $i -le $LINENUM ]]; do 
 		ATEXT=$(cat $OUTPUT$html_file | grep "<strong>" | head -n $i | tail -n 1)
 		STRONG=$(echo $ATEXT | cut -d ">" -f2 | cut -d "<" -f1)
-		ATEXTNEU
-		echo $ATEXT | sed -e 's/'
+		ATEXTNEU=
+		echo $ATEXTNEU | sed -e 's/'
 		i=$i+1
 	done
 	i=1
