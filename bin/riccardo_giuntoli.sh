@@ -8,7 +8,10 @@ TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 integer LINENUM
+integer i=1
 ATEXT=""
+ATEXTNEU=""
+STRONG=""
 
 for markdown_file in $(ls $RGMD)
 do
@@ -39,10 +42,14 @@ unset html_file
 for html_file in $(ls $OUTPUT)
 do
 	LINENUM=$(cat $OUTPUT$html_file | grep "<strong>" | wc -l)
-	while [[ $LINENUM -gt 1 ]]; do
-		LINENUM=$LINENUM-1 
-		cat $OUTPUT$html_file | grep "<strong>" | head -n $LINENUM
+	while [[ $i -le $LINENUM ]]; do 
+		ATEXT=$(cat $OUTPUT$html_file | grep "<strong>" | head -n $i | tail -n 1)
+		STRONG=$(echo $ATEXT | cut -d ">" -f2 | cut -d "<" -f1)
+		ATEXTNEU
+		echo $ATEXT | sed -e 's/'
+		i=$i+1
 	done
+	i=1
 done 
 
 rm $TMPPAGE
