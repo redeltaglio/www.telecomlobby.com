@@ -17,7 +17,9 @@ OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 integer LINENUM
 integer i=1
 ATEXT=""
+ATEXTESCAPED=""
 ATEXTNEU=""
+ATEXTNEUESCAPED=""
 STRONG=""
 
 for markdown_file in $(ls $RGMD)
@@ -58,11 +60,12 @@ do
 		ATEXTNEU=$(echo $ATEXTNEU | sed 's/<\/p/<\/p>/')
 		i=$i+1
 		#echo $ATEXTNEU
-		ATEXT=$(echo $ATEXT | sed 's,<\/,<\\/,g')
-		ATEXTNEU=$(echo $ATEXTNEU | sed 's,<\/,<\\/,g')
-		echo $ATEXT
-		echo $ATEXTNEU
-		#sed -i "s/${ATEXT}/${ATEXTNEU}/g" $OUTPUT$html_file
+		#ATEXTESCAPED=$(echo $ATEXT | gsed 's/[^^]/[&]/g; s/\^/\\^/g')
+		#ATEXTNEUESCAPED=$(echo $ATEXTNEU | gsed 's/[^^]/[&]/g; s/\^/\\^/g')
+		#echo $ATEXT
+		#echo $ATEXTNEU
+		perl -s -0777 -pe 's/\Q$from\E/$to/' $OUTPUT$html_file -from="$ATEXT" -to="$ATEXTNEU" 
+		#sed -i "s/${ATEXTESCAPED}/${ATEXTNEUESCAPED}/g" $OUTPUT$html_file
 		ATEXT=""
 		ATEXTNEU=""
 	done
