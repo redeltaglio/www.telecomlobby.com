@@ -45,9 +45,12 @@ do
 	while [[ $i -le $LINENUM ]]; do 
 		ATEXT=$(cat $OUTPUT$html_file | grep "<strong>" | head -n $i | tail -n 1)
 		STRONG=$(echo $ATEXT | cut -d ">" -f2 | cut -d "<" -f1)
-		ATEXTNEU=
-		echo $ATEXTNEU | sed -e 's/'
+		ATEXTNEU=$(echo $ATEXT | sed -r -e 's/(\[..\])/'"$STRONG"'/' | cut -d \> -f3)
+		ATEXTNEU=$ATEXTNEU">"$(echo $ATEXT | sed -r -e 's/(\[..\])/'"$STRONG"'/' | cut -d \> -f4) 
+		ATEXTNEU=$ATEXTNEU">"$(echo $ATEXT | sed -r -e 's/(\[..\])/'"$STRONG"'/' | cut -d \> -f5)
+		ATEXTNEU=$(echo $ATEXTNEU | sed 's/<\/p/<\/p>/')
 		i=$i+1
+		sed -i 's/${ATEXT}/${ATEXTNEU}/' $OUTPUT$html_file
 	done
 	i=1
 done 
