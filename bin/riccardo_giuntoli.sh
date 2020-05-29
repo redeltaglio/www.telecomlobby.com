@@ -1,5 +1,12 @@
 #!/bin/ksh
 
+###NOTES
+#awk -v old="$ATEXT" -v new="$ATEXTNEU" 'p=index($0, old) {print substr($0, 1, p-1) new substr($0, p+length(old)) }' $OUTPUT$html_file
+#https://stackoverflow.com/questions/29613304/is-it-possible-to-escape-regex-metacharacters-reliably-with-sed
+#
+#
+#
+
 RGMD="/home/taglio/Work/RNMnetwork/riccardo_giuntoli/"
 HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
@@ -50,10 +57,14 @@ do
 		ATEXTNEU=$ATEXTNEU">"$(echo $ATEXT | sed -r -e 's/(\[..\])/'"$STRONG"'/' | cut -d \> -f5)
 		ATEXTNEU=$(echo $ATEXTNEU | sed 's/<\/p/<\/p>/')
 		i=$i+1
+		#echo $ATEXTNEU
+		ATEXT=$(echo $ATEXT | sed 's,<\/,<\\/,g')
+		ATEXTNEU=$(echo $ATEXTNEU | sed 's,<\/,<\\/,g')
 		echo $ATEXT
 		echo $ATEXTNEU
-		#awk -v old="$ATEXT" -v new="$ATEXTNEU" 'p=index($0, old) {print substr($0, 1, p-1) new substr($0, p+length(old)) }' $OUTPUT$html_file
-		#sed -i 's/${ATEXT}/${ATEXTNEU}/' $OUTPUT$html_file
+		#sed -i "s/${ATEXT}/${ATEXTNEU}/g" $OUTPUT$html_file
+		ATEXT=""
+		ATEXTNEU=""
 	done
 	i=1
 done 
