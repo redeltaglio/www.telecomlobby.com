@@ -50,7 +50,10 @@ do
 		ATEXTNEU=$ATEXTNEU">"$(echo $ATEXT | sed -r -e 's/(\[..\])/'"$STRONG"'/' | cut -d \> -f5)
 		ATEXTNEU=$(echo $ATEXTNEU | sed 's/<\/p/<\/p>/')
 		i=$i+1
-		sed -i 's/${ATEXT}/${ATEXTNEU}/' $OUTPUT$html_file
+		echo $ATEXT
+		echo $ATEXTNEU
+		#awk -v old="$ATEXT" -v new="$ATEXTNEU" 'p=index($0, old) {print substr($0, 1, p-1) new substr($0, p+length(old)) }' $OUTPUT$html_file
+		#sed -i 's/${ATEXT}/${ATEXTNEU}/' $OUTPUT$html_file
 	done
 	i=1
 done 
