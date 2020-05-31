@@ -72,7 +72,7 @@ do
 #	done
 #	i=1
 	perl ./links.pl $OUTPUT$html_file > /tmp/$html_file
-	mv /tmp/$html_file $OUTPUT$html_file
+	cp /tmp/$html_file $OUTPUT$html_file
 done 
 
 rm $TMPPAGE
