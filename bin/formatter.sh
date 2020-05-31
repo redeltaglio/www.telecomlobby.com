@@ -46,6 +46,7 @@ do
 			cat $TMPHTML | sed -r 's/<\/em> <\/p>/<\/span><\/p>/' > $TMPHTML
 			cat $TMPHTML | gsed -E 's/<strong>/\n<strong>/g' > $TMPHTML
 			cat $TMPHTML | sed -r 's/~~(.*)~~/<span class="strike">\1<\/span>/g' > $TMPHTML
+			cat $TMPHTML | grep -v  \<hr > $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
