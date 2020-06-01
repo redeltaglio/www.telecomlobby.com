@@ -44,12 +44,12 @@ do
 			cat $TMPHTML | sed -e 's/<p><em>/<p><span class="important">/' -e 's/<\/em><\/p>/<\/span><\/p>/' > $TMPHTML
 			cat $TMPHTML | sed -r 's/<\/em>[.]<\/p>/<\/span><\/p>/' > $TMPHTML
 			cat $TMPHTML | sed -r 's/<\/em> <\/p>/<\/span><\/p>/' > $TMPHTML
-			cat $TMPHTML | gsed -E 's/<strong>/\n<strong>/' > $TMPHTML
-			cat $TMPHTML | sed -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' > $TMPHTML
-			cat $TMPHTML | sed  '/<hr/d' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' > $TMPHTML
-			#cat $TMPHTML | sed -e '/^$/d' > $TMPHTML
+			cat $TMPHTML | gsed -E 's/<strong>/\n<strong>/g' > $TMPHTML
+			cat $TMPHTML | sed -r 's/~~(.*)~~/<span class="strike">\1<\/span>/g' > $TMPHTML
+			cat $TMPHTML | grep -v  \<hr > $TMPHTML
+			cat $TMPHTML | sed -r -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' > $TMPHTML
+			cat $TMPHTML | sed -r -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' > $TMPHTML
+			cat $TMPHTML | gsed  -e '/^<code>/,/^<\/code>/ {s/<[^>]*>//g}' -e '/^$/d' -e '1 i\<code>' -e "\$a<\/code>" > $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
@@ -62,7 +62,6 @@ unset html_file
 for html_file in $(ls $OUTPUT)
 do
 	perl ./links.pl $OUTPUT$html_file > /tmp/$html_file
-	 gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g}}' /tmp/$html_file
 	cp /tmp/$html_file $OUTPUT$html_file
 done 
 
