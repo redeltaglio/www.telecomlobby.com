@@ -38,18 +38,18 @@ do
 			cat $HEADER$html_file > $TMPPAGE
 			cat $RGMD$markdown_file | markdown > $TMPHTML
 			#sed manipulation
-			cat $TMPHTML | sed -nr '/[Ee]xternal [Ll]inks/q;p' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p><em>/<p><span class="important">/' -e 's/<\/em><\/p>/<\/span><\/p>/' > $TMPHTML
-			cat $TMPHTML | sed -r 's/<\/em>[.]<\/p>/<\/span><\/p>/' > $TMPHTML
-			cat $TMPHTML | sed -r 's/<\/em> <\/p>/<\/span><\/p>/' > $TMPHTML
-			cat $TMPHTML | gsed -E 's/<strong>/\n<strong>/' > $TMPHTML
-			cat $TMPHTML | sed -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' > $TMPHTML
-			cat $TMPHTML | sed  '/<hr/d' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' > $TMPHTML
-			cat $TMPHTML | sed -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' > $TMPHTML
-			#cat $TMPHTML | sed -e '/^$/d' > $TMPHTML
+			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML 
+			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
+			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<em>/<span class="important">/' -e 's/<\/em>/<\/span>/' $TMPHTML
+			#sed -i -e 's/<p><em>/<p><span class="important">/' -e 's/<\/em><\/p>/<\/span><\/p>/' -e 's/<\/em>[.]<\/p>/<\/span><\/p>/' -e 's/<\/em> <\/p>/<\/span><\/p>/' $TMPHTML
+			gsed -i 's/<strong>/\n<strong>/' $TMPHTML
+			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
+			sed  -i '/<hr/d' $TMPHTML
+			sed -i -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' $TMPHTML
+			sed -i -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' $TMPHTML
+			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g}}' $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
@@ -62,7 +62,6 @@ unset html_file
 for html_file in $(ls $OUTPUT)
 do
 	perl ./links.pl $OUTPUT$html_file > /tmp/$html_file
-	 gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g}}' /tmp/$html_file
 	cp /tmp/$html_file $OUTPUT$html_file
 done 
 
