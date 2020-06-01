@@ -48,6 +48,8 @@ do
 			cat $TMPHTML | sed -r 's/~~(.*)~~/<span class="strike">\1<\/span>/g' > $TMPHTML
 			cat $TMPHTML | grep -v  \<hr > $TMPHTML
 			cat $TMPHTML | sed -r -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' > $TMPHTML
+			cat $TMPHTML | sed -r -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' > $TMPHTML
+			cat $TMPHTML | gsed  -e '/^<code>/,/^<\/code>/ {s/<[^>]*>//g}' | sed '/^$/d' | gsed '1 i\<code>' | gsed -e "\$a<\/code>" > $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
