@@ -87,8 +87,12 @@ do
 				sed -ri 's/command\:/command\:<\/p>/' $TMPHTML
 				sed -ri 's/Arguments<span class="important">against<\/span>systemd/Arguments_against_systemd/' $TMPHTML
 				sed -ri 's/Now create/<p>Now create/' $TMPHTML
-				sed -ri 's/with \:/with \:<\/p>/' $TMPHTML
+				sed -ri 's/with :/with :<\/p>/' $TMPHTML
 				sed -ri 's/<\/p>  and\:<\/p>/and\:<\/p>/' $TMPHTML
+				sed -ri 's/<p><p>/<p>/' $TMPHTML
+				sed -ri 's/<\/p><\/p>/<\/p>/' $TMPHTML
+				sed -ri 's/-t<\/p>/-t table/' $TMPHTML
+				sed -ri 's/<p>-T/-T/' $TMPHTML
 			fi
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
