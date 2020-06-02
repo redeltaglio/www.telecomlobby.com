@@ -49,7 +49,7 @@ do
 			sed  -i '/<hr/d' $TMPHTML
 			sed -i -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' $TMPHTML
 			sed -i -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' $TMPHTML
-			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g}}' $TMPHTML
+			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
