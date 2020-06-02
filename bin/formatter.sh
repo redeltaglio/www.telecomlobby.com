@@ -44,7 +44,6 @@ do
 			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
 			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
 			sed -i -e 's/<em>/<span class="important">/' -e 's/<\/em>/<\/span>/' $TMPHTML
-			#sed -i -e 's/<p><em>/<p><span class="important">/' -e 's/<\/em><\/p>/<\/span><\/p>/' -e 's/<\/em>[.]<\/p>/<\/span><\/p>/' -e 's/<\/em> <\/p>/<\/span><\/p>/' $TMPHTML
 			gsed -i 's/<strong>/\n<strong>/' $TMPHTML
 			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
 			sed  -i '/<hr/d' $TMPHTML
@@ -55,14 +54,26 @@ do
 			sed  -i -e 's/<li><p>/<li>/' -e 's/<\/p><\/li>/<\/li>/' $TMPHTML
 			test=$(grep "^...*<code>" $TMPHTML)
 			while [[ $test != ""  ]] do
-				sed -ri 's/^(...*)<code>/\1<pre>/' $TMPHTML
+				sed -ri 's/^(...*)<code>/\1<span class="coding">/' $TMPHTML
 				test=$(grep "^...*<code>" $TMPHTML)
 			done
 			test=$(grep "^...*</code>" $TMPHTML)
 			while [[ $test != ""  ]] do
-                                sed -ri 's/^(...*)<\/code>/\1<\/pre>/' $TMPHTML
+                                sed -ri 's/^(...*)<\/code>/\1<\/span> /' $TMPHTML
                                 test=$(grep "^...*</code>" $TMPHTML)
                         done
+			if [[ $namemd == "tor"  ]]; then
+				test=$(grep "<code></p>" $TMPHTML)
+				while [[ $test != ""  ]] do
+					if [[ $i -eq 1 || $i -eq 3 ]]; then
+						sed -i 's/<code><\p>/<\/code>/' $TMPHTML
+					elif [[ $i -eq 2 || $i -eq 4 ]]; then
+						sed -i 's/<code><\p>/<code>/' $TMPHTML
+					fi
+					i=`expr $i + 1`
+					test=$(grep "<code></p>" $TMPHTML)
+				done
+			fi
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
@@ -80,4 +91,5 @@ done
 
 rm $TMPPAGE
 rm $TMPHTML
+
 
