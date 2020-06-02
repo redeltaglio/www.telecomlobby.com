@@ -63,7 +63,33 @@ do
                                 test=$(grep "^...*</code>" $TMPHTML)
                         done
 			test=""
-			
+			i=1
+			while [[ i -le 4 ]] do
+				if [[ i -eq 1 ]]; then
+					gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+				elif [[ i -eq 2 ]]; then
+					gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				elif [[ i -eq 3 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+                                elif [[ i -eq 4 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				fi
+				i=$i+1
+			done
+			#little specific adjunt if tor.md
+			if [ $namemd == "tor" ]; then
+				gsed -i '/alt=\"torbsd proyect\"/,+1 d' $TMPHTML
+				sed -ri 's/\}<\/span>/\}<\/span><\/p>/' $TMPHTML
+				sed -ri 's/Ok, the cooking/<p>Ok, the cooking/' $TMPHTML
+				sed -ri 's/Now we/<p>Now we/' $TMPHTML
+				sed -ri 's/settings<\/span>/settings<\/span><\/p>/' $TMPHTML
+				sed -ri 's/Ok simply/<p>Ok simply/' $TMPHTML
+				sed -ri 's/command\:/command\:<\/p>/' $TMPHTML
+				sed -ri 's/Arguments<span class="important">against<\/span>systemd/Arguments_against_systemd/' $TMPHTML
+				sed -ri 's/Now create/<p>Now create/' $TMPHTML
+				sed -ri 's/with \:/with \:<\/p>/' $TMPHTML
+				sed -ri 's/<\/p>  and\:<\/p>/and\:<\/p>/' $TMPHTML
+			fi
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
