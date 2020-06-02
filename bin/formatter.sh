@@ -27,6 +27,7 @@ ATEXTESCAPED=""
 ATEXTNEU=""
 ATEXTNEUESCAPED=""
 STRONG=""
+test=""
 
 for markdown_file in $(ls $RGMD)
 do
@@ -50,6 +51,18 @@ do
 			sed -i -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' $TMPHTML
 			sed -i -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' $TMPHTML
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
+			gsed  -i -e '/^<blockquote>/,/^<\/blockquote>/{/^<blockquote>/!{/^<\/blockquote>/!s/<[^>]*>//g;}}' $TMPHTML
+			sed  -i -e 's/<li><p>/<li>/' -e 's/<\/p><\/li>/<\/li>/' $TMPHTML
+			test=$(grep "^...*<code>" $TMPHTML)
+			while [[ $test != ""  ]] do
+				sed -ri 's/^(...*)<code>/\1<pre>/' $TMPHTML
+				test=$(grep "^...*<code>" $TMPHTML)
+			done
+			test=$(grep "^...*</code>" $TMPHTML)
+			while [[ $test != ""  ]] do
+                                sed -ri 's/^(...*)<\/code>/\1<\/pre>/' $TMPHTML
+                                test=$(grep "^...*</code>" $TMPHTML)
+                        done
 			cat $TMPHTML >> $TMPPAGE
 			cat $FOOTER >> $TMPPAGE
 			cp $TMPPAGE $OUTPUT$namemd".htm"
