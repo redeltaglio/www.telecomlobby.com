@@ -29,9 +29,6 @@ ATEXTNEUESCAPED=""
 STRONG=""
 test=""
 
-
-rm -rf $OUTPUT*
-
 for markdown_file in $(ls $RGMD)
 do
 	namemd=$(echo $markdown_file | cut -d "." -f1)
@@ -40,36 +37,19 @@ do
 		namehtml=$(echo $html_file | cut -d "." -f1)
 		if [ "$namemd" = "$namehtml" ]; then
 			cat $HEADER$html_file > $TMPPAGE
+			
 			cat $RGMD$markdown_file | markdown > $TMPHTML
-
 			#sed manipulation
 			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML 
 			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
 			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<em>/<span class="important">/' -e 's/<\/em>/<\/span>/' $TMPHTML
+			gsed -i 's/<strong>/\n<strong>/' $TMPHTML
 			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
-			sed -ir '/<p>```<\/p>/d' $TMPHTML
-			gsed -i 's/<strong>/\n<strong>/g' $TMPHTML
 			sed  -i '/<hr/d' $TMPHTML
-			test=$(grep -E "<p><code>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<p><code>/s//<code>/' $TMPHTML
-                                test=$(grep -E "<p><code>" $TMPHTML)
-                        done
-			test=$(grep -E "</code></p>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<\/code><\/p>/s//<\/code>/' $TMPHTML
-                                test=$(grep -E "</code></p>" $TMPHTML)
-                        done
-			test=$(grep -E "<p>\`\`\`" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<p>```/s//<code>/' $TMPHTML
-                                test=$(grep -E "<p>\`\`\`" $TMPHTML)
-                        done 
-                        test=$(grep -E "\`\`\`</p>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/```<\/p>/s//<\/code>/' $TMPHTML
-                                test=$(grep -E "\`\`\`</p>" $TMPHTML)
-                        done
+			sed -i -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' $TMPHTML
+			sed -i -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' $TMPHTML
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
 			gsed  -i -e '/^<blockquote>/,/^<\/blockquote>/{/^<blockquote>/!{/^<\/blockquote>/!s/<[^>]*>//g;}}' $TMPHTML
 			sed  -i -e 's/<li><p>/<li>/' -e 's/<\/p><\/li>/<\/li>/' $TMPHTML
@@ -83,19 +63,22 @@ do
                                 sed -ri 's/^(...*)<\/code>/\1<\/span> /' $TMPHTML
                                 test=$(grep "^...*</code>" $TMPHTML)
                         done
-			test=$(grep "^...*<em>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                sed -ri 's/^(...*)<em>/\1<span class="important">/' $TMPHTML
-                                test=$(grep "^...*<em>" $TMPHTML)
-                        done
-                        test=$(grep "^...*</em>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                sed -ri 's/^(...*)<\/em>/\1<\/span> /' $TMPHTML
-                                test=$(grep "^...*</em>" $TMPHTML)
-                        done
-			
+			test=""
+			i=1
+			while [[ i -le 4 ]] do
+				if [[ i -eq 1 ]]; then
+					gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+				elif [[ i -eq 2 ]]; then
+					gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				elif [[ i -eq 3 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+                                elif [[ i -eq 4 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				fi
+				i=$i+1
+			done
 			#little specific adjunt if tor.md
-			if [ $namemd == "openbsd_tor_privoxy" ]; then
+			if [ $namemd == "tor" ]; then
 				gsed -i '/alt=\"torbsd proyect\"/,+1 d' $TMPHTML
 				sed -ri 's/\}<\/span>/\}<\/span><\/p>/' $TMPHTML
 				sed -ri 's/Ok, the cooking/<p>Ok, the cooking/' $TMPHTML
