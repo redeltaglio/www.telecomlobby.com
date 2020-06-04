@@ -42,37 +42,26 @@ do
 			cat $HEADER$html_file > $TMPPAGE
 			cat $RGMD$markdown_file | markdown > $TMPHTML
 
-			#sed manipulation
-			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML 
-			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
-			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
-			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
+			#sed delete
+			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML
 			sed -ir '/<p>```<\/p>/d' $TMPHTML
-			gsed -i 's/<strong>/\n<strong>/g' $TMPHTML
 			sed  -i '/<hr/d' $TMPHTML
-			test=$(grep -E "<p><code>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<p><code>/s//<code>/' $TMPHTML
-                                test=$(grep -E "<p><code>" $TMPHTML)
-                        done
-			test=$(grep -E "</code></p>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<\/code><\/p>/s//<\/code>/' $TMPHTML
-                                test=$(grep -E "</code></p>" $TMPHTML)
-                        done
-			test=$(grep -E "<p>\`\`\`" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/<p>```/s//<code>/' $TMPHTML
-                                test=$(grep -E "<p>\`\`\`" $TMPHTML)
-                        done 
-                        test=$(grep -E "\`\`\`</p>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                gsed -i '0,/```<\/p>/s//<\/code>/' $TMPHTML
-                                test=$(grep -E "\`\`\`</p>" $TMPHTML)
-                        done
+
+			#sed change
+			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
+			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
+			gsed -i 's/<strong>/\n<strong>/g' $TMPHTML
+			sed -i 's/^<p>```/<code>/g' $TMPHTML
+			sed -i 's/```<\/p>$/<\/code>/g' $TMPHTML
+			sed -i 's/^<p><code>$/<code>/g' $TMPHTML
+			sed -i 's/^<\/code><\/p>$/<\/code>/g' $TMPHTML
+			sed -i -e 's/^<p><img/<img/' -e 's/\/><\/p>$/\/>/' $TMPHTML
+			#sed strip
+			
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
 			gsed  -i -e '/^<blockquote>/,/^<\/blockquote>/{/^<blockquote>/!{/^<\/blockquote>/!s/<[^>]*>//g;}}' $TMPHTML
 			sed  -i -e 's/<li><p>/<li>/' -e 's/<\/p><\/li>/<\/li>/' $TMPHTML
+
 			test=$(grep "^...*<code>" $TMPHTML)
 			while [[ $test != ""  ]] do
 				sed -ri 's/^(...*)<code>/\1<span class="coding">/' $TMPHTML

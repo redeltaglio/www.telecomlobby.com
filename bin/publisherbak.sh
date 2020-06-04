@@ -28,11 +28,6 @@ ATEXTNEU=""
 ATEXTNEUESCAPED=""
 STRONG=""
 test=""
-WWWDIR="/var/www/htdocs/telecomlobby.com/"
-WWWOUTPUT="/var/www/htdocs/telecomlobby.com/test/"
-
-
-rm -rf $OUTPUT*
 
 for markdown_file in $(ls $RGMD)
 do
@@ -42,28 +37,22 @@ do
 		namehtml=$(echo $html_file | cut -d "." -f1)
 		if [ "$namemd" = "$namehtml" ]; then
 			cat $HEADER$html_file > $TMPPAGE
-			cat $RGMD$markdown_file | markdown > $TMPHTML
-
-			#sed delete
-			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML
-			sed -ir '/<p>```<\/p>/d' $TMPHTML
-			sed  -i '/<hr/d' $TMPHTML
-
-			#sed change
-			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
-			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
-			gsed -i 's/<strong>/\n<strong>/g' $TMPHTML
-			sed -i 's/^<p>```/<code>/g' $TMPHTML
-			sed -i 's/```<\/p>$/<\/code>/g' $TMPHTML
-			sed -i 's/^<p><code>$/<code>/g' $TMPHTML
-			sed -i 's/^<\/code><\/p>$/<\/code>/g' $TMPHTML
-			sed -i -e 's/^<p><img/<img/' -e 's/\/><\/p>$/\/>/' $TMPHTML
-			#sed strip
 			
+			cat $RGMD$markdown_file | markdown > $TMPHTML
+			#sed manipulation
+			sed -nri '/[Ee]xternal [Ll]inks/q;p' $TMPHTML 
+			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
+			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<p><img/<img/' -e 's/\/><\/p>/\/>/' $TMPHTML
+			sed -i -e 's/<em>/<span class="important">/' -e 's/<\/em>/<\/span>/' $TMPHTML
+			gsed -i 's/<strong>/\n<strong>/' $TMPHTML
+			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
+			sed  -i '/<hr/d' $TMPHTML
+			sed -i -e 's/<p[>|>\n]<code>/<code>/' -e 's/<\/code[>|>\n]<\/p>/<\/code>/' $TMPHTML
+			sed -i -e 's/<p>```/<code>/' -e 's/```<\/p>/<\/code>/' $TMPHTML
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
 			gsed  -i -e '/^<blockquote>/,/^<\/blockquote>/{/^<blockquote>/!{/^<\/blockquote>/!s/<[^>]*>//g;}}' $TMPHTML
 			sed  -i -e 's/<li><p>/<li>/' -e 's/<\/p><\/li>/<\/li>/' $TMPHTML
-
 			test=$(grep "^...*<code>" $TMPHTML)
 			while [[ $test != ""  ]] do
 				sed -ri 's/^(...*)<code>/\1<span class="coding">/' $TMPHTML
@@ -74,19 +63,22 @@ do
                                 sed -ri 's/^(...*)<\/code>/\1<\/span> /' $TMPHTML
                                 test=$(grep "^...*</code>" $TMPHTML)
                         done
-			test=$(grep "^...*<em>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                sed -ri 's/^(...*)<em>/\1<span class="important">/' $TMPHTML
-                                test=$(grep "^...*<em>" $TMPHTML)
-                        done
-                        test=$(grep "^...*</em>" $TMPHTML)
-                        while [[ $test != ""  ]] do
-                                sed -ri 's/^(...*)<\/em>/\1<\/span> /' $TMPHTML
-                                test=$(grep "^...*</em>" $TMPHTML)
-                        done
-			
+			test=""
+			i=1
+			while [[ i -le 4 ]] do
+				if [[ i -eq 1 ]]; then
+					gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+				elif [[ i -eq 2 ]]; then
+					gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				elif [[ i -eq 3 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<\/code>/' $TMPHTML
+                                elif [[ i -eq 4 ]]; then
+                                        gsed -i '0,/<code><\/p>/s//<code>/' $TMPHTML
+				fi
+				i=$i+1
+			done
 			#little specific adjunt if tor.md
-			if [ $namemd == "openbsd_tor_privoxy" ]; then
+			if [ $namemd == "tor" ]; then
 				gsed -i '/alt=\"torbsd proyect\"/,+1 d' $TMPHTML
 				sed -ri 's/\}<\/span>/\}<\/span><\/p>/' $TMPHTML
 				sed -ri 's/Ok, the cooking/<p>Ok, the cooking/' $TMPHTML
@@ -112,29 +104,11 @@ done
 
 unset html_file
 
-if [[ $2 == "output" ]]; then
-	rm -rf $WWWOUTPUT*
-fi
-
 for html_file in $(ls $OUTPUT)
 do
 	perl ./links.pl $OUTPUT$html_file > /tmp/$html_file
 	cp /tmp/$html_file $OUTPUT$html_file
-	if [[ $2 == "www" ]]; then
-		case $1 in 
-			"riccardo_giuntoli")
-				doas mv /tmp/$html_file $WWWDIR$1/$html_file ;;
-		esac
-		
-	elif [[ $2 == "output" ]]; then
-		doas cp $OUTPUT$html_file $WWWOUTPUT
-		
-	fi
 done 
-
-if [[ $2 != "" ]]; then
-	./wwwperm.sh
-fi
 
 rm $TMPPAGE
 rm $TMPHTML
