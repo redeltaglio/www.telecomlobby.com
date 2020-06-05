@@ -124,11 +124,16 @@ do
 		case $1 in 
 			"riccardo_giuntoli")
 				doas mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork")
+				#echo $WWWDIR$1/$html_file
+				doas mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork/considerations")
+				doas mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork/ES")
+				doas mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 		esac
-		
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
-		
 	fi
 done 
 
