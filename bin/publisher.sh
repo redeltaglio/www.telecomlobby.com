@@ -136,6 +136,10 @@ do
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES/get_access")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork/technomafia")
+				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"radioham")
+                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 		esac
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
