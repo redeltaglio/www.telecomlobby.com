@@ -142,6 +142,8 @@ do
                                 mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia/crimes_deaths_laws_health")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork/electrosmog")
+                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 		esac
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
