@@ -29,6 +29,7 @@ ATEXTNEUESCAPED=""
 STRONG=""
 test=""
 WWWDIR="/var/www/htdocs/telecomlobby.com/"
+SPIDERDIR="/var/www/htdocs/unspider.telecomlobby.com"
 WWWOUTPUT="/var/www/htdocs/telecomlobby.com/test/"
 
 
@@ -125,7 +126,11 @@ do
 			"riccardo_giuntoli")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				if [[ $html_file == "sexual_harassment.htm"  ]]; then
+					mv /tmp/$html_file $SPIDERDIR/$html_file  
+				else
+					mv /tmp/$html_file $WWWDIR$1/$html_file 
+				fi ;;
 			"RNMnetwork/considerations")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES")
