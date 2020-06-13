@@ -143,6 +143,8 @@ do
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+			"RNMnetwork/technomafia/sect")
+                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"radioham")
                                 mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia/crimes_deaths_laws_health")
