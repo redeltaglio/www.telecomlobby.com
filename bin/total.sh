@@ -13,3 +13,6 @@ sh publisher.sh RNMnetwork/technomafia www
 sh publisher.sh radioham
 sh publisher.sh RNMnetwork/technomafia/crimes_deaths_laws_health www
 sh publisher.sh RNMnetwork/electrosmog www
+sh publisher.sh RNMnetwork/technomafia/sect www
+sh sitemap.sh
+sh wwwperm.sh
