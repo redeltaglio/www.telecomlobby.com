@@ -15,6 +15,7 @@ fi
 RGMD="/home/taglio/Work/RNMnetwork/$1/"
 HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
+FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -105,7 +106,11 @@ do
 				sed -ri 's/<p>-T/-T/' $TMPHTML
 			fi
 			cat $TMPHTML >> $TMPPAGE
-			cat $FOOTER >> $TMPPAGE
+			if [ $namemd == "carcelona" ]; then
+				cat $FOOTER_CARCELONA >> $TMPPAGE
+			else
+				cat $FOOTER >> $TMPPAGE
+			fi
 			cp $TMPPAGE $OUTPUT$namemd".htm"
 		fi
 	done

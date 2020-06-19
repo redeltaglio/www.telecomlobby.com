@@ -1,7 +1,5 @@
 #!/bin/ksh
 
-
-
 sh gitpull.sh
 sh publisher.sh riccardo_giuntoli www
 sh publisher.sh RNMnetwork www
