@@ -16,6 +16,7 @@ RGMD="/home/taglio/Work/RNMnetwork/$1/"
 HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
 FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.html"
+FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidences_footer.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -106,8 +107,10 @@ do
 				sed -ri 's/<p>-T/-T/' $TMPHTML
 			fi
 			cat $TMPHTML >> $TMPPAGE
-			if [ $namemd == "carcelona" ]; then
+			if [ $namemd == "catalan_neural_applications" ]; then
 				cat $FOOTER_CARCELONA >> $TMPPAGE
+			elif [ $namemd == "overwhelming_evidences" ]; then
+				cat $FOOTER_EVIDENCES >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi

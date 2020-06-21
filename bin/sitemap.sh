@@ -18,6 +18,7 @@ cp $WWWDIR/sitemap.template $TMPSITE
 sed -i "s/<p><em>.*<\/em><\/p>/<p><em>V 0.9 alpha - $ver<\/em><\/p>/"  $WWWDIR/index.html
 sed -i "s/<p><em>.*<\/em><\/p>/<p><em>V 0.9 alpha - $ver<\/em><\/p>/"  $TEMPLATEDIR/footer.html
 sed -i "s/<p><em>.*<\/em><\/p>/<p><em>V 0.9 alpha - $ver<\/em><\/p>/" $TEMPLATEDIR/carcelona_footer.html
+sed -i "s/<p><em>.*<\/em><\/p>/<p><em>V 0.9 alpha - $ver<\/em><\/p>/" $TEMPLATEDIR/overwhelming_evidences_footer.html
 sed -i "s/<lastmod>.*<\/lastmod>/<lastmod>$ver<\/lastmod>/g" $TMPSITE
 
 sed -i '$d' $TMPSITE 
