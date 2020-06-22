@@ -7,6 +7,12 @@
 #
 ###
 
+function imgsubdomain {
+        subdomain=$(echo $1 | sed "s/[^a-zA-Z']//g")
+        echo $subdomain
+}
+
+
 if [[ $# -eq 0 ]];then
 	print "No Arguments"
 	exit
@@ -132,6 +138,7 @@ do
 	if [[ $2 == "www" ]]; then
 		case $1 in 
 			"riccardo_giuntoli")
+				imgsubdomain $1
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork")
 				if [[ $html_file == "sexual_harassment.htm"  ]]; then
