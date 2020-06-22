@@ -53,7 +53,7 @@ do
 			sed  -i '/<hr/d' $TMPHTML
 
 			#sed change
-			sed -i -e 's/<h3>/<h1>/' -e 's/<\/h3>/<\/h1>/' $TMPHTML
+			sed -i -e 's/<h3>/<h2>/' -e 's/<\/h3>/<\/h2>/' $TMPHTML
 			sed -i -r 's/~~(.*)~~/<span class="strike">\1<\/span>/' $TMPHTML
 			gsed -i 's/<strong>/\n<strong>/g' $TMPHTML
 			sed -i 's/^<p>```/<code>/g' $TMPHTML
