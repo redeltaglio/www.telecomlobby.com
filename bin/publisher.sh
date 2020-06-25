@@ -24,7 +24,7 @@ HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
 FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.html"
 FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidences_footer.html"
-FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.htm"
+FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -119,7 +119,7 @@ do
 				cat $FOOTER_CARCELONA >> $TMPPAGE
 			elif [ $namemd == "overwhelming_evidences" ]; then
 				cat $FOOTER_EVIDENCES >> $TMPPAGE
-			elif [ $namemd = "" ]; then
+			elif [ $namemd = "phenotypic_traits" ]; then
 				cat $FOOTER_TRAITS >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
