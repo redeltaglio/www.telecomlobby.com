@@ -8,8 +8,9 @@
 ###
 
 function imgsubdomain {
-        subdomain=$(echo $1 | sed "s/[^a-zA-Z']//g")
-        echo $subdomain
+	subdomain=$(echo $1 | sed "s/[^a-zA-Z']//g")
+	sed -ri "s/^<img src=\"(.*)\" alt=\"(.*)\" .* \/>$/<a href=\"http:\/\/$subdomain.telecomlobby.com\"><img src=\"\1\" title=\"\2\" \/><\/a>/" $2
+        
 }
 
 
@@ -23,6 +24,7 @@ HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
 FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.html"
 FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidences_footer.html"
+FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.htm"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -117,6 +119,8 @@ do
 				cat $FOOTER_CARCELONA >> $TMPPAGE
 			elif [ $namemd == "overwhelming_evidences" ]; then
 				cat $FOOTER_EVIDENCES >> $TMPPAGE
+			elif [ $namemd = "" ]; then
+				cat $FOOTER_TRAITS >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi
@@ -138,9 +142,10 @@ do
 	if [[ $2 == "www" ]]; then
 		case $1 in 
 			"riccardo_giuntoli")
-				imgsubdomain $1
+				imgsubdomain $1 /tmp/$html_file
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork")
+				imgsubdomain targetindividual /tmp/$html_file
 				if [[ $html_file == "sexual_harassment.htm"  ]]; then
 					mv /tmp/$html_file $SPIDERDIR/$html_file  
 				else
@@ -149,6 +154,7 @@ do
 			"RNMnetwork/considerations")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES")
+				imgsubdomain mindgames /tmp/$html_file
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"opensource_guides")
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
