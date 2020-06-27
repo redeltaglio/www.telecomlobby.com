@@ -1,12 +1,5 @@
 #!/bin/ksh
 
-###NOTES
-#awk -v old="$ATEXT" -v new="$ATEXTNEU" 'p=index($0, old) {print substr($0, 1, p-1) new substr($0, p+length(old)) }' $OUTPUT$html_file
-#https://stackoverflow.com/questions/29613304/is-it-possible-to-escape-regex-metacharacters-reliably-with-sed
-#
-#
-###
-
 function imgsubdomain {
 	subdomain=$(echo $1 | sed "s/[^a-zA-Z']//g")
 	sed -ri "s/^<img src=\"(.*)\" alt=\"(.*)\" .* \/>$/<a href=\"http:\/\/$subdomain.telecomlobby.com\"><img src=\"\1\" title=\"\2\" \/><\/a>/" $2
@@ -25,6 +18,7 @@ FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
 FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.html"
 FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidences_footer.html"
 FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.html"
+FOOTER_TORTURES="/home/taglio/Work/telecomlobby.com/footer/tortures_humiliations_footer.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -39,6 +33,7 @@ ATEXTNEUESCAPED=""
 STRONG=""
 test=""
 WWWDIR="/var/www/htdocs/telecomlobby.com/"
+ESWWWDIR="/var/www/htdocs/es.telecomlobby.com/"
 SPIDERDIR="/var/www/htdocs/unspider.telecomlobby.com"
 WWWOUTPUT="/var/www/htdocs/telecomlobby.com/test/"
 
@@ -121,6 +116,8 @@ do
 				cat $FOOTER_EVIDENCES >> $TMPPAGE
 			elif [ $namemd = "phenotypic_traits" ]; then
 				cat $FOOTER_TRAITS >> $TMPPAGE
+			elif [ $namemd = "tortures_humiliations" ]; then
+				cat $FOOTER_TORTURES >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi
@@ -172,6 +169,11 @@ do
 				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/electrosmog")
                                 mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+		esac
+	elif [[ $2 == "eswww" ]]; then
+		case $1 in
+			"es.telecomlobby.com/riccardo_giuntoli")
+				mv /tmp/$html_file $ESWWWDIR"riccardo_giuntoli"/$html_file ;;
 		esac
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
