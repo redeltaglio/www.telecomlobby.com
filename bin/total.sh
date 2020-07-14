@@ -12,5 +12,6 @@ sh publisher.sh radioham
 sh publisher.sh RNMnetwork/technomafia/crimes_deaths_laws_health www
 sh publisher.sh RNMnetwork/electrosmog www
 sh publisher.sh RNMnetwork/technomafia/sect www
+sh publisher.sh es.telecomlobby.com/riccardo_giuntoli eswww
 sh sitemap.sh
 sh wwwperm.sh

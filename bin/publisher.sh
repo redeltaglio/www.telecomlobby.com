@@ -64,6 +64,13 @@ do
 			sed -i 's/^<p><code>$/<code>/g' $TMPHTML
 			sed -i 's/^<\/code><\/p>$/<\/code>/g' $TMPHTML
 			sed -i -e 's/^<p><img/<img/' -e 's/\/><\/p>$/\/>/' $TMPHTML
+			#sed special letters
+			sed -i 's/ñ/\&#241;/g' $TMPHTML
+			sed -i 's/á/\&#225;/g' $TMPHTML
+			sed -i 's/é/\&#233;/g' $TMPHTML
+			sed -i 's/í/\&#237;/g' $TMPHTML
+			sed -i 's/ó/\&#243;/g' $TMPHTML
+			sed -i 's/ú/\&#250;/g' $TMPHTML
 			#sed strip
 			
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
@@ -186,5 +193,4 @@ done
 
 rm $TMPPAGE
 rm $TMPHTML
-
 
