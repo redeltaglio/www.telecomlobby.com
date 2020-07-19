@@ -71,6 +71,12 @@ do
 			sed -i 's/í/\&#237;/g' $TMPHTML
 			sed -i 's/ó/\&#243;/g' $TMPHTML
 			sed -i 's/ú/\&#250;/g' $TMPHTML
+			sed -i 's/è/\&#232;/g' $TMPHTML
+			sed -i 's/«/\&#171;/g' $TMPHTML
+			sed -i 's/»/\&#187;/g' $TMPHTML
+			sed -i 's/¿/\&#191;/g' $TMPHTML
+			sed -i 's/ü/\&#252;/g' $TMPHTML
+			sed -i 's/Á/\&#193;/g' $TMPHTML
 			#sed strip
 			
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
@@ -181,6 +187,8 @@ do
 		case $1 in
 			"es.telecomlobby.com/riccardo_giuntoli")
 				mv /tmp/$html_file $ESWWWDIR"riccardo_giuntoli"/$html_file ;;
+			"es.telecomlobby.com/barcelona_carcelona")
+				mv /tmp/$html_file $ESWWWDIR"barcelona_carcelona"/$html_file ;;
 		esac
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
