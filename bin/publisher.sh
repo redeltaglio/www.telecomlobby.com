@@ -19,6 +19,7 @@ FOOTER_CARCELONA="/home/taglio/Work/telecomlobby.com/footer/carcelona_footer.htm
 FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidences_footer.html"
 FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.html"
 FOOTER_TORTURES="/home/taglio/Work/telecomlobby.com/footer/tortures_humiliations_footer.html"
+FOOTER_SPANISH="/home/taglio/Work/telecomlobby.com/footer/footer_spanish.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
@@ -131,6 +132,10 @@ do
 				cat $FOOTER_TRAITS >> $TMPPAGE
 			elif [ $namemd = "tortures_humiliations" ]; then
 				cat $FOOTER_TORTURES >> $TMPPAGE
+			elif [ $namemd = "maquina_catalana" ]; then
+				cat $FOOTER_SPANISH >> $TMPPAGE
+			elif [ $namemd = "funciona_maquina_catalana" ]; then
+				cat $FOOTER_SPANISH >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi
