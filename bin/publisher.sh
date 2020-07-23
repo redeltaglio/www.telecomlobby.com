@@ -20,6 +20,7 @@ FOOTER_EVIDENCES="/home/taglio/Work/telecomlobby.com/footer/overwhelming_evidenc
 FOOTER_TRAITS="/home/taglio/Work/telecomlobby.com/footer/phenotypic_traits_footer.html"
 FOOTER_TORTURES="/home/taglio/Work/telecomlobby.com/footer/tortures_humiliations_footer.html"
 FOOTER_SPANISH="/home/taglio/Work/telecomlobby.com/footer/footer_spanish.html"
+FOOTER_CARES="/home/taglio/Work/telecomlobby.com/footer/footer_spanish_maquina.html"
 OUTPUT="/home/taglio/Work/telecomlobby.com/output/"
 TMPPAGE=$(mktemp)
 TMPHTML=$(mktemp)
