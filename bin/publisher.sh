@@ -1,5 +1,17 @@
 #!/bin/ksh
 
+function imgsubdomain {
+	subdomain=$(echo $1 | sed "s/[^a-zA-Z']//g")
+	sed -ri "s/^<img src=\"(.*)\" alt=\"(.*)\" .* \/>$/<a href=\"http:\/\/$subdomain.telecomlobby.com\"><img src=\"\1\" title=\"\2\" \/><\/a>/" $2
+        
+}
+
+
+if [[ $# -eq 0 ]];then
+	print "No Arguments"
+	exit
+fi
+
 RGMD="/home/taglio/Work/RNMnetwork/$1/"
 HEADER="/home/taglio/Work/telecomlobby.com/header/"
 FOOTER="/home/taglio/Work/telecomlobby.com/footer/footer.html"
