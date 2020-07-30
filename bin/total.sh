@@ -14,5 +14,6 @@ sh publisher.sh RNMnetwork/electrosmog www
 sh publisher.sh RNMnetwork/technomafia/sect www
 sh publisher.sh es.telecomlobby.com/riccardo_giuntoli eswww
 sh publisher.sh es.telecomlobby.com/barcelona_carcelona eswww
+sh publisher.sh es.telecomlobby.com/esclavitud_moderna eswww
 sh sitemap.sh
 sh wwwperm.sh
