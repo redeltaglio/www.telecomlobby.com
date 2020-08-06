@@ -68,6 +68,7 @@ do
 			sed -i -e 's/^<p><img/<img/' -e 's/\/><\/p>$/\/>/' $TMPHTML
 			#sed special letters
 			sed -i 's/ñ/\&#241;/g' $TMPHTML
+			sed -i 's/à/\&#224;/g' $TMPHTML
 			sed -i 's/á/\&#225;/g' $TMPHTML
 			sed -i 's/é/\&#233;/g' $TMPHTML
 			sed -i 's/í/\&#237;/g' $TMPHTML
