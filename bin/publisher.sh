@@ -80,6 +80,7 @@ do
 			sed -i 's/ü/\&#252;/g' $TMPHTML
 			sed -i 's/Á/\&#193;/g' $TMPHTML
 			sed -i 's/°/\&deg;/g' $TMPHTML
+			sed -i 's/®/\&#174;/g' $TMPHTML
 			#sed strip
 			
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
