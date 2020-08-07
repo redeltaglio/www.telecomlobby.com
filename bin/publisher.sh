@@ -146,6 +146,8 @@ do
                                 cat $FOOTER_SPANISH >> $TMPPAGE
                        elif [ $namemd = "asociaciones_organismos" ]; then
                                 cat $FOOTER_SPANISH >> $TMPPAGE
+			elif [ $namemd = "industrias_maquina_catalana" ]; then
+				cat $FOOTER_SPANISH >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi
