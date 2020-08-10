@@ -1,0 +1,39 @@
+
+		<hr><a name="2019-11-05-1">
+		<div><h3>Mesh networks require height. Height is expensive. What are some alternate ways to get height and what are their DIY enabling technologies?</h3>
+		<h5><a href="2019-11-05-1.html">2019-11-05 #1</a></h5>
+		<!--<img src="/image.jpg">-->
+
+		<p>Mesh networks between people are an alternative to the internet are hard. Height above terrain is everything in the VHF and up range if you're not in a giant city of skyscrapers or coastal town with giant mountains overlooking everything. It's just not possible to put together networks if there are many hills or valleys obstructing line of sight. The only reason cell networks work is that they buy space on towers, buildings, and the like high above the ground. That's too expensive for individuals or community groups. There are some non-traditional ways to get height and power up to that height, cheaply.</p>
+
+		<p><b>Surface wave transmission lines going up to antennas in trees</b></p>
+
+		<p>The first I've tried was making a light weight  transmission line to connect a ground level transceiver with the antenna hanging up in a tree. RF power can be carried on a single thin bare (28awg) wire in much the same way that it travels inside a waveguide but inverted (TEM). This surface wave transmission line (SWTL) just requires a couple complex metal tapers making up horns at both ends. These can be 3D as in the <a href="/library/Electromagnetics/A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">designs from Glenn Elmore in QEX</a> I implemented or 2D as shown in some of <a href="https://www.youtube.com/user/n6gnSWTL">Glen Elmore's more recent youtube demostrations</a> of high power (50w) tranmission at high effiencies. Though it's complex to make the 3D version like mine the 2D design made of metallized paper that Elmore demostrates could easily be DIY'd. Rain, snow, and ice are problems but sometimes working is better than not at all. Loss is low and they aren't an eyesore to the neighbors. For higher frequency band (ie, 2.4 GHz and up the launchers can be very small. The 2 launchers I made shown below are designed for a ~400 MHz lower cut-off and so quite large.</p>
+
+		<ul><li><a href="/library/Electromagnetics/Method%20and%20Apparatus%20for%20Launching%20a%20Surface%20Wave%20onto%20a%20Single%20Conductor%20Transmission%20Line_%20Glen%20E%20Elmore_%20EP03796883NWB1_%202012.pdf">Method and Apparatus for Launching a Surface Wave onto a Single Conductor Transmission Line_ Glen E Elmore_ 2012</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Flying%20antenna_%20Surface%20Wave%20Transmission%20Lines_%20Presentation_%20Glen%20Elmore_%20John%20Watrous_%202011.pdf">Flying antenna_ Surface Wave Transmission Lines_ Presentation_ Glen Elmore_ John Watrous_ 2011</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Surface%20wave%20transmission%20system%20over%20a%20single%20conductor%20having%20E-fields%20terminating%20along%20the%20conductor_%20US7567154_%202008.pdf">Surface wave transmission system over a single conductor having E-fields terminating along the conductor_ US7567154_ 2008</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Klopfenstein%20Taper%20Spreadsheet%20With%20Data%20From_%20A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.ods">Klopfenstein Taper Spreadsheet With Data From_ A Surface Wave Transmission Line_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li>
+		<li><a href="/library/Electromagnetics/A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">A Surface Wave Transmission Line_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/An%20All-Band%20Antenna_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">An All-Band Antenna_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li></ul>
+
+		<img src="http://erewhon.superkuh.com/swtl-launcher-parts.jpg">
+		<img src="http://erewhon.superkuh.com/swtl_launcher.jpg">
+		<img src="http://erewhon.superkuh.com/swtl_launcher_complete.jpg">
+
+		<p><b>Magnetrons as reflection amplifiers</b></p>
+
+		<p>The second, one I'm only exploring in theory right now, is using very high power by operation of cheap oven magnetrons as reflection amplifiers. When an external signal up to ~30 dB below the cavity's operating level is introduced the cavity behaves like a diode with negative resistance and will lock on to the introduced signal and amplify it significantly. Normally over magnetrons are fairly noisy outside of the carrier because of electrons that make it more than one loop around the cavity. This can be stopped by making the magnetic field asymmetrical vertically by adding a handful of extra neodynium magnets to bias one of the poles. Additional reduction in noise can can be had by minimizing cathode heating current if not turning it off entirely. Magnetrons in ovens operate at a power level well above what they can sustain in steady state. To reduce the power level to something that can be dissipated the input capacitor on the voltage doubler needs to be reduced to one about 1/50th of it's capacity of a similar or higher voltage rating. This results in output power levels in the 10s of watts with very low noise and a decent modulation depth.</p>
+
+		<p>Magnetrons' innate frequency of oscillation can be effected by many things during operation. Increased anode current "pushes up" the frequency at about 0.1 MHz/mA while the frequency is "pulled down" the lower the impedance of the output. By using a slightly shorter than 1/4 wavelength monopole the frequency can be shifted some tens of MHz down to well within the safe amateur radio operating band. External coils wound around the poles of the magnetron can be used to change the magnetic field intensity and so decrease the amount of electrons that make it from the cathode to anode at a given voltage decreasing the power.</p>
+
+		<p>The one problem with magnetrons as reflection amplifiers is that the magnetron is only one part of the amplifier. The other is the circulator. Circulators are not cheap. And circulators cannot be home made because of the sintering and pressing requirements even if the chemistry of nickel ferrites is easy to do. So they must be bought ($50-100 for 50w). Ferrimagnetic resonance stripline circulators tend to be the cheapest at these powers.</p>
+
+		<p>In terms of practical assembly, the microwave is left mostly assembled. The output of the TE_10 waveguide is closed off with a copper plate and another magnetron cap "probe" antenna is put into the sealed waveguide ~1/4 wave away from the newly shorted end of the waveguide. The output of the monopole is connected directly to the circulator tab despite the weird impedance probably presented. The input from the signal to be transmitted and the antenna (or SWTL launcher) are on the other two pins of the circulator. </p>
+
+
+		<p><b>Combining it all together</b></p>
+
+		<p>10-20w of power on 2.4 GHz that's transmitted as 5-10w from the antenna at the top end of a surface wave transmission line lofted in a tree at 70ft would enable whole town and true community mesh networks. The injection locking effect only works over a ~5 MHz range though. Any modulation scheme has to stay within those bounds but things like amplitude shift keying are bad choices because of the frequency pushing effect. The best modulations are FSK or MSK but BPSK does work at a slightly higher error rate. A handful of megabits per second is possible.</p>
+		</div>
+

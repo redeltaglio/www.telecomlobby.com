@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# use it like, 
+#		$ ./num-tabs.pl opera
+#		$ ./num-tabs.pl palemoon
+#		$ ./num-tabs.pl firefox
+
+use Cwd;
+use Fcntl qw(:seek);
+use Time::Piece;
+
+my $debug = 0;
+my $browser = lc($ARGV[0]);
+print "browser: $browser\n" if $debug;
+#$browser = 'opera' unless $browser;
+
+my $extension;
+if ($browser eq 'opera') {
+	$extension = 'win';
+} elsif ($browser eq 'palemoon' | $browser eq 'firefox') {
+	$extension = 'session';
+} else {
+	print "Browser, \'$browser\', not supported.\n";
+	print "Put it in the dir with the session files then like below.\n$0 opera\n$0 palemoon\n$0 firefox\n";
+	exit;
+}
+
+
+my $dir = cwd();
+my @files = glob( $dir . "/*.$extension" );
+if ($debug) { 
+	print "files: " . scalar(@files) . "\n";
+}
+my %sessions;
+
+foreach my $sessionfile (@files) {
+	print "Filename: $sessionfile\n" if $debug;
+	my $date;
+
+	# does it follow my filename conventions?
+	$date = use_superkuh_date_embeded_filenames($sessionfile);
+	# if it isn't in the filename get the last modified date/time.
+	unless ($date) {
+		my $t = localtime((stat $sessionfile)[9]);
+		$date = $t->ymd . " " .  $t->hms;
+	}
+
+	my @entries;
+	my $tabs = 0;
+
+	if ($browser eq 'opera') {
+		# Opera 5 - Opera 12
+		{
+			open(SESSION, "$sessionfile") or die;
+	 		local $/ = '\n';
+	  		while (<SESSION>) {
+				# all tab entries start with [4] or [5] or [6] or [48], etc.
+				# count the number of matches for that pattern.
+	  	 		$tabs  = () = $_ =~ /\[\d+\]/g;
+	  		}
+			close SESSION;
+
+			# but the first three entries, [1],[2],[3] are browser window meta-data, not tabs.
+			# minus 3 from total tabs to fix the offset	
+			$tabs -= 3;
+
+			# if there were 0 tabs, meaning no decodable text, try binary session parsing.
+			if ($tabs == -3) {
+				$tabs = op6binarytabs($sessionfile);
+			}
+		}
+	} else {
+		# Pale Moon and Firefox ([SessionManager v2] extension)
+		# timestamp=1364215630579
+		# autosave=false	count=1/142	screensize=1920x1080
+		{
+			local $/ = '0xd'; # CARRIAGE RETURN (CR)
+			open(SESSION, "$sessionfile") or die;
+			while(<SESSION>) {
+				if (/count=\d+\/(\d+)/) {
+					$tabs = $1;
+				}
+			}
+			close SESSION;
+		
+		}
+	}
+
+	print "tabs: $tabs\n" if $debug;
+	$sessions{$date} = $tabs;
+}
+
+for (sort {$a cmp $b} (keys %sessions)) {
+ 	if ($sessions{$_} == -3) {
+		print "$_ couldn't be parsed.\n";
+	} else {
+		print "$_,$sessions{$_}\n";
+	}
+}
+
+sub op6binarytabs {
+	# this is all just getting the third byte out and converting it to a decimal number.
+	# it might be that for very large session both byte 2 and 3 are used. I ignore this.
+	my $filename = shift;
+	my($fh, $byte_position, $byte_value);
+	$byte_position = 3;
+	open($fh, "<", $filename)
+	  || die "can't open $filename: $!";
+	binmode($fh)
+	  || die "can't binmode $filename";
+	sysseek($fh, $byte_position, SEEK_CUR)  # NB: 0-based
+	  || die "couldn't see to byte $byte_position in $filename: $!";
+	sysread($fh, $byte_value, 1) == 1
+	  || die "couldn't read byte from $filename: $!";
+	close $fh;
+	return ord($byte_value);
+}
+
+sub use_superkuh_date_embeded_filenames {
+	my $sessionfile = shift;
+	my $date = 0;
+
+	# /12-28_21-04___Op76.win
+	# /01-02_10-04.win
+	# /11-12_1-03.win
+	if ($sessionfile  =~ m#.+/(\d\d)-(\d+)_(\d+)-(\d\d).+#) {
+#	                     2d Year     Month      Day     24H time
+		$date = "20" . $4 . "-" . $1 . "-" . $2 . " $3:00:00";
+	}
+
+	# /8-17-03.win
+	if ($sessionfile  =~ m#.+/(\d)-(\d\d)-(\d\d).+#) {
+#		            2d Year            Month      Day     24H time
+		$date = "20" . $3 . "-" . "0" . $1 . "-" . $2 . " 00:00:00";
+	}
+
+	# /8-20_5-03.win
+	if ($sessionfile  =~ m#.+/(\d)-(\d\d)_(\d\d)-(\d\d).+#) {
+#		            2d Year       Month      Day     24H time
+		$date = "20" . $4 . "-" . $1 . "-" . $2 . " $3:00:00";
+	}
+
+	return $date;
+}

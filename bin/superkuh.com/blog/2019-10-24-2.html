@@ -1,0 +1,32 @@
+
+		<hr><a name="2019-10-24-2">
+		<div><h3><a href="http://sci-hub.se/10.1063/1.1609040">An easy modification to suppress noise from a household magnetron</a></h3>
+		<h4>And how magnetrons can be used as reflection amplifiers</h4>
+		<h5><a href="2019-10-24-2.html">2019-10-24 #2</a></h5>
+		<a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Low-noise%20microwave%20magnetrons%20by%20azimuthally%20varying%20axial%20magnetic%20field_%20V%20B%20Neculaes_%20R%20M%20Gilgenbach_%20Y%20Y%20Lau_%202003.pdf"><img src="/magnetron-noise-mod-01.png"></a>	
+		<h5>Low-noise microwave magnetrons by azimuthally varying axial magnetic field_ V B Neculaes_ R M Gilgenbach_ Y Y Lau_ 2003</h5>
+		<p>This paper documents how sticking (literally) some extra magnets on the top magnet of a microwave magnetron gets rid of most of the noise around the carrier. Unlike other methods of running a magnetron in a low noise mode this way requires no invasive modifications and you can still run the cathode heater to get full power output. This is at all relevant because there exists a way to use a household magnetron as an amplifier (<a href="http://superkuh.com/library/Electromagnetics/Magnetron/The%20Magnetron%20-%20A%20Low%20Noise%20Long%20Life%20Amplifier_%20William%20C%20Brown_%201990.pdf">ref pdf</a>).</p>
+
+		<h5>Reference material <a href="/library/Electromagnetics/Magnetron/">/library/Electromagnetics/Magnetron</a></h5>
+
+		<p>There are two ways in the literature to use a microwaven oven magnetron as a reflection amplifier (w/circulator). Both of them modulate the anode current, which is to say, the rate at which electrons travel from the cathode to the node in the coaxial cavity surrounded by resonating cells.</p>
+
+		<p>The first and easiest way to do this is to change the magnetic field projecting down vertically through the cavities. An additional electromagnet coil is added to contribute (or subtract) from the the permanent magnets. The current in this coil is controlled by a phase locked loop. But the current through the coil can't be changed rapidly so this kind of amplifier can't be used with phase modulation schemes.</p>
+
+<a href="http://superkuh.com/library/Electromagnetics/Magnetron/The%20Magnetron%20-%20A%20Low%20Noise%20Long%20Life%20Amplifier_%20William%20C%20Brown_%201990.pdf"><img src="/magnetron-noise-mod-02.png"><img src="/magnetron-noise-mod-03.png"></a>
+
+		<p>The second and most expensive is to change the actual HV bias current directly by using a switched IGBT HV supply with complex control circuitry. It also uses a PLL but allows for much faster phase modulation.</p>
+
+		<p>Both types of set are pretty high noise when there's a lot of cathode heater current supplied (ie, high power). But if the magnetron is started with just a bit of heater power then the heater is turned off the magnetron continues to operate at a much lower noise level and with much less random phase jitter. But this can now be solved by having extra bias field on the top magnet.</p>
+
+		<p>Both types require extensive filtering of the AC-DC conversion power supply.</p>
+
+		<pre>Later...</pre>		
+
+		<p><a href="http://superkuh.com/library/Electromagnetics/Magnetron/Characterization%20and%20Optimization%20of%20the%20Magnetron%20Directional%20Amplifier_%20Thesis_%20Mike%20Hatfield_%201999.pdf">Characterization and Optimization of the Magnetron Directional Amplifier_ Thesis_ Mike Hatfield_ 1999</a> - this is by far the best and most authoritive document on using magnetrons as reflection amplifiers.</p>
+
+		</div>
+
+
+
+

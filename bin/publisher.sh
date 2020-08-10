@@ -82,6 +82,7 @@ do
 			sed -i 's/Á/\&#193;/g' $TMPHTML
 			sed -i 's/°/\&deg;/g' $TMPHTML
 			sed -i 's/®/\&#174;/g' $TMPHTML
+			sed -i 's/ì/\&igrave;/g' $TMPHTML
 			#sed strip
 			
 			gsed  -i -e '/^<code>/,/^<\/code>/{/^<code>/!{/^<\/code>/!s/<[^>]*>//g;/^$/d}}' $TMPHTML
@@ -147,7 +148,9 @@ do
                        elif [ $namemd = "asociaciones_organismos" ]; then
                                 cat $FOOTER_SPANISH >> $TMPPAGE
 			elif [ $namemd = "industrias_maquina_catalana" ]; then
-				cat $FOOTER_SPANISH >> $TMPPAGE
+                                cat $FOOTER_SPANISH >> $TMPPAGE
+			elif [ $namemd = "nombres_apellidos" ]; then
+                                cat $FOOTER_SPANISH >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi

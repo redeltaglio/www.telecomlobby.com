@@ -1,0 +1,61 @@
+
+		<hr><a name="2019-10-26-1">
+		<div><h3>Why do microwave magnetron outputs have holes if they're not waveguides?</h3>
+		<h5><a href="2019-10-26-1.html">2019-10-26 #1</a></h5>
+		<img src="/microwave-magnetron-cap-holes.jpg">
+		<p>I've been looking at a lot of microwave oven magnetrons lately. One thing that vexed me was why they all seem to have a hole in the cap on their output. <b>Initially this predisposes you to think that it's an aperture of a waveguide</b>. But the wavelength of of 2.4 GHz in air is way to large for the size of the 'waveguide'. For a 'waveguide' that small it'd only support about 15 GHz wavelength as the lowest frequency and support up to some ~20 GHz before high end cut-off.</p>
+	<p><b>It's actually a monopole antenna with a dielectric standoff</b>. The fatter the monopole the greater the bandwidth generally, and the larger the better heat tolerance, and the lower the e-field gradients. So it makes sense to use a fat cylinder for the monopole. But what <em>doesn't make sense</em> is that there's a hole in the end of it. In all of them.</p>
+
+<!--		<p>US 2011/0234093 A1
+An insulation cylinder 80 is made of ceramic and extends along the axis 22. An end of the insulation cylinder 80 is fixed to an output end (an upper end in FIG. 1) of the metallic sealing member 74. The other end of the insulation cylinder 80 is fixed to an exhausting pipe 82. An antenna 84 is
+fixed to one of the even number of vanes 30, penetrates the pole piece, extends inside of the metallic sealing member 74 and the insulation cylinder80 and is led to the exhausting pipe 82. The exhausting pipe 82 holds the tip of the antenna 84 there between. A cap 86 is disposed so as to surround the exhausting pipe 82.</p>
+-->
+
+		<p>After reading a few patents I think I know why. Originally the vacuum evacuation tube comes out of the top of the magnetron. It's normally closed off but it's still under the antenna cap. <b>If the antenna has a hole in it then the magnetron can be tested somewhat normally while still being hooked up to the vacuum pump</b>. That's my guess. I can't think of any other reason for it beyond letting hot air out of the cavity beneath the antenna.</p>
+
+		<p>I ended up emailing a number of people who seemed to be authorities or at least very knowledgable on commercial oven magnetron operation. The consensus of *all* of them was that the hole in the cap really didn't matter and it was just there to cover the sharp edges of the sealed evacuation tube. But few really seemed to know why they all have little holes on the end. Until today (a week since I started digging) when two people confirmed that <b>the holes *are* just for mechanical assembly</b>.</p>
+
+		<blockquote><p>There is no electrical reason for the hole: the antenna with such a hole behaves exactly the same way as without a hole. The cap serves for
+defining/unifying the magnetron radiating structure shape and protection from the sharp edges of the sealed evacuation tube end.</p>
+		<p>I am not a magnetron technology specialist but <b>the hole must have some prosaic technological reason, such as air vent when the cap is pressed onto the magnetron.</b> In mass production, this may be a very snappy operation.</p>
+
+		<p>Magnetrons are certainly not tested in any electric way while being hooked up to the vacuum pump. A "magnetron" is then just a bare bulb without electric connections, without magnets, without the cap alone.</p>
+
+		<p>- Vladimir Bilik</p></blockquote>
+
+		<div><img src="/magnetron-06.jpg"><img src="/magnetron-05.jpg"></div>
+
+		<blockquote><p>&lt;_abc_&gt; The hole in the top of tha probe on an oven magnetron serves as assembly help. There's an equivalent hole on almost all anode contact caps on tubes, sometimes it is smaller and soldered closed. <a href="http://danyk.cz/gu81_en.html">http://danyk.cz/gu81_en.html</a> Different style, same idea, the little tab is spot welded to the wire coming out of the glas</p></blockquote>
+<!--
+		<p>I ended up emailing the guy behind the excellent site, <a href="http://radartutorial.eu/">radartutorial.eu</a> figuring he would know but it didn't resolve much of my confusion.</p>
+		<blockquote><p>For the function of the magnetron this part is rather unimportant. Its only function is to mechanically adapt the magnetron to the high-voltage plug. (Like the BERU Nut Coupling on a spark plug in a car.)</p></blockquote>
+		<p>Honestly, I don't know what that means. There's no high voltage plug on the output or the antenna. I must have phrased my question ambigiously.</p>
+		<p>Edit Oct 28: I continued to bother the guy by email.</p>
+		<blockquote>
+<pre>It's only function is mechanical? It's not the monopole antenna that
+radiates? Just to be clear, I'm talking about the part highlighted in
+red on the image on this page,
+
+http://superkuh.com/blog/2019-10-26-1.html
+http://superkuh.com/microwave-magnetron-cap-holes.jpg
+
+And specifically the hole in the top of it and why it is there in all of
+them.
+
+Are you saying this steel cap is only there so that there's a
+standardized fit for the waveguide? I could understand that. But it
+still doesn't explain the hole.
+
+Again, thanks for the help.
+	- superkuh</pre>
+</blockquote>
+		<p>And he was nice enough to help further.</p>
+<blockquote><p>Nevertheless, it is only a mechanical plug: it decouples the power from the probe inside the vacuum tube, that don't have a contact to the waveguide. 
+It works like a capacitor. But if it was missing, the tube would still work. But maybe the power output would be less effective.</p></blockquote>
+
+<p>The idea that the power is capacitively coupled from the metal probe and not from direct contact electrically really suprises me. I need to take apart one of my broken magnetrons and measure the continuity.</p>
+
+-->
+
+		</div>
+

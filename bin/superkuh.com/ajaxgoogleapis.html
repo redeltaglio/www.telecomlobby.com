@@ -1,0 +1,516 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>superkuh.com: local ajax.googleapis.com</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+<body>
+<div id="center" class="column">
+<h1>How to mirror and serve ajax.googleapis.com from your own box with nginx</h1>
+<h5>Last <a href="/ajax/libraries.txt">libraries.txt</a> update: 2015-10-26</h5>
+
+<hr/>
+<p>If you're looking for an easy solution you may want to try "<a href="https://addons.mozilla.org/en-US/firefox/addon/decentraleyes/">Decentraleyes</a>" instead of what's documented on this page. It is a Firefox add-on that does local mirroring and replacement for not only google's CDN like this page but, "Google Hosted Libraries, Microsoft Ajax CDN, CDNJS (Cloudflare), jQuery CDN (MaxCDN), jsDelivr (MaxCDN), Yandex CDN, Baidu CDN, Sina Public Resources and UpYun Libraries."</p>
+<hr/>
+
+<p>This is how I set up a fairly simple local googleapis mirror using nginx
+and /etc/hosts. It works for most types of requests. I snagged the first list of
+files and their directories from Ryan McGeary's awesome ruby based googleapis-mirror
+which is at, <a href="https://github.com/rmm5t/googleapis-mirror">https://github.com/rmm5t/googleapis-mirror</a> .</p><p>I didn't want to run an extra webserver since I already had nginx running or I would've just used it.<!-- Grab
+your <a href="https://raw.github.com/rmm5t/googleapis-mirror/master/libraries.txt">libraries.txt</a> updates from there. You can see <a href="/ajax/">my dir structure</a> too if you want.--> Unfortunately he stopped updating his list in 2014 so you probably want my hand updated <a href="/ajax/libraries.txt">libraries.txt</a> which is also here <a href="/ajax/">in my dir structure</a> too.</p>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/ajaxgoogleapis.html" type="hidden"></p>
+		</form>
+
+
+
+<!--<p>In addition to McGeary's list I've found you also need to mirror these below too. They're already in my list.</p>-->
+<!--<p>I also added a handful of things not in McGeary's list or on Google's <a href="https://developers.google.com/speed/libraries">https://developers.google.com/speed/libraries/</a> list that I discover by logging 404s to my webserver's /ajax/ dir like,</p>
+<pre>http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js
+http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js
+etc...</pre>
+-->
+
+<h4>Mirroring and directory name tweaks.</h4>
+
+<p>In 2013 and 2014 I would just use a simple wget command like below. Unfortunately google has begun blocking wget requests so it no longer works.
+
+<pre>$ wget -x -i <a href="/ajax/libraries.txt">libraries.txt</a></pre>
+
+<p>I tried lots of spoofing before settling finally on the below workaround. Make sure to remove newlines and feel free to increase the speed by removing --wait=5.</p>
+<pre>wget -x -i <a href="/ajax/libraries.txt">libraries.txt</a> --wait=5 --header='Host: ajax.googleapis.com' 
+--header='User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0' 
+--header='Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' 
+--header='Accept-Language: en-US,en;q=0.5' --header='Content-Type: application/x-www-form-urlencoded' -c</pre>
+
+<p>After it finishes move the created ./ajax subdirectory to someplace you want to keep it. Go into ./ajax/libs/. There's a list of softlinks you need to make in order to fullfill stupid GET requests like,</p>
+
+<pre>GET /ajax/libs/jquery/1.4/jquery.min.js?ver=3.4.2</pre>
+
+<p>See how it calls for 1.4, but in the dir stucture there is only,</p>
+
+<pre>ajax/libs/jquery/1.4.0/</pre>
+
+<p>So correct it by hand using the list below. You can throw it into a bash script
+or whatever if you trust me.</p>
+
+<pre>cd ajax/
+cd libs/
+cd jquery
+ln -s 1.3.0/ 1.3
+ln -s 1.4.0/ 1.4
+ln -s 1.5.0/ 1.5
+ln -s 1.6.0/ 1.6
+ln -s 1.7.0/ 1.7
+ln -s 1.8.0/ 1.8
+ln -s 1.9.0/ 1.9
+ln -s 1.10.0/ 1.10
+ln -s 2.0.0/ 2.0
+ln -s 2.0.0/ 2
+ln -s 2.1.0/ 2.1
+cd ..
+cd jquerymobile/
+ln -s 1.4.0/ 1.4
+cd ..
+cd webfont/
+ln -s 1.0.0/ 1.0
+cd ..
+cd mootools/
+ln -s 1.3.0/ 1.3
+ln -s 1.4.0/ 1.4
+ln -s 1.5.0/ 1.5
+cd ..
+cd jqueryui/
+ln -s 1.6.0/ 1.6
+ln -s 1.7.0/ 1.7
+ln -s 1.8.0/ 1.8
+ln -s 1.9.0/ 1.9
+ln -s 1.10.0/ 1.10
+ln -s 1.11.0/ 1.11
+cd ..
+cd ext-core/
+ln -s 3.0.0/ 3.0
+ln -s 3.0.0/ 3
+cd ..
+cd dojo/
+ln -s 1.2.0/ 1.2
+ln -s 1.3.0/ 1.3
+ln -s 1.4.0/ 1.4
+ln -s 1.5.0/ 1.5
+ln -s 1.6.0/ 1.6
+ln -s 1.7.0/ 1.7
+ln -s 1.8.0/ 1.8
+ln -s 1.9.0/ 1.9
+ln -s 1.10.0/ 1.10
+cd ..
+cd chrome-frame/
+ln -s 1.0.0/ 1.0
+ln -s 1.0.0/ 1</pre>
+
+<!--
+http://ajax.googleapis.com/ajax/libs/yui/2.9.0/build/yahoo-dom-event/yahoo-dom-event.js?v=387
+-->
+
+<h5>Don't want to do all of that? Download the rar.</h5>
+
+<p>Here's ~ <a href="/ajax/ajaxlibs.rar">37 MB rar file with all the folders, js/css, and fixes already done</a>. It expands into two folders: ./ajax/libs/. I made this on October 27, 2015 and won't keep it up to date.</p>
+
+<h4>Webserver and system configuration.</h4>
+
+<p>If all the mirroring and folder tweaking is done then it's time to setup the nginx webserver config/location. I did it
+like,</p>
+
+<pre>location /ajax/ {
+	# make sure to put the trailing "/" on the alias path.
+	alias /home/superkuh/app_installs/googleapis-mirror/ajax/;
+}</pre>
+
+<p>Now all that's left is to set up the /etc/hosts file so that ajax.googleapis.com
+resolves to 127.0.0.1</p>
+
+<pre># Google
+127.0.0.1	ajax.googleapis.com</pre>
+
+<p>Reload your nginx config if you haven't (sudo /etc/init.d/nginx reloads for me).</p>
+
+
+<p>If all went well you have regular pages making requests to localhost for the javascript 
+libraries hosted on ajax.googleapis.com To see if it's working and diagnose potential problems I
+watch the tail of the nginx logs.</p>
+
+<pre>$ watch -n 2 'tail -n 12 /var/log/nginx/access.log'
+$ watch -n 5 'grep "/ajax/" < /var/log/nginx/access.log | tail -n 8'
+</pre>
+
+<p>To be honest that section of my hosts file actually looks like the below. Most of those are just opt-ed out with no replacement. It'll be nice to slowly replace them with safe, non-tracking versions. </p>
+<pre># Google
+127.0.0.1	ajax.googleapis.com
+127.0.0.1       www.google-analytics.com 
+127.0.0.1	plusone.google.com
+127.0.0.1 	ssl.google-analytics.com
+127.0.0.1 	pagead.googlesyndication.com
+127.0.0.1 	pagead2.googlesyndication.com</pre>
+
+</div>
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-10-1">
+		<h3 class="p-name">A static, manual system for *receiving* webmentions (and pingback) with nginx</h3></a>
+		<h4>~Log HTTP POST data~</h4>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-10-1.html" class="u-url"><time class="dt-published" datetime="2020-01-10">2020-01-10-1</time></a></h5>
+
+		<p>I don't want to have any "moving parts" in my static website. I also don't want to have to rely on any third party services. To support webmentions (and pingback) all you really have to do is log HTTP POST request body. To do this with nginx you proxy it to itself so it thinks it's passing to a cgi script and define a custom log format to handle POSTs for the wemention endpoint location.</p>
+
+		<h5># /etc/nginx/nginx.conf for debian-style</h5>
+		
+		<pre>
+http {
+	# just the request body, hopefully source=...&target=...
+	#log_format postdata $request_body;
+
+	# extra info in csv
+	log_format postdata '$time_local,$remote_addr,"$http_user_agent",$request_body';</pre>
+
+		<p>The log output looks like whatever someone submits. But assuming it's webmentions with two variables it might be something like this,</p>
+		<pre>10/Jan/2020:15:24:06 -0600,216.189.159.184,"Mozilla/5.0 (X11; Linux x86_64; rv:68.9) Gecko/20100101 Goanna/4.4 Firefox/68.9 PaleMoon/28.8.0",source=http%3A%2F%2Fadfadfafsdwut.html&target=http%3A%2F%2Fsuperkuh.com%2Fblog%2F2019-12-11-3.html
+10/Jan/2020:22:35:37 -0600,192.168.1.1,"curl/7.19.7 (x86_64-pc-linux-gnu) libcurl/7.19.7 OpenSSL/0.9.8k zlib/1.2.3.3 libidn/1.15",source=http://somedomain.net/iscommenting.html&target=http://superkuh.com/blog/2019gfdgdsgfdgsffd
+10/Jan/2020:22:35:56 -0600,216.189.159.184,"Mozilla/5.0 (X11; Linux x86_64; rv:68.9) Gecko/20100101 Goanna/4.4 Firefox/68.9 PaleMoon/28.8.0",source=http%3A%2F%2Fwutwut.com%2Finthebutt&target=http%3A%2F%2Fsuperkuh.com%2Fblog%2F2020-01-10-1.html</pre>
+
+		<h5># /etc/nginx/sites-enabled/default.conf for debian-style</h5>
+		<pre># use $server_name instead of $binary_remote_addr IP match so the pool is for the whole server
+limit_req_zone  $server_name  zone=webmention:1m   rate=2r/s;
+...
+server {
+	...
+	# use proxying to self to get the HTTP post variables.
+	# https://stackoverflow.com/questions/4939382/logging-post-data-from-request-body
+	location = /webmention {
+		limit_req zone=webmention;
+		client_max_body_size 7k;
+		if ($request_method = POST) {
+			access_log /var/log/nginx/postdata.log postdata;
+			proxy_pass $scheme://127.0.0.1/logsink;
+			break;
+		}   
+		return 204 $scheme://$host/serviceup.html;
+	}
+	location /logsink {
+		#return 200;
+		# use 204 instead of 200 so no 0 byte file is sent to browsers from HTTP forms.
+		return 204;
+	}</pre>
+
+		<p>Then you can look at the log with your eyes at a later time and respond if you want to. Manually (using curl). Any including of their response in your page will just be from going there in a browser and copy/pasting or whatever. You could script that too but it seems like a hassle and open to abuse.</p>
+
+		<pre>curl https://webmention.io/indiewebcamp/webmention -d "source=http://superkuh.com/blog/2020-01-10-1.html" -d "target=https://indieweb.org/static_site"</pre>
+		<p>Or to me,</p>
+<!--		<pre>http://superkuh.com/webmention?source=http://yourdomain.net/wrote/a/response&target=http://superkuh.com/blog/2020-01-10-1.html</pre> -->
+		<pre>curl http://superkuh.com/webmention -d "source=http://yourdomain.net/wrote/a/response" -d "target=http://superkuh.com/blog/2020-01-10-1.html"</pre>
+
+		<p>To make it easier to others I put an HTTP POST html form at the bottom of posts that points to my /webmention endpoint like shown below. The way I do this in nginx with HTTP 204 return code means, well, there's no response. It just happens silently. That's fine with me even if it confuses people. Feel free to play with this one and submit whatever strings you want. Webmentions, pingback xml, a perl script, ascii art, whatever.</p>
+
+		<form action="/webmention" method="POST">
+  		<p><input type="text" name="source"><input type="submit" value="your response URL">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-10-1.html" type="hidden"></p>
+		</form>
+
+		<p>As far as my tests go and using other's online testing tools my implemention and endpoint seems to be detected and I get the data in my logs. I'm redundantly putting the &lt;link ... &gt; webmention tags in all posts, at the top of the main indexes, and in my HTTP headers.</p>
+
+		<p>Since nginx is the only thing exposed and all it's doing is logging to disk and there's no increased dangers of exploits or abuse. The only real danger is someone trying to fill up the disk with lots of POSTs. But the log file size can be easily managed with system tools like logrotate and by limiting connections per second and max body size. At max it should be about ~900 MB of logs per day which triggers logrotate at the start of the next day and clears them.</p>
+	
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-10-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+

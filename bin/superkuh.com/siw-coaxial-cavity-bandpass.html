@@ -1,0 +1,85 @@
+<html><head><title>Experiments in Substrate Integrated Waveguide (SIW) Evanescent *Coaxial*-Cavity Bandpass Filters</title></head>
+<body>
+<!--<img style="float:right;margin-left:1em;" src="/rf-filter-animation.gif">-->
+<link rel="webmention" href="http://superkuh.com/webmention" />
+<p><a href="/">Home</a>: Planar PCB Radio Filters<p>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			<li><a href="/interdigital-combline-bandpass-filter.html">Interdigital Combline Bandpass</a></li>
+			</ul>
+
+
+<h1>Experiments in Substrate Integrated Waveguide (SIW) Evanescent *Coaxial*-Cavity Bandpass Filters</h1>
+<h2>From Sonnet EM Simulator to Kicad to PCB fab to VNA to Antenna</h2>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/rYOJubg2V7E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+<h3>tldr;</h3>
+
+<p>It's a bandpass filter that uses a coaxial cavity made of a post and a ring of vias shorted at one end (bottom) and loaded with lumped discrete capacitors at the other (top). It's really small relative to wavelength for decent  performance (-20 dB return loss, -0.5 dB insertion loss).</p>
+
+<p>I'm basing some of it off the paper, "<a href="http://superkuh.com/library/Electromagnetics/Evanescent-mode%20Cavity/A%20UHF%20Multi-Evanescent-Mode%20Coaxial%20Cavity%20Resonator_%20J-S%20Zhan_%20S-W%20Dong_%20L-M%20Gong_%20S-F%20Dong_%20X-L%20Chen_%20J-L%20Wang_%202014.pdf">A Multi-Evanescent-Mode Coaxial Cavity Resonator</a>" by Jin-Song Zhan, Shi-Wei Dong, Li-Ming Gong, Shao-Feng Dong, Xiao-Long Chen, and Jia-Li Wang. This paper has no photos and only confusing models of the physical layout. I also used a different thickness PCB with different dielectric constant. So I guessed at and changed things like transmission line widths and capacitor placement.</p>
+
+<pre>Abstract-This paper presents a novel miniaturized multi-evanescent-mode resonator. The resonator
+is achieved with a coaxial cavity. This coaxial cavity essentially has a direct short connection at one
+end and is connected with several lumped capacitances at the other end. The key technology of the
+resonator is the usage of multiple evanescent-modes of TM (transverse magnetic wave) modes. Due to
+the combined effects of the evanescent mode and multiple modes, the size of the resonator is greatly
+reduced. In this paper, the theory of resonator is discussed in detail. To verify the correctness of
+operation, the resonator is used in experimental measurements conducted to realize a third-order band-
+pass filter based on SIW (substrate-integrated waveguide) technology. The measured results are found
+to agree with the theoretical values.</pre>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/siw-coaxial-cavity-bandpass.html" type="hidden"></p>
+		</form>
+
+
+
+<hr />
+<h2>Single frequency, low UHF, designs.</h2>
+
+<p>This is a peculiar design. A dielectric filled cavity is made with plated vias in a circuit board. In the center of this, coaxially, is a post made of vias and a top metallization disc. This post/disc is connected to the via wall cavity ground by 4 microstrip transmission line  arms that terminate in capacitors. The capacitor placement is arranged so that they are in the areas of max electrical field for the 3 evenascent modes of the design.</p>
+
+<img src="/TM01-TM11-TM21-evanescent-modes-coaxial-cavity-resonator.png">
+
+
+<p>The high quality inductance of the microstrip lines and a high-Q SMD capacitor make for decent Q resonators. The difference in capacitance between the vertical and horizontal arms defines the bandwidth of the filter. The two vertical lines are always terminated with slightly less capacitance than the two horizontal ones (where the feeds tap). Generally that's about 5 pF difference, but altering the relative values of Cp (horizontal) and Cp-Ct (vertical) gives some freedom in shifting peaks and optimizing S11.</p>
+
+<p>The feeds are SMA probes up through the bottom of the cavity and they terminate 4.5 mm away from the center of the post. This is the trickiest thing, I guess. Will 4.8 mm of probe length change the results with it's series inductance? Only testing for real will tell because I don't know how to figure it out. In Sonnet you can have internal ports but they have to be at the edge of two conductors.</p>
+
+<p>In order to work with low loss the cavity had to be about 5mm tall (unlike the paper's  suggested use of 2.5 mm). So that means 3x 1.6mm boards in a stack. One bottom board with full ground and a via/metal-ring on top. One middle board with no ground and a via/metal-ring on bottom and top. One top board with no ground but the a via/metal-ring on bottom with the resonator top disc, microstrip lines, cap pads, and via ring. A 5mm box ceiling is required but the board doesn't have to be suspended.</p>
+
+<p>0.027 wavelength * 0.027 wavelength * 0.005 wavelength</p>
+
+<p>It probably won't work.</p>
+
+<img src="/uhf-coaxial-cavity-bandpass-test2.png">
+<img src="/uhf-coaxial-cavity-bandpass-test2-v1.png">
+
+<h2>Tuning with Digitally Tuned Capacitors (0.6-4.6 pF) at much higher frequencies.</h2>
+
+<p>While playing around down in low UHF (~300 MHz Cp=41pF) I noticed that this filter functions just as well, or better, at higher frequencies. The only thing that needs to be changed is decreasing the lumped capacitance to couple to the reduced inductive reactance of the transverse magnetic (TM) coaxial evanescent modes. So the same filter could be for many bands just by adding an extra cap or removing one. Though at higher levels (@low freq) the tuning range would be swamped by the increased base capacitance added. So it's only widely tunable at higher frequencies.</p>
+
+<p>At the very low end near 0.6 pF the capacitance step size of the digital caps, ~0.125 pF, shifts the resonant frequency so much that there are gaps between pass bands. So the tuning can only extend up so far with full coverage.</p>
+
+<p>I scaled the gap between the lines and the top ring to the size the Psemi DTC requires for it's shunt-mode configuration. But I'm not adding in control lines yet because, frankly, I don't know how or where.</p>
+
+<img src="/uhf-coaxial-cavity-bandpass-test3-tunable1.png">
+
+<h3>Hardware? Coming soon...</h3>
+<a name="hardware">
+
+</body>
+</html>
+

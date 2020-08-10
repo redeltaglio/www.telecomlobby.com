@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Biconical Antenna w/tensegrity prism supports</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+<body>
+<div id="center" class="column">
+<h1>Biconical Antenna Build</h1>
+
+<h4>Antenna properties</h4>
+
+<p><a href="https://en.wikipedia.org/wiki/Biconical_antenna">Biconical dipole antennas</a> (wikipedia link) are just two cones with the pointy ends at each other. They are supposed to have fairly good impedance bandwidth and good *pattern* bandwidth over that same wide range. In retrospect I think I should've just cut the frustrum shape out of aluminum flashing sheet for all the tedious soldering work assembling this out of copper coated steel welding rods took. All hooked together the conductive structure stands about 2m tall. Some day I might add curved end caps to the cones but it'd complicate the support structure.</p>
+
+<p>The frequency range should be like a very fat dipole on the low end and limited by construction errors on the high end. I did make the top of the cones out of tin sheet so they're pretty smooth. The join is also a very small gap distance. So the 15 db return loss defined low end might be ~300 MHz and the high end somewhere in the 2-3 GHz range. I'll measure with a VNA sometime.</p> 
+
+<h4>Support structure</h4>
+
+<img style="float:left;margin-right:1em;" src="http://erewhon.superkuh.com/Tensegrity_simple_3.gif">
+
+<p>I thought about how I wanted to do the mechanical support in depth and made plans for how to do it for weeks. Then when it came time to build I ignored the square box plans and did something entirely different. So I could only use 3 rods I decided to make a <a href="https://en.wikipedia.org/wiki/File:Tensegrity_simple_3.gif">tensegrity prism</a>. As a single person the challenge of holding it all together and upright while running the cord (and fishing line) was daunting. I let it fall off center sloppily while I went in a circle around the triangle progressively tightening all the tension lines between the compression spars. The zip ties holding the spars to the copper ring at the end of each cone helped a lot.</p>
+
+<p>Anyway, here's a progressive series of photos from tin frustrums rolled into cones to a working antenna standing outside.</p><br clear="all">
+
+<p>I calculated the two arc lengths of the frustrum needed and modeled it in SketchUp at 1:1 scale. I used it as cutting template for zinc sheet and then rolled it into shape and soldered.</p>
+
+<img src="http://erewhon.superkuh.com/bicone-01.jpg"><br />
+<p>I used copper coated low carbon content steel rods as wire elements because they are cheap. They're stiff and fairly conductive.</p>
+<img src="http://erewhon.superkuh.com/bicone-02.jpg"><br />
+<p>I used a normal panel mount F connector as the feed point. In retrospect I should've just done this with RG6 coax cut bare and connectorized because I needed to add an extension anyway to make it easier to screw.</p>
+<img src="http://erewhon.superkuh.com/bicone-03.jpg"><br />
+<p>The soldering of the wires onto the cone tips was extremely awkward and took a lot of burnt fingertips and little jigs made out of random heavy crap I had lying around. It tooks a long time. In the future I think it'd be easier to just cut large sheet frustrums and fold them instead of using wire rods.</p>
+<img src="http://erewhon.superkuh.com/bicone-04.jpg"><br />
+<p>I don't really have photos of the raising of the tensegrity structure because it was just me and once I started I needed to finish it otherwise it'd break at the feed point. But this is it assembled and being tested.</p>
+<img src="http://erewhon.superkuh.com/bicone-06.jpg"><br />
+<p>I made ever larger holes and slots in the PVC support tube for the cones in order to be able to properly solder it. I never really succeeded at this which lead to the next step.</p>
+<img src="http://erewhon.superkuh.com/bicone-05.jpg"><br />
+<p>I eventually decided to just glob on an excess of solder not caring about bridging then I went in with a rotary tool and ground it down (relatively) flat so there were no bridges or electrical shorts. This whipped the coaxial plastic up a bit but it shouldn't effect performance too bad.</p>
+<img src="http://erewhon.superkuh.com/bicone-07.jpg"><br />
+
+<!--<img src="/biconical-antenna-tensegrity-prism-supports.jpg" height="50%" width="50%"><br />
+<img src="/biconical-antenna-feed-area.jpg" height="50%" width="50%"><br />-->
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/bicone.html" type="hidden"></p>
+		</form>
+
+
+</div>
+
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+</body></html>

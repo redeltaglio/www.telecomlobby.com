@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet title="CSS_formatting" type="text/css" href="http://www.interglacial.com/rss/rss.css"?>
+<rss version="2.0"
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+><channel>
+<!-- Generated with Perl's XML::RSS::SimpleGen v11.11 -->
+
+<link>http://127.0.0.1/blog/recent14.html</link>
+<title>superkuh's blog</title>
+<description>recently *modified* posts</description>
+<language>en</language>
+<lastBuildDate>Wed, 17 Jun 2020 05:53:00 GMT</lastBuildDate>
+<skipHours><hour>0</hour><hour>1</hour><hour>2</hour><hour>3</hour><hour>4</hour><hour>5</hour><hour>7</hour><hour>8</hour><hour>9</hour><hour>10</hour><hour>11</hour><hour>12</hour><hour>13</hour><hour>14</hour><hour>15</hour><hour>16</hour><hour>17</hour><hour>18</hour><hour>19</hour><hour>20</hour><hour>21</hour><hour>22</hour><hour>23</hour></skipHours>
+<sy:updateFrequency>1</sy:updateFrequency>
+<sy:updatePeriod>daily</sy:updatePeriod>
+<sy:updateBase>1970-01-01T06:00+00:00</sy:updateBase>
+<ttl>1440</ttl>
+<webMaster>rss@superkuh.com</webMaster>
+<docs>http://www.interglacial.com/rss/about.html</docs>
+
+<item>
+  <title>Gardening, crystal growth, dams, transmitting on HF again.</title>
+  <link>http://www.superkuh.com/blog/blog.html#2020-06-17-1</link>
+  <description>[2020-06-17-1]</description>
+</item>
+
+
+</channel></rss>

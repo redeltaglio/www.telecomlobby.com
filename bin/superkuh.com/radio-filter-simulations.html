@@ -1,0 +1,290 @@
+<html><head><title>Experiments in Dual-Coupled Combline Bandstop Filters in Sonnet EM Simulator</title></head>
+<body>
+<link rel="webmention" href="http://superkuh.com/webmention" />
+<p><a href="/">Home</a>: Planar PCB Radio Filters<p>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			<li><a href="/interdigital-combline-bandpass-filter.html">Interdigital Combline Bandpass</a></li>
+			</ul>
+
+<!--<img style="float:right;margin-left:1em;" src="/rf-filter-animation.gif">-->
+<img style="float:right;margin-left:1em;" src="/rf-filter-animation-text.gif">
+
+<h1>Experiments in Dual-Coupled Combline Bandstop Filters</h1>
+<h2>From Sonnet EM Simulator to Kicad to PCB fab to VNA</h2>
+
+<img src="/vsm_actual-photo-VNA-check-physical-board-dual-coupled-combline-bandstop-filter.jpg">
+
+<h3>tldr;</h3>
+
+<p>The gist of this planar radio filter is that it removes one frequency but lets frequencies much higher (and lower) than that one go through. The design uses a 50 ohm microstrip on FR4 PCB that goes around the unconnected resonators in the middle twice.</p>
+
+<p>Those resonators are shorted to ground at their tip of the long skinny part sticking down between the microstrip lines. The long skinny part acts as an inductor. The fat part as a capacitor. Together they resonate at a frequency and coupled to the microstrip placed along it, suck away the power at that frequency, and hopefully only that frequency.</p>
+
+<p>This is my (much simpler) implementations in an EM simulator of the general design as copied from the research paper, "<a href="http://erewhon.superkuh.com/library/Electromagnetics/Design%20of%20Fixed%20and%20Varactor-Tuned%20Bandstop%20Filters%20with%20Spurious%20Suppression_%20A%20C%20Guyette_%20ADA532920_%202010.pdf">Design of Fixed and Varactor-Tuned Bandstop Filters with Spurious Suppression_ A C Guyette_ ADA532920_ 2010</a>".</p>
+
+<hr>
+<ul style="align:center;">
+<li><a href="#how">How the design is supposed to work + simulation.</a></li>
+<li><a href="#improvements">Going from cargo cult copying to understanding and getting 2*-10dB improvements.</a></li>
+<li><a href="#implementation">Moving from simulation to implementation.</a></li>
+<!--<li><a href="#iteration">Old, crappy versions that I made while learning.</a></li>-->
+<li><a href="#hardware">Actual physical hardware and VNA confirmation!</a></li>
+</ul>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/radio-filter-simulations.html" type="hidden"></p>
+		</form>
+
+
+
+<hr>
+
+<h3>Why bother doing this?</h3>
+<p>I'm interested in solar radio astronomy. A lot of the radio emissions I am interested in span thousands of MHz. I also live downtown in a city next to a university with very powerful radio transmitters. In order to prevent those transmitters from interfering with my recordings I need to be able to filter them out. But most filters are only designed for narrow ranges of frequencies and have periodic bandstop harmonics (ie, stub filters) or stop working due to spurious modes at greater than 2x the bandstop frequency.</p>
+
+<p>So I need a filter that can block ~5 MHz of bandwidth around 461 MHz but also pass signals (without attenuating them) all the way up to ~2000 MHz (4x the notch frequency). This design is suited particularly well for my use. I don't need tons of attenuation of the interfering radio signal. I just need to knock it down enough to stop it from causing problems but also pass everything else.</p>
+
+<a name="how">
+<h3>How does it work?</h3>
+
+<img style="float:left;margin-right:1em;" src="discrete-cap-bandstop-test.png">
+
+<p>The resonant frequency is determined by the electrical length of the two parts of the resonator. The fat and the skinny parts (capacitor-like and inductor-like). The notch is at the frequency where the length of both combined equal 1/4 wavelength long. In theory.</p>
+
+<p>But in my testing I also just completely removed the fat top part and replaced it with a discrete capacitor. With a value of ~10.5 pF I achieved the same bandstop frequency and depth as using the fat trace which had distributed capacitance. But this <a href="/whysospurious.png">throws away</a> the 3rd order spurious suppression *and* even changing the discrete cap's capacitance by 0.2 pF could shift the resonance 10 MHz. It'd be very fiddly. That's why in the paper they used varactors which could be tuned with voltage to adjust the capacitance.</p>
+
+<br clear="all"/>
+
+<img style="float:right;margin-left:1em" src="/fig-3-from-bandstop-paper-by-guyette.png">
+
+<h5>Constructive interference to suppress spurious responses</h5>
+
+<p>A C Guyette's design is based on a combination of two clever things. It takes a normal combline filter but then wraps around the coupling section twice, a dual-coupled-resonator in the lingo, which has some particular advantages. But the point of the paper, the really clever thing, is the integration of the delay lines and the coupling sections into the same structure and then being able to set the phase arbitrarily so each section constructively interferes.</p>
+
+<p><i>The procedure to calculate the lengths require is very complex. I could not understand it. So in my design I don't even think the 2nd or 3rd order spurious modes are suppressed. But this particular dual-coupled combline resonator arrangement is still useful because it doesn't have strong harmonics at 2,3,etc times the notch bandstop frequency.</i></p>
+
+<p>The resonator is composed or two PCB trace sections: the fat, capacitor like span and skinny, inductor like span are chosen to be 1/2 and 1/4 wavelength long respectively at the frequency of the 3rd spurious mode.</p> 
+
+<p>The microstrip length (between discrete resonators) is chosen to be 1 wavelength (360 deg) at the 2nd spurious mode frequency.</p> 
+
+<p>Together these two particular arrangements give rise to constructive interference at their respective spurious frequencies and mitigate them allowing the upper passband to be lower loss and extend further.</p>
+
+<p>In the animation at the top of the current density over the microstrip and resonator elements from 100-2000 MHz the current flows mostly unmolested until about 1400 MHz when some insertion loss (~3dB) begins. That's about 2.3x the notch freq which probably means spurious modes not not being properly suppressed by the phase shift of the circle delay lines. I saw this behavior in most of the intertions I simulated for 461 MHZ.</p>
+
+<p>All of these lengths are *electrical length* on the microstrip. For a FR4 board with assumed dielectric constant of 4.4 this means the scaling factor is 3.2 and not 4.4. I'm using <a href="http://leleivre.com/rf_microstrip.html">http://leleivre.com/rf_microstrip.html</a> to calculate this.</p>
+<!--<p>To fix it I have to make the length of two lines of the resonator (fat, capacitor like and skinny inductor like) equal to 1/4 wavelength (at the bandstop frequency) when combined  on the board. I think. Because there is dielectric a scaling factor applies and I'm using <a href="http://leleivre.com/rf_microstrip.html">http://leleivre.com/rf_microstrip.html</a> to calculate. It says for my parameters e_r 4.4 equals about a 3.2 effective e_r.</p>-->
+
+<h5>Destructive interference to deepen the notch</h5>
+<p>The lengths of the two resonators are inductively coupled together and destructively interfere at the frequency of of the stop band. Additional capacitance is added to this system by the thin H-shaped conductor capacitively coupling them.</p>
+
+<h3>Simulation results and interpretation.</h3>
+
+<p>After making a series (~30+) of slightly (or drastically) changed versions of this type of filter in Sonnet I eventually converged on something that worked and could be simulated fairly quickly. I found out fast that it's helpful to avoid curves and having lots of excess transmission line. The end result of all these simulations were two different kinds of plots as shown below in for final version.</p>
+
+<p>The point of the simulations is to generate scattering parameters for some set of conductors: what happens to the energy from one place to another on the circuit(s). This is typically shortened to S-Parameters and more usually just the notation like: S11, S12, and S21, etc. The left number S[1]2 is the direction the power goes to while the right S1[2] is where the power comes from. So S11 is the power reflected back to place 1 from place 1, S21 is the power going through from place 1 to place 2.</p>
+
+<p>In the top chart S11, the return loss represents the amount of reflection back from the filter. The lower the amount of reflection back the more you can assume goes out and through. But S21 not S11 is what is (primarily) cared about in filters. It's the power received at port 2 from port 1. The dip in the pink S21 line represents stuff filtered out or lost due to other things. The lower the S21 at the bandstop frequency the better. But S11 has to be kept low (that is, minimal reflections) for all other frequency ranges otherwise there will be high loses for the stuff you want to pass through.</p>
+
+<p>In the bottom left chart current density at a frequency near the bandstop is shown. It shows how lots of energy is coupled into the resonators and dumped to ground.</p>
+
+<p>The bottom right shows the top-down view of the top copper metal layer. The width is 80mm and the height (not shown fully) is 100mm. The entire simulation is run assuming a metal box encasing it that is 80*100*10mm in volume.</p>
+
+<img src="/bandstop-461MHz-no-spurious-pretty.png">
+<!--<img src="/bandstop-465MHz-no-spurious-pretty.png">-->
+
+<h3>Improvements after learning the program and how the filters worked</h3>
+<a name="improvements">
+<p>After about a week of trying lots of different PCB filter techniques and topologies I had a much better handle on which aspects of the filters I needed for my requirements and how to use Sonnet to make them. So I went back and re-did the filter implementation from scratch and it turned out about -10 dB better than my first with the same number (2) of dual-coupled resonator sections! Nice. I then tried 4 resonator sections but the insertion loss for that path length was just a bit too much. 3, on the otherhand, was just right. So it was time to move on to kicad (again).</p>
+<img src="/no-frills-bandstop-460MHz-minus24dB.png">
+<img src="4-element-combline-notch-filter-460MHz-animation.gif">
+
+<h4>Trying to move on from cargo-cult scaled copies to understanding and design.</h4>
+
+<p>Since I had a good no frills version working and sent off to be fabricated I decided it was time to revisit the bottom delay line loops. Initially I had kind of just copied these without reason. I wasn't sure exactly how much the microstrip counted as part of it or exactly how to calculate the required length.</p>
+
+<p>But after lots of testing and re-reading the paper and it's references and citations I finally got a hang of it, or so I thought. I could see my 2nd order spurious mode started at about 2500 MHz. Above what I needed but still, why not try to eliminate it? So I figured out i needed 118mm of path length but only have 87; 32mm needed. So I'd add a loop of ~4 * 8mm elements or something close. Of course while doing this I completely forgot that the electrical scale length would be 3.2 times less for FR4 of 4.4 dielectric constant. But the sim was already going.</p>
+
+<p>It sort of helped the spurious mode but not a lot. And the close I got to 118m the worse it go. But what *did* change is the notch depth, for some reason. Whereas before with the simple, no-frills version I needed 3 resonator elements to get down to -35dB at 461 MHz now I could hit -37 dB with just *2* elements.</p>
+
+<img src="/no-more-cargo-cult-delay-lines-bandstop-filter.png">
+
+<p>I don't know why, it's still cargo cult, but I like the results!</p>
+
+<h4>Add some happy little bumps...</h4>
+
+<p>Another technique I had read about for mitigating high frequency supurious resonances was the use of small bumps (impedance discontinuities) on the microstrip that high frequencies around the spurious modes would 'see' and be interrupted by but lower freqs would pass on by. I kind of of just guessed at the scale needed and placement but with good results. In the example below you can see while I didn't wipe out the 2500 MHz second order spurious mode I did disrupt it quite a bit. With this technique the acceptable insertion loss upper passband could be extended another 500 MHz from 2 GHz. Not a trivial amount.</p>
+
+<img src="/using-little-bumps-that-only-high-freq-see-to-disrupt-the-2500MHZ-spurious-mode-resonance.png">
+
+
+<h3>Moving from simulation to implementation</h3>
+<a name="implementation">
+<h4>The kicad importation and work up for PCB fab houses.</h4>
+
+<!--<p>In order to import gerber metal layers into kicad 5's pcbnew you first open it in gerbview then File->Export to pcbnew and save the file .kicad_pcb text file. Then it is easiest to just open the text file, copy the text, go to pcbnew and ctrl-v paste it in while clicking anywhere in the active window. This works fine for the top metal layer. For the bottom you do the same except edit the .kicad_pcb file so that entries that say F.Cu are instead made B.Cu. Then paste the bottom layer in.</p>-->
+
+
+<p>Make sure to draw in an explicit metallization rectangle on the GND layer instead of relying on the box GND. This means there'll be a green dashed rectangle outline when viewing the top metallization layer. Then export the gerbers, open in kicad with *GERBVIEW* then use gerbview's "Export to pcbnew" feature to save as a .kicad_pcb file, specifically $projectname.kicad_pcb and overwrite the auto-created one.</p>
+
+<p>During the process gerbview will ask which layers are F.cu (front copper) B.cu (back copper) and so on. gerbview color codes this and you can toggle the layers on and off to see which is which.</p>
+
+<h5>Abusing Sonnet grid size to output good gerbers.</h5>
+
+<p>You may notice the metal layer is rough and jagged with notches and mismatched bits in my first attempt shown below. In Sonnet there is a trade-off between grid cell size and computation time. While a 0.25 mm grid may take 10 minutes to sim a 0.1 mm grid will take half a day. The trick is to do the simulation at a large grid size, save that version then switch to a much smaller grid size, fix all the little jaggies and notches and mismatches, and export the gerber. Then save that small grid size version of the file as your gerber-out version and reload the original large grid version to continue work. It also helps if you pick a grid size that lends itself to even divisions when you're working. 0.25mm is my favorite.</p>
+
+<p>Also very important in getting good gerbers out is to avoid using the centering tool, either horizontally or vertically, because it will place your objects offset from the grid and cause quantitization errors and irregularities due to not fitting the grid anymore.</p>
+
+<p>Another hint that may be obvious to other people but wasn't to me was that the solder mask layers don't define where the solder mask *is*. Instead they define the holes where the solder mask *isn't*. I had quite a bit of trouble with this went first attempting to order PCB and kind of made myself look like an idiot.</p>
+
+<p>Final dimensions ended up 80mm*54mm*1.6mm.</p>
+
+<ul>
+<li><a href="/fixed-gerbers-461MHz-combline-bandstop.zip">zipped gerbers + drill file</a> - ready for upload to PCB fabrication company.</li>
+<li><a href="/clean-triple-bandstop.kicad_pcb">kicad file of the filter</a></li>
+</ul>
+
+<img src="/final-clean-bandstop-pcb-design.png">
+<img src="/final-3-element-filter-sparams.gif">
+<a href="/actual-physical-PCB-final-clean-bandstop-pcb-design.jpg"><img src="/sm_actual-physical-PCB-final-clean-bandstop-pcb-design.jpg"></a>
+
+<h3>Minor improvements</h3>
+
+<p>I made these improvements after I had already ordered the above fabricated. It achieves -35 dB insertion loss over 460-465 MHz with only two resonator elements. The improvement is entirely from the loop at the bottom. Not in the delay line sense but in the decoupling the two sides sense. Here it is in kicad with SMA end-launch fittings,</p>
+
+<img src="/kicad-dual-coupled-combline-bandstop-461MHz.png">
+
+<h5>And now my wait begins...</h5>
+
+<a name="hardware">
+<h2>Hardware!</h2>
+
+<img src="http://erewhon.superkuh.com/physical-board-dual-coupled-combline-bandstop-filter.jpg">
+
+<p>And here's the first VNA test. The frequency response is almost perfect. When I put it in the metal box, 1cm gap above, 1cm gap below, it should get even better.</p>
+
+<img src="/VNA-check-physical-board-dual-coupled-combline-bandstop-filter.png">
+
+<a href="/actual-photo-VNA-check-physical-board-dual-coupled-combline-bandstop-filter.jpg"><img src="/sm_actual-photo-VNA-check-physical-board-dual-coupled-combline-bandstop-filter.jpg"></a>
+
+
+<!--
+<img src="/bandstop-461MHz-no-spurious-kicad.png">
+
+<p>The fixed version below was made with the smaller grid size (+required fixes after grid change) before exporting. I also made the board size a bit smaller after seeing the price per inch of some PCB fab companies and realizing longer traces lead to more problems at high frequency. The triangles of solder mask and silk screen are because the companies web portal didn't work if they didn't exist. Plus it kind of makes it look like a face.</p>
+
+<p>Final dimensions ended up 50mm*90mm*1.6mm</p>
+
+<ul>
+<li><a href="/gerbers-461MHz-combline-bandstop.zip">zipped gerbers + drill file</a> - ready for upload to PCB fabrication company.</li>
+<li><a href="/kicad-461MHz-combline-bandstop.kicad_pcb">kicad file of the filter</a></li>
+</ul>
+
+<h5>Dealing with PCB fab companies.</h5>
+
+<p>I ordered from the cheap jlcpcb.com. For 10 boards it was $2 and $10 shipping (registered air mail). It's very likely their FR4 mystery material is *not* going to have a dielectric constant of 4.4 and my filters will not work or at least not at the frequency I want. But I have a VNA and I'll be able to see how to scale things for the next order.</p>
+
+<p>Because I did not want *any* solder mask or silk screen on these filters over the copper I ran into some weird issues. Many online PCB fab companies automated submission forms and upload tools will error out or report failure if there is no mask layer. In order to get around this I tried putting random small triangles of solder mask and silk screen (F.SilkS, F.Mask, B.Mask). But this just confused the company who then emailed me asking if it was an error or if I wanted the triangles to be *holes* in an all-board solder mask.</p>
+
+<p>Additionally, many of the cheapest PCB fab companies are in China and use Tencent/QQ.com email service with blacklists a large portion of email servers that aren't run by giant institutions or not in their country. So even though I'm able to receive their email they cannot receive mine responding to their questions. It's a serious problem. China will be China, I guess.</p>
+
+<img src="/final-bandstop-pcb-design.png">
+
+-->
+
+<!-- ##### this old section is no longer needed
+
+<hr />
+<a name="iteration">
+<h3>Old Interations of the Design</h3>
+<hr />
+
+<p>Here's the sim run with only one resonator while I was learning the tools. I also thought that only the circle part of the path length had to be 360 deg long at the 2nd order spurious frequency so I made it really big. In reality it's the circle + the straight coupled lengths along the resonator. So this was way too big.</p>
+
+<p>Plus I didn't know how to move and place rectangle segments precisely yet so I just used the 'donut' tool and gave it a shot.</p>
+<img src="/first-notch-filter-simmed-from-scratch-in-sonnet.png">
+
+<hr />
+
+<p>The next steps are to increase the capacitance of the stepped impedance resonator tops by expanding them a bit to push the frequency down to 461 MHz and then increase the length of both (l_fat+l_skinny) and the circle delay line.</p>
+
+-->
+
+<!--<h3>Sim setup screenshots</h3>-->
+
+<!-- ##### this old section is no longer needed
+
+<p>This run was my first and I tried to keep everything relatively close (proportion and scale-wise) to the original text although it was about 30% larger (for lower freq) and I did it randomly, by eye. It worked out way better than I could have expected.</p>
+
+<img src="/2nd-order-notch-filter-sim.png">
+
+<hr />
+
+<p>This run I tried lengthening the resonators to push the frequency down. It did. I also tried more exactly matching the length proportionals of l_fat and l_skinny of the resonator. But some aspect of these changes induced a bad spurious response. This has to be tuned out by adjusting the circle electrical length which I'm keeping static for now to only alter one (or two) variable at a time.</p>
+
+<p>Also I accidentally use 1 full wavelength = l_fat+l_skinny instead of 3/4 wavelength. This was stupid. Anyway, this screenshot is here just to show one of the many failures I haven't included.</p>
+
+<p>I also had some problems with the grid size and metal outlines not being able to match up symmetrically on the coupling section of the microstrip/resonator length. The gap was slightly asymmetrical. This was a program problem more than a design one and hurt it a little bit. I could make a smaller grid but I fear the increased computational time.</p>
+
+<img src="/failed-but-400MHz-bandstop.png">
+
+<hr />
+
+<p>So I decided to go back to the start and try something else. I needed to be able to iterate faster. Initially I just used circles because there was a tool to draw them simply. But now I know how to use the program so replicating the diamond shape from the paper was possible. This is my first attempt at that and it computed *so* much faster without all the curves.</p>
+
+<p>I also forgot to put the capacitive coupling conductor in on the top of the resonators so it was interesting to see that the second element did almost nothing at the notch frequency.</p>
+
+<img src="/improved-symmetry-fast-compute-diamond-bandstop.png">
+
+<img src="/bandstop-no-cap-coupling.png">
+
+<p>However when I added it back in I didn't notice any increase in the depth of the notch nor increased current in the second element. So maybe it just doesn't matter until the exact 3/4 and 1/1 length parameters discussed above are met. Time to do that next.</p>
+
+<img src="/bandstop-cap-coupling.png">
+
+<hr />
+
+<p>Finally I manged to get one tuned to 461 MHz for the notch. Now the hard part will be changing the microstrip length winding around the resonators so that it is 1 wavelengt</p>
+
+<img src="/bandstop-actually-at-460MHZ.png">
+<img src="/bandstop-v8v2-freq-plot.png">
+
+<hr />
+
+<pre>Diamond loop full length including coupling sections,
+((15*4)+5.5)+(21.3*2) = 108 mm
+First (2nd order) spurious mode at 1680 MHz. 1 wavelength at 1680 MHz / 3.2 effective dielectric.
+(c / (1680 MHz)) / 3.2 = 5.57 cm = 55.7 mm
+Conclusion? I need to make the loop *much* smaller. 4 parts of 7.6 for the loop + 5 for bottom and the stem the same,
+((7.6*4)+5.5)+(21.3*2) = 78.5
+Which is still too long? Lets sim and see....</pre>
+
+<p>[later] It seems to work. Now to just push that notch frequency down a tiny bit.</p>
+
+<img src="bandstop-475MHz-no-spurious.png">
+
+<p>Add 1mm to the resonator l_fat and it's down to -15 dB S21 @ 465 MHz and -10 dB @ 460 MHz,</p>
+
+<img src="bandstop-465MHz-no-spurious.png">
+
+-->
+
+</body>
+</html>
+
+<!--
+
+How do you determine the reduction in size/length of a microstrip line due to the contribution of the dielectric? Is there a better way to phrase this? Usually I can find online calculators for microstrip properties but I can't find this. I'm just guessing you just use half the dielectric constant for now. ie, for 4.4 on microstrip the length scale will be reduced 2.2.
+
+
+-->

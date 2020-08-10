@@ -1,0 +1,566 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- 
+not much to see here. just some sloppily written mix of html spec styles. 
+this isn't actually xhtml 1.0 compatible.
+copied some of the css from best motherfucking website.
+if you're bored check out the webserver's http headers for more CSS.
+-->
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>superkuh's blog</title>
+	<link rel="alternate" type="application/rss+xml" title="superkuh's latest library documents" href="/blog/rss.xml" />
+	<!-- I can use the same endpoint for both because I made my own implementation with no moving parts. 
+	A 'static' webmentions/pingback endpoint that I respond to manually at my own leisure. -->
+	<link rel="webmention" href="http://superkuh.com/webmention">
+	<link href="mailto:indieauth@superkuh.com" rel="me"/>
+<style>
+	body{
+		margin:1em auto;
+		max-width:60em;
+		padding:0 .62em;
+		font:1.2em/1.62 sans-serif;
+	}
+	h1,h2,h3 {line-height:0.9;}
+	hr {border: 2px solid black;}
+	img {max-width: 100%;}
+	#navcontainer ul {
+		float: right;
+		margin: 0;
+		padding: 0;
+		list-style-type: none;
+	}
+	#navcontainer ul li {display: inline;}
+	#navcontainer ul li a {
+		text-decoration: none;
+		padding: .2em 1em;
+		color: #fff;
+		background-color: #000;
+	}
+	#navcontainer ul li a:hover {
+		color: #fff;
+		background-color: #424242;
+	}
+	blockquote {
+		background: #f9f9f9;
+		border-left: 10px solid #ccc;
+		margin: 1.5em 10px;
+		padding: 0.5em 10px;
+		quotes: "\201C""\201D""\2018""\2019";
+	}
+	blockquote:before {
+		color: #ccc;
+		content: open-quote;
+		font-size: 4em;
+		line-height: 0.1em;
+		margin-right: 0.25em;
+		vertical-align: -0.4em;
+	}
+	blockquote:after { 
+		color: #ccc;
+		content: close-quote;
+		font-size: 4em;
+		line-height: 0.1em;
+		margin-left: 0.25em;
+		vertical-align: -0.4em;
+	}
+	blockquote p {display: inline;}
+	pre {white-space: pre-wrap;}
+	p.sm {font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;}
+</style>
+</head>
+<body>
+<div id="navcontainer">
+<ul>
+<li><a href="http://superkuh.com/blog/recent31337.html">All Posts List</a></li>
+<li><a href="blog-2020.html">2020</a></li>
+<li><a href="blog-2019.html">2019</a></li>
+<li><a href="/blog/">Raw Dir</a></li>
+<li><a href="/blog/rss.xml">RSS</a></li>
+<!--<li><a href="/rss-feeds-2019.opml">Feeds I Read</a></li>-->
+</ul>
+</div> 
+<div>
+
+<h1><a href="http://superkuh.com/" class="h-card u-url" rel="me">superkuh</a>'s blog</h1>
+<p>A web log about sci-fi, tech, and photos of random things</p>
+<pre>The filesystem is the best CMS. Append "/@say/This is a comment." to any URL to <a href="/hello/">comment</a>.</pre>
+<!--../blog/$ ./<a href="/blog/recentblogposts.pl">recentblogposts.pl</a>; ls -v 2020-*.html | tac | xargs cat > blog-2020.html</pre>-->
+
+<hr>
+
+<ul><li><a href="/blog/blog.html#2020-06-17-1">Gardening, crystal growth, dams, transmitting on HF again.</a> [<a href="/blog/2020-06-17-1.html">2020-06-17-1</a>]</li>
+</ul>
+
+
+
+
+
+	<div>
+
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-06-17-1">
+		<h3 class="p-name">Gardening, crystal growth, dams, transmitting on HF again.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-06-17-1.html" class="u-url"><time class="dt-published" datetime="2020-06-17">2020-06-17-1</time></a></h5>
+
+		
+		<h4>Trying to go forward through time as fast as possible.</h4>
+
+
+		<p>It's been a while. For those of you coming from the far future (hopefully is hasn't gotten <em>worse</em>) the gap in posts was because I was trying to sleep my way through the beginning of the pandemic. But life goes on and there are only so many hard scifi books to read. I've just been trying to go forward without making memories so it'll seem to pass by quickly. But since I'm still only shopping once per month (since Feb) that makes doing technical projects on a whim harder but not impossible.</p>
+		<h5>1. Squirrels are the enemy.</h5>
+		<p>Lately I'm working on a few things. First and foremost is what everyone else is doing: gardening. Gardening sure is fun. Except for the squirrels. I can plant a seedling, cover it with chicken wire for a month, remove the chicken wire, and the next day the now established plant gets dug up. The squirrels have been trained by the neighbor feeding them for 20 years. They think all bare dirt is just some other squirrel's hiding spot. So, after losing about 40% of my garden I caved and bought a trap. So far I've caught 3 of the little tree rats. I've been relocated them 10mi east out of town. It seems to be helping. You can't get rid of squirrels but I can at least get rid of these trained ninja plant assassin squirrels and trade in for some new ones that don't suck.</p>
+
+		<!--
+		<img src="/squirrel-damage.jpg" />
+		<br clear=all />-->
+		<img src="/squirrel-caught.jpg" />
+		<h5>2. Excess crystalization driving pressure is the enemy.</h5>
+	
+		<p>My second project have been making little PID temp controlled water baths and stirrer to grow large single crystal KDP (Potassium dihydrogen phosphate) and TGS (Triglycine Sulfate crystals). My first efforts with very slow evaporation being the only driving force worked well for a while, but then crystals started forming on the bottom of the containers. So I started pouring the solution into new jars every day. Then eventually the saturation would get too high and dendritic forms would appear and cloudy main crystals. So I started over but this time I add a few ml of clean water every night that I change the jar. So far this is working well to make large clear single crystals. Once I have a few a cm or so wide perpendicular to their optical axis it'll be time to try using them as seeds to grow large boules.</p>
+
+		<img src="/old-kdp-small-seed.jpg">
+
+		<p>The above crystal was the seed I started with. The crystal now is almost too large to fit in the quart mason jar. I'm mostly making the KDP for practice without having to waste my previous synthesized TGS but in the end it might be fun to try two-photon harmonic upconversion with them. The purpose for the TGS crystals is pyroeletric acceleration. Although making a simple bolometer might be fun too.</p>
+
+
+		<h5>3. Flow is the enemy.</h5>
+
+		<p>At one point I started going out and making random dams across local rivers. That was a nice way to get away from everyone else but still exercise.</p>
+
+		<img src="/dam.jpg">
+
+		<h5>4. Routing cables and coaxial cable cost is the enemy.</h5>
+
+		<p>Just this evening I cleaned up and reconnected all my HF (1-30 MHz) radio transceiver but removed the manual tuner and the 1500w amp from the chain. I threw together the most janky and simple of all possible dipoles using an F-connector with no balun, and the two wires connected to it were each dumpster dive finds made of multiple sections soldered together. In the end each half of the dipole was about 20ft (6.3m). Not a lot to work with. But it's about all that I could fit up into my maple tree using the slingshot/fishing line method without getting close to powerlines or making it obvious. The other half I ran along my house and off to the disconnected garage. Total parts costs was about $5 (no including the $10 zebco fishing reel and $10 slingshot).</p>
+
+		<p>My Kenwood TS-450S with it's basic auto-tuner seemed to be able to match it over a pretty good range from 3.8 MHz up to 28 MHz. I'm sure it wasn't actually radiating that well but I did manage to make contact on 80m with a guy down in florida with voice. A good afternoon project.</p>
+
+		<p>But that was just checking everything still worked. My next project will be a 3m diameter 4" wide aluminum flashing magnetic loop antenna attached to the inside of the back of the garage. I plan to just let the flashing overlap 9 inches or so with transparency sheet between to the ~200 pF needed for ~3.975 MHZ I want. That should be just under the near vertical incidence scattering edge and cover a nice 100-600 mile donut around me to try mesh stuff. But that's a story for another day.</p>
+
+		<h5>5. We have always been at war with headphone cables.</h5>
+
+		<p>As per usual, my headphones started going flaky on one side. Too much shock or torque or bending stress. After 3 previous repairs, each lasting a few years but shortening the cord, I decided to bite the bullet and replace the cord entirely. I cut a long male to male extension in half for the purpose and this final cord is about 5m long. I can now scoot around in my chair with impunity. No cord pulling. It sounds the same.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-06-17-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-03-13-1">
+		<h3 class="p-name">Well fuck and the degrees of belief.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-03-13-1.html" class="u-url"><time class="dt-published" datetime="2020-03-13">2020-03-13-1</time></a></h5>
+
+		<h4>[attention conservation notice: this is just me venting anxieties about the pandemic]</h4>
+
+		<p>Seriously. Fuck.</p>
+
+		<p>There are many types of believing. You can "believe" in religion but for most people it doesn't really effect their actual behavior. And even if it does at some level it's not like military generals out there are planning for what to do if god intervenes. It's a belief but it isn't held in the same context as other beliefs.</p>
+
+		<p>Back in 2005 I learned about the vulnerability of the health care system to viral pandemics. I believed in them and it scared the shit out of me. I was embarrassed later for doing typical "prepper" things like buying a 3 month food supply and rotating it, buying boxes of n95 masks, etc. I believed, but I didn't really anticipate anything concretely out of h5n1 influenza despite my obsession that well crossed the border into mental pathology.</p>
+
+		<p>At first I talked to everyone around me about it. There was serious danger. Not saying anything would be like not saying, "There's a bear behind you." But this was obviously not received well and for good reason. I slowly stopped with this negative feedback. I just did things quietly. Then years passed and nothing happened, and nothing happend, and something happened (2009 swine flu) but it was all okay. I eventually, thankfully, became convinced by others and the lack of realization that it wasn't a realistic scenario. That was good. I couldn't really function believing otherwise. I stopped rotating food and gradually forgot about my anxieties.</p>
+	
+		<p>Now this. The nightmare that I had every night and day for 5 years but painstakingly moved past is real, or at least part of it is. The rest is excruciatingly uncertain. It's surreal and terrifying. I hadn't had an anxiety attack in almost a decade till yesterday at the grocers seeing my fears in everyone else for the first time.</p>
+
+		<p>And I don't even get to fucking say "I told you so." because I stopped believing. I never really believed.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-03-13-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-03-09-1">
+		<h3 class="p-name">Businesses only accepting interactions from corporate people is the death of volition for human persons</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-03-09-1.html" class="u-url"><time class="dt-published" datetime="2020-03-09">2020-03-09-1</time></a></h5>
+
+		<p>You hear about on the news every month now. $x store is opening a location that allows shoppers to buy without human interaction, without a checkout. Restaurants are slowly but steadily being replaced by food trucks which won't take your order unless you pay with a credit card first, no cash allowed. Browsers and search engines both are starting to refuse to display websites that don't exist on the whim of some leased SSL cert saying you're part of the established corporate order. Soon no businesses will accept interacting directly with human persons. All transactions, all interaction, will require a third party corporation (one whom is almost certainly extracting rent) to do the transaction for you.</p>
+
+		<p>It's so fast, so easy, so convenient. All the complexity and awkwardness is hidden from the human persons and their life is easier. But a chain around your neck is still a chain no matter how long you make it. Human person motives and corporate person motives rarely align and in the future when there's a disagreement it's clear who's going to make the decisions about what is allowed and what is not: the corporate people everyone loves and depends on.</p>
+			
+	
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-03-09-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-26-1">
+		<h3 class="p-name">The pandemic stirs old memories: an over-the-counter tamiflu synthesis from when influenza was the big worry</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-26-1.html" class="u-url"><time class="dt-published" datetime="2020-02-26">2020-02-26-1</time></a></h5>
+
+		<img src="/deathtoll.jpg">
+
+		<p>The <a href="https://www.reuters.com/article/us-china-health-japan/japanese-woman-confirmed-as-coronavirus-case-for-second-time-weeks-after-initial-recovery-idUSKCN20L0BI">potential for reinfection after being sick with SARS-CoV-2019</a> has me a little unsettled. I hope it's just a idiosyncratic case.</p>
+
+		<p>I had a bit of a freak-out back around 2005 when I learned about influenza pandemics and <a href="https://en.wikipedia.org/wiki/Influenza_A_virus_subtype_H5N1">H5N1</a>. I did all the things from buying basic supplies (and rotating food for years) to working with a friend online (over <a href="https://en.wikipedia.org/wiki/AIM_%28software%29">AIM</a> w/<a href="https://en.wikipedia.org/wiki/Trillian_%28software%29">trillian</a>) to come up with an over-the-counter route to synthesize <a href="https://en.wikipedia.org/wiki/Oseltamivir">oseltamivir</a> (tamiflu).</p>
+
+		<p>For example the starting material, furan, can be sourced from corn cobs (furfural from corncobs, 2-furancarboxylic acid from furfural, furan from 2-furancarboxylic acid). Or, far more feasibly, just extracted from it's use as a solvent from a commercial product. The current pandemic reminds me of that fun but wasted effort. It's presented below so someone might get a kick out of it.</p>
+
+		<pre>OTC Oseltamiver Synthesis
+By Chris The Great, 2006
+
+This document has not yet been tested to ensure that it works as presented.
+<img src="/oseltamivir.gif">
+Step One: Synthesis of A
+Methyl acrylate (2.78mol) is added to furan (3.95mol) and cooled to -10*C.  AlCl3 in DCM (1.15mol in 1-5M conc.) is added slowly with stirring, keeping the temperature below -10*C.  The mixture is then cooled with a cold water bath and stirred for 2 hours.  The mixture is added to 1000ml of saturated sodium bicarbonate solution, and the precipitate is filtered out.  The aqeous layer is extracted twice with 250ml DCM, and the organic layers are combined and dried over anhydrous sodium sulfate.  The solvent is distilled away and the product purified by silica gel column chromatography to give the desired product in 38.6% yield (1.07mol).
+
+Step Two: Synthesis of B
+A (1.07mol) is added to NaOH (1.65mol, 3 to 15M concentration) in water with stirring, maintaining a temperature of 5*C.  The mixture is allowed to warm up over a period of 30 minutes with stirring, and stirred at room temperature for 2 hours.  HCl (310ml of 31% sol.) is added to adjust the pH to below 1, and then the mixture is extracted 4 times with 200ml of DCM.  The combined organic layers are dried with Na2SO4, and solvent evaporated and the product recrystallized from ethyl acetate to give the desired product in 87.5% yield (0.936mol).
+
+Step Three: Synthesis of C
+B (0.936mol) is dissolved into 850ml water, and NaHCO3 (0.936mol) is added slowly, with stirring to control the foaming.  After foaming ceases, bromine (0.936mol) is added dropwise with stirring, and then the mixture is stirred at room temperature for 2 hours.  The mixture is extracted with 400ml ethyl acetate, washed with 100ml thiosulfate solution (to remove unreacted bromine) and dried with Na2SO4.  The solvent is distilled away and the product purfied by recrystallizing from ethyl acetate, giving the desired product in 89.6% yeild (0.84mol)
+
+Step Four: Synthesis of D
+Potassium hydroxide (2.5mol) is dissolved into dimethylacetamide (1000ml) and methanol (150ml), and C (0.84mol) is added slowly as the mixture is heated to a gentle reflux.  It is stirred under reflux for 3 hours, then ethyl iodide (1.6mol) is added and the mixture stirred under reflux for another 3 hours.  To the mixture is added HCl (300ml 31%) and the solution extracted with ethyl acetate (250ml) eight times.  The organic layer is washed with saturated brine and dried with Na2SO4.  The solvent is distilled away and the product purified by recrystallization to give the desired product in 95.9% yield (0.804mol).
+
+Step Five: Synthesis of E
+A solution of sodium methoxide (0.9mol) in tetrahydrofuran (500ml) is cooled to -30*C, and D (0.804mol) in tetrahydrofuran (500ml) is added dropwise with stirring.  After the addition, the mixture is stirred at 30*C for 1hr.  To the mixture is added acetic anhydride (1.05mol) and the mixture is stirred at room temperature for 3hr.  To the reaction mixture is added saturated ammonium chloride (1000ml), and the mixture is extracted with ethyl acetate (800ml).  The organic layer is dried (Na2SO4) and the solvent distilled away.  The product is recrystallized (ethyl acetate) to give the desired product in 80.0% yeild (0.644mol).
+
+Step Six: Synthesis of F
+E (0.644mol) is dissolved into 3-pentanol (600ml) at reflux, and AlCl3 (0.7mol) is slowly added with stirring.  The mixture is stirred at reflux for 1 hour, and then allowed to cool to room temperature.  A saturated solution of NaHCO3 is added (1000ml), and the mixture is extracted with 750ml DCM, washed with saturated brine (750ml) and dried with Na2SO4.  The solvent is distilled away and the product recrystallized (DCM) to give the desired product in 81.2% yield (0.522mol)
+
+Step Seven: Synthesis of G
+F (0.522mol) is dissolved in DCM (750ml) and triethylamine (0.78mol) is added.  The mixture is stirred at room temperature for 5 min. and then cooled to 0*C.  To the mixture is added tosyl chloride (0.78mol) and the mixture is stirred at room temperature for 1hr.  The reaction mixture is washed with saturated sodium bicarbonate solution (1500ml), saturated brine (750ml) and then dried with sodium sulfate.  The solvent is distilled off, and the crude product recrystallized from DCM to give G in 97.3% yeild (0.508mol).
+
+Step Eight: Synthesis H
+G (0.508mol) is dissolved in ethanol (1000ml) at reflux, and potassium carbonate (0.25mol) is added with stirring.  The mixture is stirred at gentle reflux for 1.5 hours, and then cooled to room temperature.  Saturated ammonium chloride solution (1000ml) is added.  The mixture is extracted with DCM (750ml), washed with saturated brine (1000ml) and dried (Na2SO4).  The solvent is distilled away and the crude product recrystallized from DCM to give H in 98.5% yeild (0.5mol).
+
+Step Nine: Synthesis of I
+H (0.5mol), sodium azide (0.6mol) and ammonium chloride (0.6mol) are dissolved into water (70ml) and ethanol (250ml), and refluxed for 8 hours.  Aqeous NaHCO3 (105ml of 8% solution) is added and the ethanol distilled in vacuum.  The aqeous residue is extracted with ethyl acetate (250ml), the extract washed with water (125ml).  The wash is back extracted with 125ml of ethyl acetate and the combined organic extracts washed with brine (125ml), dried over Na2SO4, filtered and concentrated in vacuum to give I as a dark brown oil in 102% yield (0.512mol)
+
+Step Ten: Synthesis of J
+Step One:
+J (0.512mol) and ammonium chloride (1.2mol) are dissolved into ethanol (1500ml), and zinc (0.7mol) is added and the mixture refluxed for 30 minutes.  The solvent is distilled off to give Ib, which is used directly in the next step.
+Step Two:
+Tosysl Chloride (1.13mol) is added portionwise at room temperature to a stirred mixture of Ib (from the step one), K2CO3 (2.5mol) in acetonitrile (1000ml) and stirred for 6hr.  Toluene (2500ml) is added, the solid is filtered off and the solvent evaporated to give J in approx 80-90% yeild.  It is used directly in the next step without purification.
+
+Step Eleven: Synthesis of K
+J (0.494mol), sodium azide (1.2mol) and ammonium chloride (1.2mol) in dimethylacetamide (400ml) is heated to 80-85*C for 5 hours.  NaHCO3 (50mmol) in water (250ml) is added, and the mixture extracted with hexanes (6x250ml).  The combined hexane extracts are concentrated to 1200ml, and 250ml DCM is added, followed by 1100ml NaHCO3 8% solution and acetic anhydride (0.6mol).  The mixture is stirred at room temperature for an hour, and then the aqeous layer is removed.  The organic phases are concentrated in vacuum to 430g total weight), dissolved in ethyl acetate (50ml).  The mixture is cooled and K crystallizes out and is collected by filtering.  The crystals are washed with cold 15% ethyl acetate in hexane (250ml) and dried in a vacuum at room temperature, to give K in 55% yield (0.272mol). [may be slighly higher, ie 60%]
+
+Step Twelve: Synthesis of L (oseltamivir freebase)
+K (0.272mol) is dissolved into ethanol (600ml) along with ammonium chloride (0.64mol).  Zinc (0.36mol) is added and the mixture refluxed for 30 minutes.  The precipitate is filtered out, giving L in 98% yeild (0.266mol).  [90-95% more likely]
+
+Step Thirteen: Synthesis of Oseltamivir Phosphate
+L (0.266mol) is dissolved in acetone (1000ml) and treated with phosphoric acid (85%, 0.266mol) in absolute ethanol (300ml).  The mixture is cooled, and after 12 hours the precipitate is filtered out to give oseltamivir phosphate in 75% yield (0.2mol, 82g). A second crop of presumably lower purity crystals can be obtained by concentrated the solution and collecting a second crop of product.</pre>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-26-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-25-1">
+		<h3 class="p-name">Actual nano-amp perpetual electrical currents in resistive permanent magnets at some scales in some arrangements because of weird quantum stuff.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-25-1.html" class="u-url"><time class="dt-published" datetime="2020-02-25">2020-02-25-1</time></a></h5>
+
+		<p>Today in my <a href="/feeds2.html#Physics">RSS feeds</a> an <a href="https://physics.aps.org/synopsis-for/10.1103/PhysRevLett.124.083601">APS paper summary came up called, "Heat Flows in a Circle Without Gradients</a>. It was about this ring of spaced ring oscillators that supported both mechanical excitation modes and phonon modes but where phonon excitations flowed around forever. It's interesting but more interesting was the offhand comment in support of infinite currents saying,</p>
+
+		<blockquote>Undriven flows do occur in nature, as evidenced by persistent electric currents in permanent magnets and superconductors.</blockquote>
+
+		<p>At first I thought they might be talking analogy, like spins as currents or electron "orbits", or something, but no, the wikipedia article, <a href="https://en.wikipedia.org/wiki/Persistent_current#In_resistive_conductors">https://en.wikipedia.org/wiki/Persistent_current#In_resistive_conductors</a> talks about real nanoamp currents physically existing. And then that leads to any even weirder rabbit hole.</p>
+
+		<p>I feel like that I can normally ignore quantum physics when doing radio and electromagnetics work. I don't do a lot of polarization stuff and quantum effects normally average out in imprecise many-sample systems. But apparently at specific mesoscopic length scales the quantum stuff I don't understand actually starts coupling to electromagnetic excitation modes. But the gist is that there's a neutral AC oscillation normally and applying an external magnetic bias to these magnetic material rings creates an internal asymmetry causing an perpetual tiny electrical current to flow.</p>
+
+		<img src="http://erewhon.superkuh.com/Persistent_Current_Ring.png">
+
+
+		<blockquote>This type of persistent current is a mesoscopic low temperature effect: the magnitude of the current becomes appreciable when the size of the metallic system is reduced to the scale of the electron quantum phase coherence length and the thermal length. Persistent currents decrease with increasing temperature and will vanish exponentially above a temperature known as the Thouless temperature. This temperature scales as the inverse of the circuit diameter squared.</blockquote>
+
+		<p>And it does so in regions where there should be both zero electric and magnetic field the <a href="https://en.wikipedia.org/wiki/Aharonov-Bohm_effect">https://en.wikipedia.org/wiki/Aharonov-Bohm_effect</a>. It's apparently strong philosophical support for the mathematical formalisms of the electric and magnetic potentials (as opposed to fields) as *real* physical things and beyond that <em>delocalized</em> physical things.</p>
+
+		<blockquote>The Aharonov-Bohm effect, sometimes called the Ehrenberg-Siday-Aharonov-Bohm effect, is a quantum mechanical phenomenon in which an electrically charged particle is affected by an electromagnetic potential, despite being confined to a region in which both the magnetic field B and electric field E are zero. The underlying mechanism is the coupling of the electromagnetic potential with the complex phase of a charged particle's wave function, and the Aharonov-Bohm effect is accordingly illustrated by interference experiments. </blockquote>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-25-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-22-1">
+		<h3 class="p-name">Web security fetishism where it isn't required does more harm than good.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-22-1.html" class="u-url"><time class="dt-published" datetime="2020-02-22">2020-02-22-1</time></a></h5>
+
+		<p>There are two mutually exclusive views of the web. As a set of protocols set to allow individual humans to share information about things they love and the web as a set of protocols to make a living.</p>
+
+		<p>Profit motivated web presences want views, they want attention, they need nine 9s uptime, need to be able to do monetary transactions absolutely securely, and they want to be an application not a document. They live and die on the eternal wave of walled garden's recommendation engines because that's the network effect and that's where money flows. It doesn't matter if this means extremely high barriers to entry because money solves everything. </p>
+
+		<p>Individuals' websites are freeform presentations about the things that person is interested in. They are the backyard gardens of the mind and the most important thing is lowering the friction from thought to posting. There's no need to get tons of traffic instantly (or ever), they're mostly time insensitive.</p>
+
+		<p>Year by year browsers' evolution into another OS are creating new barriers to entry for those wishing to host personal website. Just one tiny example of this is browsers (and search engines, and etc) requiring HTTPS and not just SSL certs but <a href="https://scotthelme.co.uk/certificate-lifetime-capped-to-1-year-from-sep-2020/">only certs with lifetimes less than 1 year</a>. All this piles on, destroys access to old web content, and generally creates cyber gentrification. With the WC3 now marginalized and corporate run web standards groups (ie <a href="https://en.wikipedia.org/wiki/WHATWG">whatwg</a>) setting the protocols there may soon come a time where it's infeasible to run a website without relying on a third party entity to do <em>some</em> part of it for you.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-22-1.html" type="hidden"></p>
+		</form>
+
+		<pre>█▓▒░ Comments ░▒▓█</pre>
+
+		<blockquote>20:54:11, Tue Feb 25, 2020 : <a href="/blog/blog.html">/blog/blog.html/</a>, Re: web security fetishism. Without HTTPS, an adversary can man-in-the-middle your connection and do all kinds of nasty things, from surveillance, to denying access, to altering the content, to running arbitrary javascript exploits against users' browsers. Given that certbot is free and now auto-renews your certificate for you on most platforms, I can't say that it is an especially high barrier to rule out this class of attacks, which may not be a personal threat to you, but can have severe consequences for the vulnerable. And although it does require trust in a 3rd party, which is not ideal, everybody is better off with it than without it.</blockquote>
+	
+		<p>re: random commenter above, as you can see from this site of mine I do like and use HTTPS. But I think HTTP has a valuable and essential place beside it. Going <em>only</em> HTTPS is bad. Going HTTP and HTTPS is great. Browsers and search engines punishing, hiding, and demonizing HTTP sites in their listings or notifications does more damage than then some potential downgrade attacks.</p>
+
+		<p>Reliance on third parties is also a bad idea. Sure, letsencrypt is great, but it's also causing extreme centralization of the web since it's so nice. The .org situation shows that no matter how benevolent and longstanding institutions that have power will be corrupted. And no matter how "easy" it is, acme2 is not a <em>simple</em> protocol. There's tons of complexity hidden behind that "easy" that has to be supported over time and changing software stacks.</p>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-21-1">
+		<h3 class="p-name">Memory is two different systems both operating in parallel at the same instant of perception.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-21-1.html" class="u-url"><time class="dt-published" datetime="2020-02-21">2020-02-21-1</time></a></h5>
+
+		<img src="/Memory-Brain-Encodes-Multiple-Copies-At-Once_sm.jpg">
+
+		<p>Memory is two different systems both operating in parallel at the same instant of perception. </p>
+
+		<p>There's the short term awareness as encoded in the ~40 Hz cortico-thalamo-cortical loops of active cortical neuronal populations. The binding in time of different types of cortical processing at the thalamic relays and stimuli representation are essential to, if probably not all of, conscious awareness.</p>
+
+		<p>There's also the long term encoding in the entorhinal cortex (3 layers transitions from the 5 of cortex to hippocampus "simplicity") and hippocampus which itself is a multiple component system encoding different properties of the new experience relative to existing memory and relations. There is "pattern separation" about encoding distinct new properties of some experience and "pattern completion" which encodes in terms of the past to extract meaning in terms of known relations. And both of these are referenced through two spatial coordinate systems (especially in CA3). The meaning is all in terms of place.</p>
+
+		<p>Distinguishing between things (pattern separation) and seeing how things are the same (pattern completion).</p>
+
+		<p>During sleep the spatial coordinate system "paths" of the day are revisited in activation backwards in time and the specific episodic and spatially referential memories of the hippocampal formation are generalized in reference to thalamo-cortical loops.</p>
+
+		<p>Recall of memory later depends on self-reinforcement of thalamo-cortical loops populations. Over time memories which a person holds as truths can actually shift based on their own biases and other associations which help form/hold that memory.</p>
+
+		<p>Consciousness is the turbulence of prediction that tries to minimize itself.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-21-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-10-1">
+		<h3 class="p-name">Solder wick that doesn't suck: soak it in flux</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-10-2.html" class="u-url"><time class="dt-published" datetime="2020-02-10">2020-02-10-1</time></a></h5>
+
+		<pre>&lt;superkuh&gt; I've never had solder wick that wasn't shitty.
+&lt;superkuh&gt; Does such a thing exist?
+&lt;OdinYggd&gt; Flux core.
+&lt;OdinYggd&gt; aka make the entire flux dish hot, put the braid in the liquid flux, then let it cool
+&lt;OdinYggd&gt; ONce you pull it out the entire braid will have flux throughout, and will actually wick up properly</pre>		
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-10-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-18-2">
+		<h3 class="p-name">Computation not construction: reconstructing images of rotating exoplanets from light intensity over time: 3 novel techniques to build cheaper big telescopes [youtube IAC talk]</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-18-2.html" class="u-url"><time class="dt-published" datetime="2020-01-18">2020-01-18-2</time></a></h5>
+
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/m535laV7p3s" frameborder="0" allow="accelerometer; gyroscope;" allowfullscreen></iframe>
+
+		<p>This "<a href="https://www.youtube.com/watch?v=m535laV7p3s">Large Instruments For Exoplanet Direct Imaging Studies beyond TMT/EELT/GMT</a>" talk by Prof. J. R. Kuhn (IfA, Hawaii) is very cool but it reminds me a lot of Robert Charles Wilson's print scifi story, "Blind Lake". In it the near future telescopes don't really even perceive the sky anymore. The sky is the start but in terms of computation triggering but it's almost the least of the input compared to the the models and priors and arcane unknowable quantum-woo-woo which synthesize the detail of the resulting images. Not to imply there's any quantum woo-woo here. This is really cool science.</p>
+
+		<ul>
+		<li>more adaptive optics instead of expensive stiff structures</li>
+		<li>don't grind glass, actively bend 2mm thin glass and retain a smooth surface</li>
+		<li>incoherence happens, let the neural networks sort it out</li>
+		</ul>
+
+ <p>In this talk Kuhn makes the call for building a large multi-mirror optical interferometer to capture enough photons to do model-based time-series reconstruction of the surface features from light reflected off exoplanets. The proposed optical telescope is an interferometer, a donut of moderate size circular apertures, that are combined to form a speckle interference pattern. Each circular mirror in the donut has adaptive optics who's arbitrary phase shift can be found with neural networks then changed arbitrarily to create nulls in the combined UV coverage directly as a function of diffraction to act as a super low noise coronagraph.</p>
+
+		<p>Optical interfometry is tough and phase error kills. Normally to be big things have to be made super stiff. He argues that the telescope structure doesn't have to be built any more rigid than the amount of atmospheric turbulence they already correct. From this premise he suggests a bicycle wheel like tension and compression design to minimize weight when flex can just be adapted.</p>
+
+		<p>But even moderate size mirrors cost a lot and so do adaptive optics. To make this cheaper he shows a small scale implementation of a mirror made out of an extremely thin bit of non-ground, perfectly smooth glass. To create the phase needed locally to cancel out the local surface error + atmospheric surface error + wobbling error he shows an electroactive polymer that can be 3D printed onto the thin glass itself and under an applied electrical field (as a dieletric in a capacitor) it can pull on the local glass surface. Without a need to grind the mirror it can be extremely smooth and relatively cheap.</p>
+
+		<p>All together it seems like a powerful system for making a cheap big light bucket. But what strikes me most about it is that the information needed for the coronograph nulling is being derived from a seemingly nonsensical speckle pattern with lots of unknowns. <!--It's not a simple deconvolution from a point spread function and the coverage of the UV plane.--> They just throw a neural network at it and tell it to create some inversion function(s?) that takes incoherent speckle pattern information and somehow comes up with the mechanical phase error.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-18-2.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-18-1">
+		<h3 class="p-name">Absolute positioning systems for autonomous land vehicles cannot work in cold climate winters.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-18-1.html" class="u-url"><time class="dt-published" datetime="2020-01-18">2020-01-18-1</time></a></h5>
+
+		<p>In cold climates in winter human drivers don't follow the official lane markings because they can't be seen. They follow the paths in the snow everyone else has packed down. These paths often diverge from the road markings. Any attempt to create an absolute positioning rather than vision based system like humans use is doomed to failure. No amount of technology injected into roads rather than cars will help because that's not how humans drive and humans are the priority users of the road transport system.</p>
+
+		<p>This doesn't just happen during and after snowfall. It's a permanent feature of side streets for months. It's not a transient effect. Regulation of autonomous land vehicles in cold climates will have to be different from temperate ones.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-18-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-17-1">
+		<h3 class="p-name">Soldering a 2x2mm QFN as my first attempt at hot air. re: digitally tunable radio filter</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-17-1.html" class="u-url"><time class="dt-published" datetime="2020-01-17">2020-01-17-1</time></a></h5>
+
+		<a href="http://erewhon.superkuh.com/electrically-good-but-not-surebottomgroundtraceisflowed.jpg"><img src="http://erewhon.superkuh.com/electrically-good-but-not-surebottomgroundtraceisflowed_sm.jpg"></a>
+
+		<p>This is me finally picking back up a <a href="http://superkuh.com/tunable-open-loop-bandpass-filters.html">2018 project</a> to design flexible and cheap RF frontend filter for rtl-sdr dongles. I've had the parts laying around for years but never actually tried for fear of breaking the ICs. I only have 10. 9 now.</p>
+
+		<p>I put down the tac'y flux, then I put tiny bits of old temp solder using a tiny conical tube on each exposed pad. Some was overlapping but I cleaned it up with tweezer tips. Then I did hot air just above the melt temp till it resettled. At first the nozzle was too close and I blew away some solder but I think enough was left. Unfortunately, as you can see, I don't think the bottom pin flowed properly. It might be time to get a cheap hotplate or something so I can reflow things evenly without burning the ICs.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-17-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-10-1">
+		<h3 class="p-name">A static, manual system for *receiving* webmentions (and pingback) with nginx</h3></a>
+		<h4>~Log HTTP POST data~</h4>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-10-1.html" class="u-url"><time class="dt-published" datetime="2020-01-10">2020-01-10-1</time></a></h5>
+
+		<p>I don't want to have any "moving parts" in my static website. I also don't want to have to rely on any third party services. To support webmentions (and pingback) all you really have to do is log HTTP POST request body. To do this with nginx you proxy it to itself so it thinks it's passing to a cgi script and define a custom log format to handle POSTs for the wemention endpoint location.</p>
+
+		<h5># /etc/nginx/nginx.conf for debian-style</h5>
+		
+		<pre>
+http {
+	# just the request body, hopefully source=...&target=...
+	#log_format postdata $request_body;
+
+	# extra info in csv
+	log_format postdata '$time_local,$remote_addr,"$http_user_agent",$request_body';</pre>
+
+		<p>The log output looks like whatever someone submits. But assuming it's webmentions with two variables it might be something like this,</p>
+		<pre>10/Jan/2020:15:24:06 -0600,216.189.159.184,"Mozilla/5.0 (X11; Linux x86_64; rv:68.9) Gecko/20100101 Goanna/4.4 Firefox/68.9 PaleMoon/28.8.0",source=http%3A%2F%2Fadfadfafsdwut.html&target=http%3A%2F%2Fsuperkuh.com%2Fblog%2F2019-12-11-3.html
+10/Jan/2020:22:35:37 -0600,192.168.1.1,"curl/7.19.7 (x86_64-pc-linux-gnu) libcurl/7.19.7 OpenSSL/0.9.8k zlib/1.2.3.3 libidn/1.15",source=http://somedomain.net/iscommenting.html&target=http://superkuh.com/blog/2019gfdgdsgfdgsffd
+10/Jan/2020:22:35:56 -0600,216.189.159.184,"Mozilla/5.0 (X11; Linux x86_64; rv:68.9) Gecko/20100101 Goanna/4.4 Firefox/68.9 PaleMoon/28.8.0",source=http%3A%2F%2Fwutwut.com%2Finthebutt&target=http%3A%2F%2Fsuperkuh.com%2Fblog%2F2020-01-10-1.html</pre>
+
+		<h5># /etc/nginx/sites-enabled/default.conf for debian-style</h5>
+		<pre># use $server_name instead of $binary_remote_addr IP match so the pool is for the whole server
+limit_req_zone  $server_name  zone=webmention:1m   rate=2r/s;
+...
+server {
+	...
+	# use proxying to self to get the HTTP post variables.
+	# https://stackoverflow.com/questions/4939382/logging-post-data-from-request-body
+	location = /webmention {
+		limit_req zone=webmention;
+		client_max_body_size 7k;
+		if ($request_method = POST) {
+			access_log /var/log/nginx/postdata.log postdata;
+			proxy_pass $scheme://127.0.0.1/logsink;
+			break;
+		}   
+		return 204 $scheme://$host/serviceup.html;
+	}
+	location /logsink {
+		#return 200;
+		# use 204 instead of 200 so no 0 byte file is sent to browsers from HTTP forms.
+		return 204;
+	}</pre>
+
+		<p>Then you can look at the log with your eyes at a later time and respond if you want to. Manually (using curl). Any including of their response in your page will just be from going there in a browser and copy/pasting or whatever. You could script that too but it seems like a hassle and open to abuse.</p>
+
+		<pre>curl https://webmention.io/indiewebcamp/webmention -d "source=http://superkuh.com/blog/2020-01-10-1.html" -d "target=https://indieweb.org/static_site"</pre>
+		<p>Or to me,</p>
+<!--		<pre>http://superkuh.com/webmention?source=http://yourdomain.net/wrote/a/response&target=http://superkuh.com/blog/2020-01-10-1.html</pre> -->
+		<pre>curl http://superkuh.com/webmention -d "source=http://yourdomain.net/wrote/a/response" -d "target=http://superkuh.com/blog/2020-01-10-1.html"</pre>
+
+		<p>To make it easier to others I put an HTTP POST html form at the bottom of posts that points to my /webmention endpoint like shown below. The way I do this in nginx with HTTP 204 return code means, well, there's no response. It just happens silently. That's fine with me even if it confuses people. Feel free to play with this one and submit whatever strings you want. Webmentions, pingback xml, a perl script, ascii art, whatever.</p>
+
+		<form action="/webmention" method="POST">
+  		<p><input type="text" name="source"><input type="submit" value="your response URL">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-10-1.html" type="hidden"></p>
+		</form>
+
+		<p>As far as my tests go and using other's online testing tools my implemention and endpoint seems to be detected and I get the data in my logs. I'm redundantly putting the &lt;link ... &gt; webmention tags in all posts, at the top of the main indexes, and in my HTTP headers.</p>
+
+		<p>Since nginx is the only thing exposed and all it's doing is logging to disk and there's no increased dangers of exploits or abuse. The only real danger is someone trying to fill up the disk with lots of POSTs. But the log file size can be easily managed with system tools like logrotate and by limiting connections per second and max body size. At max it should be about ~900 MB of logs per day which triggers logrotate at the start of the next day and clears them.</p>
+	
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-10-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+	<link rel="webmention" href="http://superkuh.com/webmention">
+	<article class="h-entry">
+		<a name="2020-01-04-1"><hr></a>
+		<h3 class="p-name">I am now a Disney princess.</h3>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-04-1.html" class="u-url">2020-01-04-1</a></h5>
+		<a href="http://ironpants.superkuh.com/cockatiel-head.jpg"><img src="http://ironpants.superkuh.com/cockatiel-head_sm.jpg"></a>
+		<p>Today while on a walk with a friend in the cold winter woods a cockatiel parrot flew down and landed on my head. It eventually moved down to my shoulder and stayed there seemingly content. It was obviously someone's distressed pet. It flew off on the walk back to find a temporary place for it and I assumed it would die of the cold later that night. So... I went back an hour later and managed to whistle, gesture, and  coax it down on to my shoulder where it had no problem sitting for 15 minutes while I asked people in the area if they were missing a parrot (really). None were, of course, but one helpful group in a parking lot took a photo for me and posted it with my phone number on a local-centric 'lost items' forum. Meanwhile, I gave up and the parrot had no problem coming home with me on my shoulder in my car.</p>
+		<p>About an hour later, after I'd resigned myself to having to buy parrot food and start putting down newspaper, I received a call from the owners of the parrot. They'd seen the post and after giving them my address they said they'd be over in 30 minutes. A woman and her son arrived and confirmed it was their parrot. They'd lost it the day before, so it had managed to survive a night. It was a pretty happy reunion scene and I'm glad I took the time to save the bird.</p>
+		<p>The bird was super cute but given birds' pooping habits I think I was almost as relieved as they were it was going home.</p>
+		
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-04-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+
+	</div>
+</div>
+
+</body>
+</html>
+

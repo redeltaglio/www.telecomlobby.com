@@ -1,0 +1,454 @@
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2019-12-11-3">
+		<h3 class="p-name">Indieweb, microformats markup, and a minimum webmention implemention</a></h3>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2019-12-11-3.html" class="u-url">2019-12-11-3</a></h5>
+		<p>The whole <a href="https://indieweb.org/Getting_Started">indieweb</a> <a href="http://microformats.org/wiki/h-entry">microformats</a> movement seems good to me. It encourages hosting your own and the mark-up is just repurposing the flexible html class attribute tag. I only had to change my post format and perl regex a tiny bit in order to accommodate h-entry style mark-up. <a href="https://indiewebify.me/validate-h-entry/?url=http%3A%2F%2Fsuperkuh.com%2Fblog%2Fblog.html">Validate me</a>.</p>
+		<p><a href="http://webmention.net/">Webmentions</a> is a well intentioned track-back like feature for systematized auto notification of responses to posts marked up with the microformat2 h-entry stuff. It requires an endpoint defined in the page that can receive url-form encoded strings that then goes out and actively GETs the other endpoint servers to do things. Without DoS mitigation somehow(?) this doesn't seem wise. There's even a guide to <a href="https://indieweb.org/webmention-implementation-guide">do it manually with curl</a> so I'm going to see if I can whip up a perl script to tail the logs and perform this function without the webserver being involved. But that's for a future post. For now I have to write something to automate converting my old format html format to h-entry tagged.</p>
+		<h2>Update: wrong again, webmentions suck.</h2>
+		<p>It seems like every blog post I've written this year has later turned out to be wrong. Indieweb is not useful, the webmentions aspect of it requires receiving x-www-form-urlencoded data. Why they chose this convoluted and complexity increasing way is beyond me. Embeding (or encoding) it in the URL string itself would've been infinitely easier for everyone with no downsides. But no, with x-www-form-urlencoded variables you need to actually be doing some dynamic scripting to handle it. If not actually some script listening for that location/endpoint then at least a series of complex nginx directives and modules to get x-www-form-urlencoded logged with all the rest of the request. This additional complexity makes running a static website that supports indieweb standards like a tail wagging the dog in terms of the webmentions receiver's relation to the static http site.</p>
+		<p>microformats2 h-entry markup for web content is still cool though. I'm going to keep doing that.</p>
+
+		<h2>Update 2: the workaround</h2>
+
+		<p>Time has passed and it's a new decade now (2020-01-08) but I kept banging away at the problem of form encoded POST data and how to get it into the logs. The trick turned out to be proxying nginx to itself so it'd think it might be passing to a cgi script and have the request body data left in. A big thanks to aaronpk of the freenode #indieweb-dev channel for putting up with my complaints and tipping me off about the nginx proxying to itself path.</p>
+		<pre># /etc/nginx/nginx.conf
+http{
+	log_format postdata $request_body;
+}
+# /etc/nginx/sites-enabled/default.conf
+	# use proxying to self to get the HTTP post variables.
+	# https://stackoverflow.com/questions/4939382/logging-post-data-from-request-body
+	location = /webmention {
+		client_max_body_size 10k;
+		if ($request_method = POST) {
+			access_log /var/log/nginx/postdata.log postdata;
+			proxy_pass $scheme://127.0.0.1/logsink;
+			break;
+		}   
+		return 200 $scheme://$host/serviceup.html;
+	}
+	location /logsink {
+		return 200;
+	}</pre>		
+
+		<form action="/webmention" method="POST">
+  		<p>[webmention/pingback] Did you respond to this post? What's the URL? <input type="text" name="source"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2019-12-11-3.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+	<article class="h-entry">
+		<hr><a name="2019-12-11-2">
+		<h3 class="p-name">CSS in HTTP Headers</a></h3>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2019-12-11-2.html" class="u-url">2019-12-11-2</a></h5>
+		<img src="/css-in-http-headers-banner.jpg" alt="css, css everywhere!">
+		<p>I found out you can put links to CSS in webserver HTTP header responses. I've got /header.css linked in this servers HTTP headers now. All it's doing is resizing images but it's kind of handy for the blog pages where embeding css in each would be a hassle. For nginx this is easy to do in your .conf,</p>
+		<pre>add_header Link "&lt;//superkuh.com/header.css&gt;; REL=stylesheet";</pre>
+		<p>The // instead of a full or specific URL is for portability re: HTTP and HTTPS. Do a,</p>
+		<pre>$ curl -I superkuh.com</pre>
+		<p>to see. Most browsers don't support header linked CSS but most browsers suck shit and people shouldn't use them. I'm looking at you Chrome. This does work in standards based browsers like Firefox and it's forks.</p>
+		</div>
+	</article>
+
+
+		<hr><a name="2019-12-11-1">
+		<div><h3>Steven Erikson's "Rejoice, A Knife to the Heart" is like if "Watchmen" was written by a bitter education worker.</a></h3>
+		<h5><a href="2019-12-11-1.html">2019-12-11-1</a></h5>
+		<img src="/scifi-author.png" alt="sci-fi author writes story about sci-fi author">
+
+		<p>Steven Erikson's "Rejoice, A Knife to the Heart" is like if "Watchmen" was written by a bitter education worker. They'll save Earth from $disaster by force! It is a pure wish fullfillment story about a godlike intelligence suddenly coming to earth and forcing everyone to play nice, even, especially, with other animals. It plays on the common trope of scifi authors that is having the main character be a scifi author. This leads to no end of not so subtle 4th wall references that break suspension of disbelief. It explicitly says it's not hard scifi through one of these 4th wall nested comments about the outer reading frame. And this is very, very true. Throughout the book the times when it even tangentially approaches physics it uses the terms in ways that are not even wrong. But that lampshade was well hung so lets move beyond that. The actual story is pretty catchy and the particular blend of authoritarians nanny state paradise isn't by itself attractive. But it is a fun and interesting what-if story about ripping out the basic precepts of human interactions and trying to start anew. And plenty of what it criticises about the current economics of humanity is spot on.</p>
+
+		<p>I'm still only about a third in so much could change but it's a fun book. He spends a good chunk of the first part of the book justifying picking a scifi author and his previous effort in scifi "Willful Child" was not so much as story as a roast of common scifi tropes wrapped around educational system criticism. So he's surely aware of the tight rope he's walking here using and mocking the same tropes. It mostly works. If you haven't already read Cory Doctorow's "Walkaway" maybe read that first. But if you have and you're looking for more like it then "Rejoice, A Knife to the Heart" is a good pick.</p>
+		</div>
+
+
+		<hr><a name="2019-12-07-1">
+		<div><h3>Thoughts on Solus linux, systemd timers vs cron, and the state of TTS on linux.</h3>
+		<h5><a href="2019-12-07-1.html">2019-12-07-1</a></h5>
+		<p>I've been trying <a href="https://getsol.us/home/">Solus</a> linux, a rolling distro that tries to stay very modern, out as a potential replacement for Ubuntu. It has first class MATE support and a modern 5.x kernel. It seems very nice visually. But, and I know it's not it's fault, as my first hard intro to systemd all the things I dislike about it are making me dislike Solus. Instead of just one line and done with cron with systemd timers you create two ~15 line config files and then it's not even auto-detected you have to run another long system command to reload config. This was an unpleasant discovery and hopefully not a harbinger of things to come. But just in case I've set up a Devuan VM too to set up the same software flows as I implement them on systemd. I'll have to learn all this systemd stuff sometime anyway.</p>
+		<p>One of the first and most important things I need set up on daily driver OS is proper text to speech. In the old days this meant Festival 1.96 with CMU Arctic dataset HTS voices. This produces a monotone but clearly understood voice rapidly. Unfortunately Festival 2.0 does not support the Nitech CMU Arctic HTS voices so distros that only had it (building festival from source is a nightmare) were always ruled out. But today while playing around in solus I learned about <a href="https://github.com/MycroftAI/mimic1">mimic</a>. It's apparently a festival lite fork but it supports all the CMU HTS voices I've come to know and love over the last decade while improving many other features. Now with mimic you can set speech speed and pitch on the fly now instead of having to config it to export every utterance to aplay binary call for manual speeding and pitch shift. Bye-bye,</p>
+		<pre>(Parameter.set 'Audio_Command "aplay -q -c 1 -t raw -f s16 -r $(($SR*105/100)) $FILE")</pre>
+		<p>Hello,</p>
+		<pre>--setf duration_stretch=0.8 --setf int_f0_target_mean=145
+...or something like that.</pre>
+		<p>While talking about mimic on IRC another guy recommended I check out <a href="https://github.com/Olga-Yakovleva/RHVoice">RHVoice</a> which apparently has a US English voice included but no online voice samples. I'll try compiling that later. In the far future there's also all those machine learning based "tacotron" text to speech methods which apparently will be the core of <a href="https://mycroft.ai/blog/mimic-2-is-live/">mimic2</a> and Mozilla's text to speech core.</p>
+		<h2>Edit: Nope.</h2>
+		<p>I was wrong. It turns out mimic doesn't have flitevox compatible voices for the nitech_us_slt_arctic_hts. It has a HTS voice from the same CMU arctic dataset but by people at CMU. This voice is not equal in quality to the Nitech one. Mimic 1 is not a replacement for festival 1.96.</p>
+		<h4>But!</h4>
+		<p>It turns out that debian did fix the syntax of the nitech voices for festival 2.0 compatibility and put some of them in the default repos! So debian 10 does have some of the nitech voices but not cmu *slt* dataset. But <a href="https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=589614">on the debian bug management list there is a guide</a> on how to do it yourself. Thanks Debian! It's worth noting that Devuan, which I was also investigating, doesn't even have the CMU HTS voices at all in it's repos for festival. So both Solus and Devuan are out of the running. Debian 10 it is.</p>
+		</div>
+
+		<hr><a name="2019-11-30-2">
+		<div><h3>Photos of unpleasant alleys at night in winter</h3>
+		<h5><a href="2019-11-30-2.html">2019-11-30-1 #2</a></h5>
+		<a href="http://erewhon.superkuh.com/a-generic-alley-in-winter.jpg"><img src="http://erewhon.superkuh.com/a-generic-alley-in-winter.jpg"></a><br />
+		<a href="http://erewhon.superkuh.com/another-generic-alley-in-winter.jpg"><img src="http://erewhon.superkuh.com/another-generic-alley-in-winter.jpg"></a>
+		</div>
+
+
+
+		<hr><a name="2019-11-30-1">
+		<div><h3>Linux software stack future shock</h3>
+		<h5><a href="2019-11-30-1.html">2019-11-30-1 #1</a></h5>
+		<p>In the old days I'd build a new computer because the old one's hardware wasn't <b>fast</b> enough to run new software. Now hardware from 2013 is plenty capable of running whatever you throw at it but if the software stack is a similar age don't expect to be able to run any new software or even decode video media. The rate of change in technological progress on the software side has only continued to increase, unlike hardware.</p>
+		<p>Because of rapid development of the previously somewhat bi-decadal-stable programming libraries (and codecs) everyone uses (C++'s C++11, C++14, C++17, C++20, changes to glibc adding new functionality, etc) it's almost to the point where you can't compile something written <em>today</em> on a software stack more than 5 years old. The proliferation of all the containerized solutions (docker, flatpak, snap, appimage, etc) is the immune response to this inflammation but it just makes it worse. Progress is great but the rapidity of obsolescence is getting intolerable.</p>
+		<p>Yeah, I could throw away my old software version workflows and update to lastest $OS but I think it's a lot easier to just build a new machine to add to the span.</p>
+		</div>
+
+
+
+		<hr><a name="2019-11-07-1">
+		<div><h3>Microwave ferrites: can they be made DIY? No. But I learned I was asking the wrong question.</h3>
+		<h5><a href="2019-11-07-1.html">2019-11-07-1 #1</a></h5>
+		<p>Most of the cost of a magnetron reflection amplifier is in the circulator. High power circulators are weird and expensive but you can't build a reflection amplifier without them. Even just ordering special microwave ferrite material is almost as expensive as the finished circulator (if they'll sell to you at all). So naturally I wondered if I could make a ferrite disk, and from it a circulator, cheaply at home. Nickle ferrites are the most applicable because they can be worked in air. The two feasible options seem to be water chemistry nanoparticles, pressing, then sintering or low temp curing pourable magnetic composites made of expensive monomers, permalloy powder, and powdered oriented-strand 3M magnetic sheet.</p>
+		<p>But in the process I learned <em>there's nothing special about garnet or other microwave ferrites</em>. They just have a small resonance line width leading to low loss. The same non-reciprocal ferrimagnetic resonance happens even mass produced cheap iron ferrite rods and might work for an extremely lossy demo</em>. Or at at high power but low duty cycle when you don't care about energy efficiency...like if you had a injection locked magnetron and bursty power to spare.</p>
+		<p><b>tldr: Home manufacture of microwave ferrites might be cheaply feasible *but* reuse of common cheap ferrites as lossy circulator elements certainly is and it's immediately accessible.</b><!-- Use of common nickle ferrites means that an above resonance design is required for 2.4 GHz. Being far above the resonance also minimizes problems with loss from the broad resonance of cheap ferrites. The question is just <em>how far</em> above the resonance can you be and still get the gyromagnetic effect? Above resonance ferrite circulators also require higher magnetic field strengths but high powered magnets are cheap now.--></p>
+
+		<hr style="width:50%;" />
+		<h5>Circulator theory</h5>
+
+		<p>A circulator uses some non-reciprocal material that allow transmissions lines to work differently depending on which direction the RF is traveling. In electromagnetics non-reciprocity is almost exclusively obtained through Zeeman splitting in (ferrite) ferromagnetic materials using a static magnetic bias that splits degenerate atomic states with opposite spin. These opposite spins have slightly different energy and so different frequency. In the plot on the right below this frequency difference is represent as advance or retreat of phase.<!-- I *<em>think</em>* the difference between their frequencies is the useful ferrimagnetic resonance.--> <!-- It's often represented as phase shift but what is an advance of phase but an increase in frequency?--></p>
+		<img src="/zeeman-splitting-ferrite.png"><img src="/ferrimagnetic-resonance.jpg"><img src="/below-vs-above-resonance-ferrite.jpg">
+		<p>For circulators made of ferrites there are two ways main ways to use this. <b>1</b>, <a href="https://en.wikipedia.org/wiki/Magic_tee">magic-tee</a> waveguides connected by two paths where one path is loaded with ferrite that causes faraday rotation of polarization (equiv to 180 deg phase shift) causing <a href="https://www.youtube.com/watch?v=tmP_3kiIyZY">two-path interference in one direction but not the other</a> (youtube link).</p>
+		<img src="/thatonecirculatordiagrameveryoneuses.png"><img src="/nonreciprocal-faraday-rotation-phase-shifter.jpg"> 
+
+		<p>And <b>2</b>, Y-junction transmission lines with ferrite resonators disks that have standing waves with nulls that can be rotated by an external magnetic field to so that the voltages at different angles around the perimeter of the resonator can be maximized and minimized.</p>
+		<img src="/ferrite-circulator-efield-sim_sm.jpg"><img src="/standing-wave-circulator.jpg"><img src="/magnitude-of-electrical-field-around-periphery-of-junction-circulator.jpg"><br />
+
+
+		<p>The standing wave is actually two counter-rotating wave patterns. When there's no external magnetic field they rotate at the same frequency. When an external magnetic field is introduced the frequency of one is shifted and the resulting interference pattern is rotated. Despite the complexity of the physics in terms of mechanical construction a round ferrite waveguide based Y-junction circulator is by far the easiest design to make. And it's the easiest with which to connect a low power magnetron. The most straightfoward approach is the traditional <a href="/microwaveovenwaveguide.png">80*40mm TE_01 waveguide</a> dimensions for the three arms.</p>
+
+		<img src="/waveguide-y-junction-circulator.jpg">
+
+		<h5>Ferrite chemistry and mechanical production</h5>
+
+		<p>The actual ferrimagnetic resonance is a frequency where the circulators *don't* work and they have to be designed with the target frequency either above the resonance in frequency or below it. Above or below resonance operation, depending on if the precession frequency is higher or lower than the RF frequency. The size of the the resonance in frequency span is called the line width and it determines the loss of the material. Expensive, densely pressed garnet ferrites have very low line widths and work over a broader range at lower loss.</p>
+		<p>But this doesn't neccessarily mean that homemade nickel ferrite would have no use in a circulator. It'd only be lossy. So what I'm thinking about here is using <a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Circulators/Preparation%20and%20Characterization%20of%20Nickel%20ferrite%20Nanoparticles%20via%20Co-precipitation%20Method_%20S%20Sagadevan_%20Z%20Z%20Chowdhury_%20R%20F%20Rafique_%202018.pdf">simple water based chemistry with ferrite chloride and nickel chloride chelated to co-precipitate a nickle ferrite</a> and attempt to manufacture the a homemade waveguide y-junction circulator.<!-- Or, if the material isn't good enough, a faraday rotation based phase shifter for a magic-tee circulator.--></p>
+
+		<img src="/nickel-ferrite-synthesis.jpg">
+	
+		<blockquote><p>Nickel Ferrites may be the least complicated ferrite from the processing point of view. The nickel remains essentially in the Ni++ state so that air is almost always used as the firing atmosphere.</p></blockquote>
+
+		<a href="https://www.youtube.com/watch?v=L7rX-_iQdmY"><img src="/bottle-jack-press.png"></a>
+
+		<p>For co-precipitated "ready" powders, like the above example, sintering temperatures can be as low as 900 C. That's plausible to do with a cheap induction heater like I have. The press could probably be a simple hydraulic press. Papers quote pressures around 100 MPa, so for a 3cm diameter disk and a 2 metric ton press thats: (2 tonne)⋅(9.8m/s^2)⋅10/(pi⋅1.5cm^2) = ~200 MPa. Plenty of margin. A $20 hydraulic bottle jack for trucks does about 6 ton. Though I imagine the limiting factor would be the threaded rod and nuts used to make the press frame. But it'd probably still have voids without proper compaction machines and the effective line width would be higher. So much higher that an improperly home-pressed nickle ferrite would probably be no less lossy than an industrial pressed iron ferrite availably commonly for cheap prices.</p>
+
+		<h5>Pourable ferrite composites with no press and low temperature curing</h5>
+
+		<img src="/3m-sheet-ferrite-permalloy-powder-castable-ferrite.jpg">
+
+		<p>But even a cheap press is an expense and a somewhat bulky and dangerous thing. And sintering at 900 C is hard in implementation. There are some papers about pourable low-temperature cured pourable magnetic composites. <!--The most exciting use things like ferroelectric PVDF polymer.--> But most of these have terrible specs. Except one 2019 paper, <a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Circulators/A%20Permalloy%20+%20NiZn%20Ferrite%20Moldable%20Magnetic%20Composite%20for%20Heterogeneous%20Integration%20of%20Power%20Electronics_%20Chao%20Ding_%20Yunhui%20Mei_%20Khai%20D%20T%20Ngo_%20Guoquan%20Lu_%202019.pdf">A (Permalloy + NiZn Ferrite) Moldable Magnetic Composite for Heterogeneous Integration of Power Electronics</a> that has both decent performance *<em>and</em>* it's easily manufactured DIY. It's a mix of expensive (but feasible) permalloy magnetic powder with NiZn ferrite from crushed up <a href="https://www.digikey.com/product-detail/en/3m/EM15TF-012-4/3M156473-ND/7652407">3M Flux Field Directional sheet</a> and expensive and infeasible to get trimethylolpropane triacrylate (TMPTA) monomer. If a source of that last one that sells to individuals could be found it might just work.</p>
+
+		<!--<p>After hearing about traditionally grown (pulled from molten pool) single crystal garnet ferrites I wondered if there might be some ferrite chemistry that would be applicable for hydrothermal single crystal growth. That'd bypass the need for press densification. But at least with the search keywords I've used I don't think anyone has found a way to do this.</p>-->
+
+<!--		<a href="http://67.225.133.110/~gbpprorg/mil/emp3/index.html"><img src="/microwaveovenwaveguide.png"></a> -->
+
+
+<!--		<p>Faraday rotation circulators use two paths in which one has a directional phase shift so the same signal traveling in two paths cancels out at some output ports and adds in others. You should stop reading this and just watch <a href="https://www.youtube.com/watch?v=tmP_3kiIyZY">this video on youtube</a>. These use a particular arrangement of three H mode ports and 1 E mode port at the top: <a href="https://en.wikipedia.org/wiki/Magic_tee">magic tee</a> circulators. The magic is in the ferrite loading one of the transmission line paths. In one direction it rotates the polarization on one path so things add up at one H mode port and cancel at the E mode port. But in the reverse direction of the already rotated wave is flipped back to match the other pair resulting in cancelization at the one input port.</p>
+-->
+		</div>
+
+
+
+		<hr><a name="2019-11-06-1">
+		<div><h3>opml to html, or, I know you're not supposed to use regexes but fuck it</h3>
+		<h5><a href="2019-11-06-1.html">2019-11-06-1 #1</a></h5>
+		<p>I tried to do it the right way. I tried all the xml manipulation libraries. But they all failed. Or I failed them. Either way it was just faster and far easier to do it with regex than attempt to learn some new xml module. So here is the dirty result that makes <a href="/feeds.html">/feeds.html</a> on my site from the opml that QuiteRSS spits out.</p>
+<pre>#!/usr/bin/perl -w
+# Usage: regexopmltohtml.pl foo.opml &gt; bar.html
+use strict;
+my $opmlfiletoparse = shift;
+open( THEFILE, "&lt;$opmlfiletoparse") or die "Can't open file $opmlfiletoparse $!";
+while(&lt;THEFILE&gt;) {
+	if ( m{&lt;outline text=\"(.+)\"&gt;\n}sg) {
+		my $name = $1;
+		print qq[&lt;hr /&gt;];
+		print qq[&lt;h3&gt;$name&lt;/h3&gt;];
+	} elsif ( m{&lt;outline text=\"(.+)\" type=\".+?\" htmlUrl=\"(.+)?\" xmlUrl=\"(.+)\"/&gt;}sg) {
+		#print "1: $1, 2: $2, 3: $3\n" if $1;
+		my($name,$htmlurl,$xmlurl) = ($1,$2,$3);
+		print qq[&lt;p&gt;];
+		print qq[&lt;a href="$xmlurl"&gt;&lt;img src="/rss.png" border="0" /&gt;&lt;/a&gt;\n];
+		print qq[&lt;a href="$htmlurl"&gt;$name&lt;/a&gt;&lt;/p&gt;];
+	}	
+}</pre>
+		</div>
+
+
+
+		<hr><a name="2019-11-05-1">
+		<div><h3>Mesh networks require height. Height is expensive. What are some alternate ways to get height and what are their DIY enabling technologies?</h3>
+		<h5><a href="2019-11-05-1.html">2019-11-05 #1</a></h5>
+		<!--<img src="/image.jpg">-->
+
+		<p>Mesh networks between people are an alternative to the internet are hard. Height above terrain is everything in the VHF and up range if you're not in a giant city of skyscrapers or coastal town with giant mountains overlooking everything. It's just not possible to put together networks if there are many hills or valleys obstructing line of sight. The only reason cell networks work is that they buy space on towers, buildings, and the like high above the ground. That's too expensive for individuals or community groups. There are some non-traditional ways to get height and power up to that height, cheaply.</p>
+
+		<p><b>Surface wave transmission lines going up to antennas in trees</b></p>
+
+		<p>The first I've tried was making a light weight  transmission line to connect a ground level transceiver with the antenna hanging up in a tree. RF power can be carried on a single thin bare (28awg) wire in much the same way that it travels inside a waveguide but inverted (TEM). This surface wave transmission line (SWTL) just requires a couple complex metal tapers making up horns at both ends. These can be 3D as in the <a href="/library/Electromagnetics/A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">designs from Glenn Elmore in QEX</a> I implemented or 2D as shown in some of <a href="https://www.youtube.com/user/n6gnSWTL">Glen Elmore's more recent youtube demostrations</a> of high power (50w) tranmission at high effiencies. Though it's complex to make the 3D version like mine the 2D design made of metallized paper that Elmore demostrates could easily be DIY'd. Rain, snow, and ice are problems but sometimes working is better than not at all. Loss is low and they aren't an eyesore to the neighbors. For higher frequency band (ie, 2.4 GHz and up the launchers can be very small. The 2 launchers I made shown below are designed for a ~400 MHz lower cut-off and so quite large.</p>
+
+		<ul><li><a href="/library/Electromagnetics/Method%20and%20Apparatus%20for%20Launching%20a%20Surface%20Wave%20onto%20a%20Single%20Conductor%20Transmission%20Line_%20Glen%20E%20Elmore_%20EP03796883NWB1_%202012.pdf">Method and Apparatus for Launching a Surface Wave onto a Single Conductor Transmission Line_ Glen E Elmore_ 2012</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Flying%20antenna_%20Surface%20Wave%20Transmission%20Lines_%20Presentation_%20Glen%20Elmore_%20John%20Watrous_%202011.pdf">Flying antenna_ Surface Wave Transmission Lines_ Presentation_ Glen Elmore_ John Watrous_ 2011</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Surface%20wave%20transmission%20system%20over%20a%20single%20conductor%20having%20E-fields%20terminating%20along%20the%20conductor_%20US7567154_%202008.pdf">Surface wave transmission system over a single conductor having E-fields terminating along the conductor_ US7567154_ 2008</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/Klopfenstein%20Taper%20Spreadsheet%20With%20Data%20From_%20A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.ods">Klopfenstein Taper Spreadsheet With Data From_ A Surface Wave Transmission Line_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li>
+		<li><a href="/library/Electromagnetics/A%20Surface%20Wave%20Transmission%20Line_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">A Surface Wave Transmission Line_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li>
+		<li><a href="http://superkuh.com/library/Electromagnetics/An%20All-Band%20Antenna_%20G%20Elmore%20N6GN_%20J%20Watrous%20K6ZPB_%20QEX%202012.pdf">An All-Band Antenna_ G Elmore N6GN_ J Watrous K6ZPB_ QEX 2012</a></li></ul>
+
+		<img src="http://erewhon.superkuh.com/swtl-launcher-parts.jpg">
+		<img src="http://erewhon.superkuh.com/swtl_launcher.jpg">
+		<img src="http://erewhon.superkuh.com/swtl_launcher_complete.jpg">
+
+		<p><b>Magnetrons as reflection amplifiers</b></p>
+
+		<p>The second, one I'm only exploring in theory right now, is using very high power by operation of cheap oven magnetrons as reflection amplifiers. When an external signal up to ~30 dB below the cavity's operating level is introduced the cavity behaves like a diode with negative resistance and will lock on to the introduced signal and amplify it significantly. Normally over magnetrons are fairly noisy outside of the carrier because of electrons that make it more than one loop around the cavity. This can be stopped by making the magnetic field asymmetrical vertically by adding a handful of extra neodynium magnets to bias one of the poles. Additional reduction in noise can can be had by minimizing cathode heating current if not turning it off entirely. Magnetrons in ovens operate at a power level well above what they can sustain in steady state. To reduce the power level to something that can be dissipated the input capacitor on the voltage doubler needs to be reduced to one about 1/50th of it's capacity of a similar or higher voltage rating. This results in output power levels in the 10s of watts with very low noise and a decent modulation depth.</p>
+
+		<p>Magnetrons' innate frequency of oscillation can be effected by many things during operation. Increased anode current "pushes up" the frequency at about 0.1 MHz/mA while the frequency is "pulled down" the lower the impedance of the output. By using a slightly shorter than 1/4 wavelength monopole the frequency can be shifted some tens of MHz down to well within the safe amateur radio operating band. External coils wound around the poles of the magnetron can be used to change the magnetic field intensity and so decrease the amount of electrons that make it from the cathode to anode at a given voltage decreasing the power.</p>
+
+		<p>The one problem with magnetrons as reflection amplifiers is that the magnetron is only one part of the amplifier. The other is the circulator. Circulators are not cheap. And circulators cannot be home made because of the sintering and pressing requirements even if the chemistry of nickel ferrites is easy to do. So they must be bought ($50-100 for 50w). Ferrimagnetic resonance stripline circulators tend to be the cheapest at these powers.</p>
+
+		<p>In terms of practical assembly, the microwave is left mostly assembled. The output of the TE_10 waveguide is closed off with a copper plate and another magnetron cap "probe" antenna is put into the sealed waveguide ~1/4 wave away from the newly shorted end of the waveguide. The output of the monopole is connected directly to the circulator tab despite the weird impedance probably presented. The input from the signal to be transmitted and the antenna (or SWTL launcher) are on the other two pins of the circulator. </p>
+
+
+		<p><b>Combining it all together</b></p>
+
+		<p>10-20w of power on 2.4 GHz that's transmitted as 5-10w from the antenna at the top end of a surface wave transmission line lofted in a tree at 70ft would enable whole town and true community mesh networks. The injection locking effect only works over a ~5 MHz range though. Any modulation scheme has to stay within those bounds but things like amplitude shift keying are bad choices because of the frequency pushing effect. The best modulations are FSK or MSK but BPSK does work at a slightly higher error rate. A handful of megabits per second is possible.</p>
+		</div>
+
+
+		<hr><a name="2019-10-30-1">
+		<div><h3>If garbage mining happens in the future they will know everything about you</h3>
+		<h5><a href="2019-10-30-1.html">2019-10-30 #1</a></h5>
+		<p>When you bag your trash and bring it out to the curb for pick-up eternal storage in a landfill somewhere you normally think it's just that: eternal. But there's no reason to think that the landfills of today will be inviolate in the future. They're absolutely jam packed full of useful rare metals and materials. I think eventually garbage mining will be a common practice.</p>
+		<p>In Vernor Vinge's "Rainbow's End" they have this book scanning machine that just shreds the books then scans all the sheds super fast as they fly by and reassembled computationally the documents (like how DNA is read). Sometimes I worry about a future where this is possible with garbage and garbage mining is happening. Not only would a garbage mining company be able to sell the materials but the vast amounts of detailed very personal information stored discretely in each person or family's bag would also be invaluable. There would be economic motives to automate information retrevial from landfill garbage mining.</p>
+		<p>Depending on how far in the future this happens it could either be a privacy nightmare or a cultural treasure.</p>
+		</div>
+
+
+		<hr><a name="2019-10-28-1">
+		<div><h3>Short review: Linda Nagata's "Memory" and "Edges" print scifi</h3>
+		<h5><a href="2019-10-28-1.html">2019-10-28 #1</a></h5>
+		<img src="/nagata.jpg">
+		<p>I'm almost finished with Linda Nagata's two books extending the "Deception Well" / "nanotech succession" series. "Memory" and "Edges". Both are far future books where humanity is mostly either evolved into not humanity or dead and hiding like mice from the rest of the galaxy. The characters are mostly contemporary humans. The tech is never explained in any detail but it's consistent. In fact for not having any tech detail, ever, these books have interesting tech driven plots. It's magic nanotech goo everywhere but the magic goo is still constrained by physics somewhat. 8/10. Worth reading if you read the deception well series but if you haven't yet the tech will seem even more hand-wavey and unsupported.</p>
+		</div>
+
+
+		<hr><a name="2019-10-26-1">
+		<div><h3>Why do microwave magnetron outputs have holes if they're not waveguides?</h3>
+		<h5><a href="2019-10-26-1.html">2019-10-26 #1</a></h5>
+		<img src="/microwave-magnetron-cap-holes.jpg">
+		<p>I've been looking at a lot of microwave oven magnetrons lately. One thing that vexed me was why they all seem to have a hole in the cap on their output. <b>Initially this predisposes you to think that it's an aperture of a waveguide</b>. But the wavelength of of 2.4 GHz in air is way to large for the size of the 'waveguide'. For a 'waveguide' that small it'd only support about 15 GHz wavelength as the lowest frequency and support up to some ~20 GHz before high end cut-off.</p>
+	<p><b>It's actually a monopole antenna with a dielectric standoff</b>. The fatter the monopole the greater the bandwidth generally, and the larger the better heat tolerance, and the lower the e-field gradients. So it makes sense to use a fat cylinder for the monopole. But what <em>doesn't make sense</em> is that there's a hole in the end of it. In all of them.</p>
+
+<!--		<p>US 2011/0234093 A1
+An insulation cylinder 80 is made of ceramic and extends along the axis 22. An end of the insulation cylinder 80 is fixed to an output end (an upper end in FIG. 1) of the metallic sealing member 74. The other end of the insulation cylinder 80 is fixed to an exhausting pipe 82. An antenna 84 is
+fixed to one of the even number of vanes 30, penetrates the pole piece, extends inside of the metallic sealing member 74 and the insulation cylinder80 and is led to the exhausting pipe 82. The exhausting pipe 82 holds the tip of the antenna 84 there between. A cap 86 is disposed so as to surround the exhausting pipe 82.</p>
+-->
+
+		<p>After reading a few patents I think I know why. Originally the vacuum evacuation tube comes out of the top of the magnetron. It's normally closed off but it's still under the antenna cap. <b>If the antenna has a hole in it then the magnetron can be tested somewhat normally while still being hooked up to the vacuum pump</b>. That's my guess. I can't think of any other reason for it beyond letting hot air out of the cavity beneath the antenna.</p>
+
+		<p>I ended up emailing a number of people who seemed to be authorities or at least very knowledgable on commercial oven magnetron operation. The consensus of *all* of them was that the hole in the cap really didn't matter and it was just there to cover the sharp edges of the sealed evacuation tube. But few really seemed to know why they all have little holes on the end. Until today (a week since I started digging) when two people confirmed that <b>the holes *are* just for mechanical assembly</b>.</p>
+
+		<blockquote><p>There is no electrical reason for the hole: the antenna with such a hole behaves exactly the same way as without a hole. The cap serves for
+defining/unifying the magnetron radiating structure shape and protection from the sharp edges of the sealed evacuation tube end.</p>
+		<p>I am not a magnetron technology specialist but <b>the hole must have some prosaic technological reason, such as air vent when the cap is pressed onto the magnetron.</b> In mass production, this may be a very snappy operation.</p>
+
+		<p>Magnetrons are certainly not tested in any electric way while being hooked up to the vacuum pump. A "magnetron" is then just a bare bulb without electric connections, without magnets, without the cap alone.</p>
+
+		<p>- Vladimir Bilik</p></blockquote>
+
+		<div><img src="/magnetron-06.jpg"><img src="/magnetron-05.jpg"></div>
+
+		<blockquote><p>&lt;_abc_&gt; The hole in the top of tha probe on an oven magnetron serves as assembly help. There's an equivalent hole on almost all anode contact caps on tubes, sometimes it is smaller and soldered closed. <a href="http://danyk.cz/gu81_en.html">http://danyk.cz/gu81_en.html</a> Different style, same idea, the little tab is spot welded to the wire coming out of the glas</p></blockquote>
+<!--
+		<p>I ended up emailing the guy behind the excellent site, <a href="http://radartutorial.eu/">radartutorial.eu</a> figuring he would know but it didn't resolve much of my confusion.</p>
+		<blockquote><p>For the function of the magnetron this part is rather unimportant. Its only function is to mechanically adapt the magnetron to the high-voltage plug. (Like the BERU Nut Coupling on a spark plug in a car.)</p></blockquote>
+		<p>Honestly, I don't know what that means. There's no high voltage plug on the output or the antenna. I must have phrased my question ambigiously.</p>
+		<p>Edit Oct 28: I continued to bother the guy by email.</p>
+		<blockquote>
+<pre>It's only function is mechanical? It's not the monopole antenna that
+radiates? Just to be clear, I'm talking about the part highlighted in
+red on the image on this page,
+
+http://superkuh.com/blog/2019-10-26-1.html
+http://superkuh.com/microwave-magnetron-cap-holes.jpg
+
+And specifically the hole in the top of it and why it is there in all of
+them.
+
+Are you saying this steel cap is only there so that there's a
+standardized fit for the waveguide? I could understand that. But it
+still doesn't explain the hole.
+
+Again, thanks for the help.
+	- superkuh</pre>
+</blockquote>
+		<p>And he was nice enough to help further.</p>
+<blockquote><p>Nevertheless, it is only a mechanical plug: it decouples the power from the probe inside the vacuum tube, that don't have a contact to the waveguide. 
+It works like a capacitor. But if it was missing, the tube would still work. But maybe the power output would be less effective.</p></blockquote>
+
+<p>The idea that the power is capacitively coupled from the metal probe and not from direct contact electrically really suprises me. I need to take apart one of my broken magnetrons and measure the continuity.</p>
+
+-->
+
+		</div>
+
+
+		<hr><a name="2019-10-24-2">
+		<div><h3><a href="http://sci-hub.se/10.1063/1.1609040">An easy modification to suppress noise from a household magnetron</a></h3>
+		<h4>And how magnetrons can be used as reflection amplifiers</h4>
+		<h5><a href="2019-10-24-2.html">2019-10-24 #2</a></h5>
+		<a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Low-noise%20microwave%20magnetrons%20by%20azimuthally%20varying%20axial%20magnetic%20field_%20V%20B%20Neculaes_%20R%20M%20Gilgenbach_%20Y%20Y%20Lau_%202003.pdf"><img src="/magnetron-noise-mod-01.png"></a>	
+		<h5>Low-noise microwave magnetrons by azimuthally varying axial magnetic field_ V B Neculaes_ R M Gilgenbach_ Y Y Lau_ 2003</h5>
+		<p>This paper documents how sticking (literally) some extra magnets on the top magnet of a microwave magnetron gets rid of most of the noise around the carrier. Unlike other methods of running a magnetron in a low noise mode this way requires no invasive modifications and you can still run the cathode heater to get full power output. This is at all relevant because there exists a way to use a household magnetron as an amplifier (<a href="http://superkuh.com/library/Electromagnetics/Magnetron/The%20Magnetron%20-%20A%20Low%20Noise%20Long%20Life%20Amplifier_%20William%20C%20Brown_%201990.pdf">ref pdf</a>).</p>
+
+		<h5>Reference material <a href="/library/Electromagnetics/Magnetron/">/library/Electromagnetics/Magnetron</a></h5>
+
+		<p>There are two ways in the literature to use a microwaven oven magnetron as a reflection amplifier (w/circulator). Both of them modulate the anode current, which is to say, the rate at which electrons travel from the cathode to the node in the coaxial cavity surrounded by resonating cells.</p>
+
+		<p>The first and easiest way to do this is to change the magnetic field projecting down vertically through the cavities. An additional electromagnet coil is added to contribute (or subtract) from the the permanent magnets. The current in this coil is controlled by a phase locked loop. But the current through the coil can't be changed rapidly so this kind of amplifier can't be used with phase modulation schemes.</p>
+
+<a href="http://superkuh.com/library/Electromagnetics/Magnetron/The%20Magnetron%20-%20A%20Low%20Noise%20Long%20Life%20Amplifier_%20William%20C%20Brown_%201990.pdf"><img src="/magnetron-noise-mod-02.png"><img src="/magnetron-noise-mod-03.png"></a>
+
+		<p>The second and most expensive is to change the actual HV bias current directly by using a switched IGBT HV supply with complex control circuitry. It also uses a PLL but allows for much faster phase modulation.</p>
+
+		<p>Both types of set are pretty high noise when there's a lot of cathode heater current supplied (ie, high power). But if the magnetron is started with just a bit of heater power then the heater is turned off the magnetron continues to operate at a much lower noise level and with much less random phase jitter. But this can now be solved by having extra bias field on the top magnet.</p>
+
+		<p>Both types require extensive filtering of the AC-DC conversion power supply.</p>
+
+		<pre>Later...</pre>		
+
+		<p><a href="http://superkuh.com/library/Electromagnetics/Magnetron/Characterization%20and%20Optimization%20of%20the%20Magnetron%20Directional%20Amplifier_%20Thesis_%20Mike%20Hatfield_%201999.pdf">Characterization and Optimization of the Magnetron Directional Amplifier_ Thesis_ Mike Hatfield_ 1999</a> - this is by far the best and most authoritive document on using magnetrons as reflection amplifiers.</p>
+
+		</div>
+
+
+
+
+
+		<hr><a name="2019-10-24-1">
+		<div><h3><a href="https://github.com/cathugger/mkp224o">mkp224o: CPU vanity address generator for tor onion v3 (ed25519) hidden services</a></h3>
+		<h5><a href="2019-10-24-1.html">2019-10-24 #1</a></h5>
+		<img src="/torv3.jpg">
+		<p>I've recently been trying to upgrade my tor setup and that means version 3 addresses using curve25519 56 char hashes. As of right now there are no GPU implementations for mining. That means CPU mining and it's really slow. Maxing out an i5 3570k it would take about 2 weeks (on average) to brute force a superkuh* prefix. But I don't want to only do that for two weeks so I'm throwing it on my fanless 5w Celeron N3150 which I *can* let run for as long as I want quitely. With it's hash rate it should take about 2 months. But it's random and could take much more or less.</p>
+		<p>There are some alternative cryptocoins out there that use the same curve25519 algorithm which have opencl GPU implementations but who knows (not me) how one would adapt the opencl bits for tor v3 addresses. <a href="https://github.com/PlasmaPower/nano-vanity">https://github.com/PlasmaPower/nano-vanity</a>. The real vanity here is thinking I can poke at this crap and get it to work. I can't. I'll just have to wait the 2+ months.</p>
+		<p>Update! It only took 5 days. Lucky me. superkuhf6grlngvhaelkgaem6i4phmzd7rekeguphwbplhk3fanpjqd.onion here I come.</p>
+		</div>
+
+
+
+		<hr><a name="2019-10-18-1">
+		<div><h3>A Thornless Honey Locust Tree</a></h3>
+		<h5><a href="2019-10-18-1.html">2019-10-18-1</a></h5>
+		<img src="/honey-locust-in-fall.jpg">
+		<p>These trees are pretty fucking neato. The helical seed pods are more than a foot long and an inch or two wide. They're big, fleshy things in the summer and in the winter they dry out into excellent little noisemakers when shaken. These are domesticated, thornless varieties of course. The wild honey locust is literally a threat to man and his machines. The giant spikes it grows can puncture tractor tires. Some scientists think they evolved the giant deadly-to-humans spikes to keep mammoths from damaging the tree trunk as the seed pods were a favorite food source. That's metal. Here's some random google images photo of one from someone that isn't me,</p>
+		<img src="http://nowhere.superkuh.com/thorns.jpg">
+		</div>
+
+
+		<hr>
+		<div><h3>This was a lake once but they tore down the dam.</a></h3>
+		<h5><a href="2019-10-17-1.html">2019-10-17 #1</a></h5>
+		<img src="http://erewhon.superkuh.com/this-was-a-lake-once-but-they-tore-down-the-dam.jpg">
+		<img src="/this-was-a-lake-once-but-they-tore-down-the-dam-2.jpg">
+		<p></p>
+		</div>
+
+
+		<hr>
+		<div><h3>The fall collection of nuts and seeds to germinate next year.</a></h3>
+		<h5><a href="2019-10-16-1.html">2019-10-16 #1</a></h5>
+		<img src="/some-nuts-and-seeds-from-this-fall.jpg">
+		<p></p>
+		</div>
+
+
+		<hr>
+		<div><h3>There were dozens of these brown (?) snakes all along the road.</h3>
+		<h5><a href="2019-10-09-2.html">2019-10-09 #2</a></h5>
+		<img src="/this-is-a-snake-but-not-one-of-the-dead-ones.jpg">
+		<p></p>
+		</div>
+
+
+
+		<hr>
+		<div><h3>This coppiced catalpa tree grew back like this in a single season.</a></h3>
+		<h5><a href="2019-10-09-1.html">2019-10-09 #1</a></h5>
+		<img src="/coppiced-catalpa-tree.jpg">
+		<p></p>
+		</div>
+
+
+
+		<hr>
+		<div><h3>Cup plants and frost grape vine</a></h3>
+		<h5><a href="2019-07-25-2.html">2019-09-09 #2</a></h5>
+		<img src="/2019-cup-plant-and-wild-grape.jpg">
+		<p></p>
+		</div>
+
+
+		<hr>
+		<div><h3>Grape beetles (grape pelidnota) on my frost grape vines</a></h3>
+		<h5><a href="/blog/2019-07-25-1.html">2019-07-25-1 #1</a></h5>
+		<img src="/grape-pelidnota-beetle-02.jpg">
+		<p></p>
+		</div>
+
+<!--
+		<hr><a name="2019-01-30-1">
+		<div><h3>Consciousness is a epiphenomenon, it runs on entirely classical hardware, and free will is just a relative value between actors.</h3>
+		<h5><a href="2019-01-30-1.html">2019-01-30 #1</a></h5>
+
+		<p>Knock knock.</p>
+
+		<p>Who's there?</p>
+
+		<p>Nobody. Self is an illusory epiphenomenon emerging from the binding in time of separate neuronal populations via loops of neurons from cortical representations (sensation, motor action planning, etc) to the brain's switching center, the thalamus, and back operating at 40 times per second. This is necessary if not sufficient for what an average observer would call being conscious.</p>
+
+		<p>The epiphenomenon of consciousness is a prediction engine and it runs on entirely deterministic, entirely classically predictable hardware. No quantum woo-woo is needed or likely given the dense wet environment. The decoherence timescale for a plasuible small molecule is 10 orders of magnitude shorter than the timescale of neuronal and astrocyte activity.</p>
+
+		<p>Free will is a relative quantity expressed in terms of the ratio of computational power available for each actor. We can have free will relative to something or some system but there's no absolute meaning of free will. Animals as we know them with nervous systems are predictable objects just like anything else.</p>
+
+		<p>I'm not saying it makes sense from the perspective of introspection. It seems absurd and obviously false.</p>
+
+		<p>I'm saying that's what the scientific evidence indicates it. One argument against it is that well before you are consciously aware of making a decision there are many neurological indicators (EEG P300 signals, fast near IR changes in scattering, and slow fMRI blood oxygenation, etc) that use the activity of sub-populations of neurons to correctly predict, for example, a motor behavior like choosing one of two buttons to press. This disconnect also exists in terms of conscious sensory perception of being pinched when external brain stimulation like rTMS can be used to inhibit perception. Or more dramatically when TMS is used in the pre-motor and motor cortices to initiate a preference for action, say, in a choice to twitch your right hand finger or your left. The brain confabulates an intention post-hoc to agree with the stimulation choice.</p>
+
+		</div>
+-->
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2019-01-30-1">
+		<h3 class="p-name">Consciousness is a epiphenomenon, it runs on entirely classical hardware, and free will is just a relative value between actors.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2019-01-30-1.html" class="u-url"><time class="dt-published" datetime="2019-01-30">2019-01-30-1</time></a></h5>
+
+		<p>Knock knock.</p>
+
+		<p>Who's there?</p>
+
+		<p>Nobody. Self is an illusory epiphenomenon emerging from the binding in time of separate neuronal populations via loops of neurons from cortical representations (sensation, motor action planning, etc) to the brain's switching center, the thalamus, and back operating at 40 times per second. This is necessary if not sufficient for what an average observer would call being conscious.</p>
+
+		<p>The epiphenomenon of consciousness is a prediction engine and it runs on entirely deterministic, entirely classically predictable hardware. No quantum woo-woo is needed or likely given the dense wet environment. The decoherence timescale for a plasuible small molecule is 10 orders of magnitude shorter than the timescale of neuronal and astrocyte activity.</p>
+
+		<p>Free will is a relative quantity expressed in terms of the ratio of computational power available for each actor. We can have free will relative to something or some system but there's no absolute meaning of free will. Animals as we know them with nervous systems are predictable objects just like anything else.</p>
+
+		<p>I'm not saying it makes sense from the perspective of introspection. It seems absurd and obviously false.</p>
+
+		<p>I'm saying that's what the scientific evidence indicates it. One argument against it is that well before you are consciously aware of making a decision there are many neurological indicators (EEG P300 signals, fast near IR changes in scattering, and slow fMRI blood oxygenation, etc) that use the activity of sub-populations of neurons to correctly predict, for example, a motor behavior like choosing one of two buttons to press. This disconnect also exists in terms of conscious sensory perception of being pinched when external brain stimulation like rTMS can be used to inhibit perception. Or more dramatically when TMS is used in the pre-motor and motor cortices to initiate a preference for action, say, in a choice to twitch your right hand finger or your left. The brain confabulates an intention post-hoc to agree with the stimulation choice.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2019-01-30-1.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+
+

@@ -1,0 +1,33 @@
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-01-18-2">
+		<h3 class="p-name">Computation not construction: reconstructing images of rotating exoplanets from light intensity over time: 3 novel techniques to build cheaper big telescopes [youtube IAC talk]</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-01-18-2.html" class="u-url"><time class="dt-published" datetime="2020-01-18">2020-01-18-2</time></a></h5>
+
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/m535laV7p3s" frameborder="0" allow="accelerometer; gyroscope;" allowfullscreen></iframe>
+
+		<p>This "<a href="https://www.youtube.com/watch?v=m535laV7p3s">Large Instruments For Exoplanet Direct Imaging Studies beyond TMT/EELT/GMT</a>" talk by Prof. J. R. Kuhn (IfA, Hawaii) is very cool but it reminds me a lot of Robert Charles Wilson's print scifi story, "Blind Lake". In it the near future telescopes don't really even perceive the sky anymore. The sky is the start but in terms of computation triggering but it's almost the least of the input compared to the the models and priors and arcane unknowable quantum-woo-woo which synthesize the detail of the resulting images. Not to imply there's any quantum woo-woo here. This is really cool science.</p>
+
+		<ul>
+		<li>more adaptive optics instead of expensive stiff structures</li>
+		<li>don't grind glass, actively bend 2mm thin glass and retain a smooth surface</li>
+		<li>incoherence happens, let the neural networks sort it out</li>
+		</ul>
+
+ <p>In this talk Kuhn makes the call for building a large multi-mirror optical interferometer to capture enough photons to do model-based time-series reconstruction of the surface features from light reflected off exoplanets. The proposed optical telescope is an interferometer, a donut of moderate size circular apertures, that are combined to form a speckle interference pattern. Each circular mirror in the donut has adaptive optics who's arbitrary phase shift can be found with neural networks then changed arbitrarily to create nulls in the combined UV coverage directly as a function of diffraction to act as a super low noise coronagraph.</p>
+
+		<p>Optical interfometry is tough and phase error kills. Normally to be big things have to be made super stiff. He argues that the telescope structure doesn't have to be built any more rigid than the amount of atmospheric turbulence they already correct. From this premise he suggests a bicycle wheel like tension and compression design to minimize weight when flex can just be adapted.</p>
+
+		<p>But even moderate size mirrors cost a lot and so do adaptive optics. To make this cheaper he shows a small scale implementation of a mirror made out of an extremely thin bit of non-ground, perfectly smooth glass. To create the phase needed locally to cancel out the local surface error + atmospheric surface error + wobbling error he shows an electroactive polymer that can be 3D printed onto the thin glass itself and under an applied electrical field (as a dieletric in a capacitor) it can pull on the local glass surface. Without a need to grind the mirror it can be extremely smooth and relatively cheap.</p>
+
+		<p>All together it seems like a powerful system for making a cheap big light bucket. But what strikes me most about it is that the information needed for the coronograph nulling is being derived from a seemingly nonsensical speckle pattern with lots of unknowns. <!--It's not a simple deconvolution from a point spread function and the coverage of the UV plane.--> They just throw a neural network at it and tell it to create some inversion function(s?) that takes incoherent speckle pattern information and somehow comes up with the mechanical phase error.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-01-18-2.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>

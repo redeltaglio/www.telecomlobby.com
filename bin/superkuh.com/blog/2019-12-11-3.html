@@ -1,0 +1,43 @@
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2019-12-11-3">
+		<h3 class="p-name">Indieweb, microformats markup, and a minimum webmention implemention</a></h3>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2019-12-11-3.html" class="u-url">2019-12-11-3</a></h5>
+		<p>The whole <a href="https://indieweb.org/Getting_Started">indieweb</a> <a href="http://microformats.org/wiki/h-entry">microformats</a> movement seems good to me. It encourages hosting your own and the mark-up is just repurposing the flexible html class attribute tag. I only had to change my post format and perl regex a tiny bit in order to accommodate h-entry style mark-up. <a href="https://indiewebify.me/validate-h-entry/?url=http%3A%2F%2Fsuperkuh.com%2Fblog%2Fblog.html">Validate me</a>.</p>
+		<p><a href="http://webmention.net/">Webmentions</a> is a well intentioned track-back like feature for systematized auto notification of responses to posts marked up with the microformat2 h-entry stuff. It requires an endpoint defined in the page that can receive url-form encoded strings that then goes out and actively GETs the other endpoint servers to do things. Without DoS mitigation somehow(?) this doesn't seem wise. There's even a guide to <a href="https://indieweb.org/webmention-implementation-guide">do it manually with curl</a> so I'm going to see if I can whip up a perl script to tail the logs and perform this function without the webserver being involved. But that's for a future post. For now I have to write something to automate converting my old format html format to h-entry tagged.</p>
+		<h2>Update: wrong again, webmentions suck.</h2>
+		<p>It seems like every blog post I've written this year has later turned out to be wrong. Indieweb is not useful, the webmentions aspect of it requires receiving x-www-form-urlencoded data. Why they chose this convoluted and complexity increasing way is beyond me. Embeding (or encoding) it in the URL string itself would've been infinitely easier for everyone with no downsides. But no, with x-www-form-urlencoded variables you need to actually be doing some dynamic scripting to handle it. If not actually some script listening for that location/endpoint then at least a series of complex nginx directives and modules to get x-www-form-urlencoded logged with all the rest of the request. This additional complexity makes running a static website that supports indieweb standards like a tail wagging the dog in terms of the webmentions receiver's relation to the static http site.</p>
+		<p>microformats2 h-entry markup for web content is still cool though. I'm going to keep doing that.</p>
+
+		<h2>Update 2: the workaround</h2>
+
+		<p>Time has passed and it's a new decade now (2020-01-08) but I kept banging away at the problem of form encoded POST data and how to get it into the logs. The trick turned out to be proxying nginx to itself so it'd think it might be passing to a cgi script and have the request body data left in. A big thanks to aaronpk of the freenode #indieweb-dev channel for putting up with my complaints and tipping me off about the nginx proxying to itself path.</p>
+		<pre># /etc/nginx/nginx.conf
+http{
+	log_format postdata $request_body;
+}
+# /etc/nginx/sites-enabled/default.conf
+	# use proxying to self to get the HTTP post variables.
+	# https://stackoverflow.com/questions/4939382/logging-post-data-from-request-body
+	location = /webmention {
+		client_max_body_size 10k;
+		if ($request_method = POST) {
+			access_log /var/log/nginx/postdata.log postdata;
+			proxy_pass $scheme://127.0.0.1/logsink;
+			break;
+		}   
+		return 200 $scheme://$host/serviceup.html;
+	}
+	location /logsink {
+		return 200;
+	}</pre>		
+
+		<form action="/webmention" method="POST">
+  		<p>[webmention/pingback] Did you respond to this post? What's the URL? <input type="text" name="source"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2019-12-11-3.html" type="hidden"></p>
+		</form>
+
+		</div>
+	</article>
+

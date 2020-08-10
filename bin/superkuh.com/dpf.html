@@ -1,0 +1,488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>superkuh.com: dense plasma focus</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+<body>
+<div id="center" class="column">
+<img style="float:right;margin:1em;" src="/library/Physics/Dense Plasma Focus/nanofocus.gif" />
+<h1>Dense Plasma Focus</h1>
+<h4><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></h4> 
+<h5>This page is a little more informal and free-form than most since it is just a copy of my notes.</h5>
+<p>This particular type of dense plasma focus is an electrical discharge between coaxial electrodes in weak vacuum (the dense part) of about 12 torr. The electrical current sheath in the plasma between the coaxial electrodes experiences the lorentz force (like a railgun) which accelerates the plasma towards the end of the device (inner electrode is anode, outer tube is cathode/ground). When the sheath reaches the end of the electrodes the lines of magnetic force undergo a pinch wherein the field is greatly concentrated in a small volume due to instabilities (<a href="http://www.youtube.com/watch?v=jVif4hUAJ8c">youtube video cgi example</a>). The combination of the electrical current flow (a kiloamp discharge) and the intense magnetic field gradient trapping (as well as heating) causes the plasma's constiuents' temperatures to rise. It turns out the <a href="/library/Physics/Dense%20Plasma%20Focus/Studies%20on%20the%20scalability%20and%20scaling%20laws%20for%20the%20plasma%20focus_%20similarities%20and%20differences%20in%20devices%20from%201%20MJ%20to%200.1%20J_%20Soto%20et%20al_%20PSST_%202010.pdf">scaling laws</a> for the maximum temperature possible make an <a href="http://superkuh.com/library/Physics/Dense%20Plasma%20Focus/Nanofocus_%20an%20ultra-miniature%20dense%20pinch%20plasma%20focus%20device%20with%20submillimetric%20anode%20operating%20at%200.1%20J_%20PSST_Nanofocus_L_Soto_et_al_2009.pdf">extremely low energy discharge (0.25J)</a> able to achieve the same plasma temperatures, and current sheath velocities, as very large megajoule discharges. The volume and mass of matter is much smaller of course. And in large machines of hundreds of thousands of kiloamperes the magnetic field <a href="http://www.lawrencevilleplasmaphysics.com/index.php?option=com_content&view=article&id=63&Itemid=81">is said to get high enough to create differences in temperatures between the light electrons and heavier ions</a>. These larger machines and the effects of their extremely high magnetic fields are being investigated for fusing predisposed isotopes of hydrogen. I want to make a tiny one to use with non-fusing noble gas just for fun.</p>
+<h2>Two impractical sketches of miniature DPF</h2>
+<img style="float:left;margin-right:1em;" src="/dpf/web/thumbs/thumb_1.jpg" />
+<p>In the first <a href="/small-dense-plasma-focus.jpg" />set of sketches</a> the surface area of plastic exposed in this structure would make outgassing difficult to handle and the glass jar would be inappropriate for situations involving electron beams. Instead a closed, thick, silver soldered and epoxied galvanized iron tube of some thickness will be used. This design is okay for testing and debugging of electronics at low voltages and high pressures.</p>
+<p>In the <a href="/dpf/web/">second set of sketches</a> the design would probably require different layout for the path of bus bars and bottom ground. I think it would be too much inductance in the 4 paths and the joints might be of too high resistance. The effect of the bottom  ground plate of aluminum might impact the discharge speed of the central brass disc capacitor adversely due to induction.</p>
+
+
+<H3>Unsorted notes, contains errors</H3>
+<p>There are two NF DPF devices by Soto. Low pressure big anode, high pressure small anode. The later is better.
+0.00025 J, 0.021 cm radius anode (0.042 cm diameter (0.42mm)), 6kA peak current (?undamped?), 12 tor (16 mbar), 70(kA mbar^−1/2 cm^−1), Energy/volume anode*pressure 16.9*10^7 (J / m^3 mbar)</p> 
+
+<p>0.42mm diameter copper wire anode</p> 
+
+<p class="quote">In addition, evidence of neutron emission has been observed in the ultraminiature device Nanofocus operating at 0.1 J of stored energy and 20 Hz of repetition rate. However, the reproducibility of this miniature device is low and several technological subjects have to be previously solved in order to produce neutrons for periods greater than minutes. Due to the low reproducibility of the Nanofocus and the fact that the device has not yet been optimized, the data of its neutron yield were not included in the plot. The same method was used to characterize the x-ray emission from the Nanofocus device operating at 0.1 J. Radiographs of an array of aluminum filters of 30, 45 and 60 μm on a HP5 Ilford film were obtained by integrating 1200 shots on the film. In this case, an effective mean energy of 4.3 ± 0.3 keV was obtained</p> 
+
+<p>GOOD. No neutrons wanted; can't shield them. 5kV xrays? Too much, if any, probably. But if there are no holes in the devices in thick pipe then nothing would get out. But computer monitors can accelerate up to 20keV so their internal brightness is more. Cathode ray tubes aren't regulated. Still need to know exact laws. Can DPF be done in higher pressures with altered geometry to get practice? No xrays, just lots of ionization. Slows the pulse requirements, can have more external inductance and still match impedance of pinch.</p> 
+
+<p>Run the dense plasma focus at the temperature of the chromosphere with the same constituent gases. Compare the vacuum spectra by diffraction grating, or even just two pinholes. The precision of the distance between them wouldn't have to be perfect if the relative fringe lengths could be fit. The magnetic field intensity would be much higher than the sun, and the plasma density... higher? Have to compare the beta of dense plasma focus and solar chromosphere. Doesn't need to be an extremely high temperature, no fusion needed. Just a bright light like the sun. There should be minimal radiation. But some soft xray? So, look up the regulations. Consult the university before anything. </p>
+
+<p>a silicon pin diode with removed glass window and aluminium filter should detect the soft x-rays.</p> 
+
+<p>NON-Porous High-Alumina Ceramic Tube .156" OD, .094" ID, 12" Length</p> 
+
+<p>16 ns to get to peak current of 100 amps. Slightly underdamped. full ~30-40 ns full width. 5 nanofarad cap, inductance of 5 nanoHenry.</p> 
+
+<p>Cu anode radius partially covered by an insulator <br />
+It has been shown that the size of the plasma pinch column scales linearly with the anode radius a.<br /> 
+The pinch radius is ∼ 0.12a, and the pinch length is ∼ 0.8a<br /> 
+the bright spots have typical dimensions lower than 0.1 times the pinch diameter, i.e., less than ∼ 0.024a.<br /> 
+the electron beam diameter is on the order of the pinch diameter, i.e., 0.24a;<br /> 
+source size of soft X-rays is on the order of ∼ 0.024a or less, and for the hard X-rays, it is on the order of ∼ 0.24a.<br /> 
+anode radius a scales with the stored energy of the device E as a^3 α E  (anode radius cubed proportional to energy)<br /> 
+instantiation: 4.9 nF copper disk, 4.8 nH, ∼5–10 kV, ∼5–10 kA, 60–250 mJ, and 16-ns time to peak current</p> 
+
+<p>(7.73*10^-5)*(peak current in kA)^4.82</p> 
+
+<p>Submillimetric anode radii (0.8 and 0.21 mm) covered by coaxial insulators were used for experiments in hydrogen.
+discharges operating at 3 mbar and ∼100 mJ.</p> 
+
+<p>0.022 cm radius * 2 = 0.044 cm diameter, 0.42 to 0.44 mm diameter.</p>
+
+<p>1 cm long insulator column on 1.6 mm Coper tube covered with alumina. 0.022 cm radius (0.044 cm diameter) anode column. 0.04 cm (0.4mm) long anode projection above insulator column. Note that the anode projection from insulator is approximately equal to anode diameter.</p>
+
+<p>In order to prevent spark-over through the coaxial hole in the dielectric a very small alumina covering is required. Tubes are too big and lose. An alumina coating on the copper wire is required. Alumina potting compounds which cure at conventional oven temperatures are available for <a href="http://www.cast-coat.com/evaluationkits.html">a moderate price</a> Cast-Coat in.'s CC3-343 mix seems well suited.
+
+<!--<pre>http://www.mcmaster.com/#alumina/=gaqy74 , search 
+0.063"	0.031"	0.016"	8746K451	$23.04 
+NON-Porous High-Alumina Ceramic Tube .063" (1.6mm) OD, .031" (0.78mm) ID, 12" Length
+Or instead of copper in a loose fit alumina tube, melt a capilliary glass tube around a platinum or Dumet metal wire.
+
+Brass Washers
+	ID	OD	Thickness
+No. 1	0.08"	5/32"	0.01"-0.02"	25	92916A300	8.25
+	2mm	4mm	0.25mm-0.5mm
+
+0.172"	7/16"	0.02"-0.05"	100	92916A340	6.07 
+4.4mm	11.1mm	0.5-1mm
+
+Electrically Conductive Copper Washers	
+	ID	OD	Thickness
+No. 10	0.2"	1/2"	0.03"-0.05"	50	93744A120	$7.75
+	5mm	12.7mm	0.762mm </pre>
+-->
+
+<p>25 cm × 25 cm × 5 cm size.<br />
+pair of 200 mm diameter brass capacitor plates (http://www.onlinemetals.com/merchant.cfm?pid=20311&step=4&showunits=inches&id=1118&top_cat=87 )<br />
+(online metals: 12"x12"x0.0625" or 305mm*305mm*1.6mm ) <br />
+separated by 0.32mm and 4 layers of 80 micron (.003 inch) PVDF (Polyvinylidene Fluoride) film available <a href="http://www.mcmaster.com/#pvdf-film/=u8zbv8">at McMastercar</a>.</p>
+
+<p>Alternately cshyde sells for about the same price.</p>
+
+<p>$14 for 1ft*2ft of 76.2 micrometers thick PVDF film (76.2*4 layers = 305 micrometers)<br />
+<a href="http://catalog.cshyde.com/item/films/pvdf-kynar-film-polyvinylidene-fluoride/pvdf-32-5f-24?">http://catalog.cshyde.com/item/films/pvdf-kynar-film-polyvinylidene-fluoride/pvdf-32-5f-24?</a></p>
+
+<p>$45 for 1ft*2ft of 381 micrometers thick PVDF film (381*1 = 381 micrometers)<br />
+<a href="http://catalog.cshyde.com/item/films/pvdf-kynar-film-polyvinylidene-fluoride/pvdf-32-15f-24?">http://catalog.cshyde.com/item/films/pvdf-kynar-film-polyvinylidene-fluoride/pvdf-32-15f-24?</a></p>
+
+<!--<p>What is the dielectric strength of Polyvinylidene fluoride? I understand it will vary with film manufacturer but the 1970s patents say 1000kV/mm. Other sources from data sheets say only ~0.3 kV/mm. That's quite a difference.</p>-->
+
+<p>A parallel plate capacitor of 20cm diameter has a coaxial hole for an alumina coated wire of 0.5mm diameter to bring a wire from the bottom plate 1cm up above the top plate. As a dielectric there are 4 layers of 80 (76.4) micron PVDF film, this too with a coaxial hole for the alumina coated wire.</p>
+
+<!--<p>Charged to ~10kV there'll be ~0.3mm of distance between the plates, so 30kv/mm. But PVDF film can only hold off 1.6kV/mm. It should require 6.25 mm of PVDF film. At 80 microns each thats... not enough with the pessimistic values.</p>-->
+
+
+
+<p>Bell jar: 15 cm OD, 14 cm ID, 1cm thickness at base. 18 cm tall</p> 
+
+<p>4cm diameter pipe.</p> 
+
+<p>Put the vacuum O-ring seals in between the plastic cover plates and and the 5nF capacitor plates! </p> 
+
+<p>What's really important, beyond the PVDF dielectric strength issue, is what are the specifications of the spark cap and the resistance of the chamber discharges. Are rounded balls used? What distance are they apart?</p> 
+
+<p class="quote">For high pressure 10^-5 mbar: The most serious hazard in the early applications of vacuum insulation was the presence of excessive residual gas, which manifested itself either directly as a relatively high ambient pressure in the gap, probably little better than --10^-6-10^-5 mbar, or indirectly as transient pressure bursts caused by the thermal desorption of gas from the electrodes and vacuum chamber walls by localised electron or ion bombardment processes.</p>
+
+<p>Surround dense plasma focus pinch with RETGEM. 6 panels, strip anode readout for each. What's the best arrangement of strip orientations for each side to enable imaging in high resolution? A given set of opposing parallel sides of the box should have their anode readout strips perpendicular to each other. So all three sets of two opposing panels each contain members that are rotated 90 degrees to each other.</p>
+
+<p>12 torr (16 mbar) pressure<br /> 
+0.21 Joules =~ 0.5*(5 nF)(9 kV)^2<br /> 
+4.9nF @ 9kV, 1.2Ohm, 4.8nH = 19.2 nanosecond pulse peak of 4.5kA @ 8ns?</p>
+
+<p>charging resistance 100 M<br /> 
+primary capacitor 28 nF</p>
+
+<p>A pair of 200 mm diameter brass electrodes act as a capacitor to drive the discharge. A 1.6 mm Cooper tube covered with alumina is attached to the center of the anode plate and passes through a small hole in the cathode center. Four dielectric PVDF films, 80 μm thick, were placed between both plates. The measured capacity is 4.9 nF. The total dimensions of the device are 20 cm×20 cm×5 cm. A primary capacitor of 28 nF charges the driven capacitor by means of a pulse.</p>
+
+<p>http://www.jarrodkinsey.org/co2laser/co2laser.html - use construction techniques from here for making the central capacitor/insulator/anode vaccum tight interface (technique orginally suggested in the CO2 laser plans from Information Unlimited).</p>
+ 
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/dpf.html" type="hidden"></p>
+		</form>
+
+
+
+</div>
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,7 @@
+test.
+<pre>
+	location ~ ^/folded/(.*)?$ { 
+		allow all; 
+		location ~ ^/folded/at/(.*)?$ { deny all; }
+	}
+</pre>

@@ -1,0 +1,638 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>superkuh.com: wolf-xmr-miner on ubuntu 14.04 with AMD</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+<body>
+<div id="center" class="column">
+
+<!-- Oh, hey. You're reading the html on the monero page. Not many people do that anymore. Most of time webpages are entirely
+	generated on the fly with 5 MB of javascript libraries and 5 MB more of tracking code, so why bother looking. Right?
+
+	But you did. Thanks. Unfortunately there's nothing interesting here. I bet my html isn't even really XHTML 1.0 compliant,
+	honestly. Like, I put closing / on most tags. Even <hr />. I'm not sure that's right thing to do but at this point browsers
+	aren't going to do what I say anyway.
+
+	You're probably an interesting person. If you want you can leave a comment on any URL on my site by appending /@say/ to the end.
+	like, 
+	
+	http://youknowtherealdomainnameitssuperkuh.com/monero.html/@say/Hi superkuh. I found your message. This is generic comment.
+
+	Anyway, you're probably bored by now.
+-->
+
+<div style="float:right;margin-right:1em"><h5>Last updated: Aug, 31 2016</h5></div>
+<!--<H1>Visitors from 2017 and on: this is so out of date. Why are you trying to use wolf-xmr-miner?</H1>
+<hr />
+-->
+<h1>wolf-xmr-miner Monero mining compilation and config on Ubuntu 14.04 / Single Sapphire AMD Radeon 7950</h1>
+<h5>Problems you'll encounter and their various fixes.</h5>
+
+
+
+<p>This page is a semi-organized collection of my notes on setting up background Monero miner on an old'ish desktop computer. By background I mean I can have it running and still watch 1080p video fullscreen with dual monitors and have no desktop lag. This is <em>not</em> about achieving absolutely max performance for a dedicated GPU miner.</p>
+
+<p>More specifically this page is about the details of compiling and running the AMD GPU miner <a href="https://github.com/wolf9466/wolf-xmr-miner">wolf-xmr-miner</a>. This page assumes you have it's source, you're familiar with linux compiling basics, and OpenCl 2.0 already installed and working.</p>
+
+<p>If you're reading this you've probably already ran 'make' and received one or more error messages which you then searched for. Here are your answers all in one place with all the keywords to get you here.</p>
+
+<ul>
+<li><a href="#opencl1">OpenCl isn't found while compiling</a></li>
+<li><a href="#jansson">the jansson library</a></li>
+<li><a href="#atomic">atomic operations unsupported by older gcc versions</a></li>
+<li><a href="#opencl2">OpenCl isn't found while linking</a></li>
+<li><a href="#config">config file settings</a></li>
+<li><a href="#wolf-skein">AMD wolf-skein.cl modifications</a></li>
+</ul>
+
+<hr />
+<a name="opencl1">
+<h5>OpenCl isn't found while compiling</h5>
+<pre>gpu.c:6:19: fatal error: CL/cl.h: No such file or directory</pre> 
+<p>Find out where you put your OpenCl libs and edit the makefile to point to them manually. If you don't remember you can do a "locate opencl" and look around a bit. I had them in /opt/AMDAPP/lib/x86_64/ ... so, open 'Makefile' and see where it differs from my example below. Substitute your paths for mine at the changes.</p>
+
+<!--
+Find out where you put your OpenCl libs and edit the makefile to point to them manually. If you don't remember you can do a "locate opencl" and look around a bit. I had them in /opt/AMDAPP/lib/x86_64/ ... so, open 'Makefile' and substitute your paths for mine below,
+-->
+
+<pre>CC		= gcc
+LD		= gcc
+OPT = -O0 -ggdb3
+CFLAGS 	= -I/opt/AMDAPP/include -L/opt/AMDAPP/lib/x86_64/ -D_POSIX_SOURCE -D_GNU_SOURCE $(OPT) -pthread -c -std=c11 
+LDFLAGS	= -pthread $(OPT)
+LIBS	= -ljansson -lOpenCL -ldl -L/opt/AMDAPP/lib/x86_64/
+all:
+	$(CC) $(CFLAGS) crypto/aesb.c -o crypto/aesb.o
+	$(CC) $(CFLAGS) crypto/aesb-x86-impl.c -o crypto/aesb-x86-impl.o
+	$(CC) $(CFLAGS) crypto/c_blake256.c -o crypto/c_blake256.o
+	$(CC) $(CFLAGS) crypto/c_groestl.c -o crypto/c_groestl.o
+	$(CC) $(CFLAGS) crypto/c_keccak.c -o crypto/c_keccak.o
+	$(CC) $(CFLAGS) crypto/c_jh.c -o crypto/c_jh.o
+	$(CC) $(CFLAGS) crypto/c_skein.c -o crypto/c_skein.o
+	$(CC) $(CFLAGS) crypto/oaes_lib.c -o crypto/oaes_lib.o
+	$(CC) $(CFLAGS) -maes cryptonight.c -o cryptonight.o
+	$(CC) $(CFLAGS) log.c -o log.o
+	$(CC) $(CFLAGS) net.c -o net.o
+	$(CC) $(CFLAGS) minerutils.c -o minerutils.o
+	$(CC) $(CFLAGS) gpu.c -o gpu.o
+	$(CC) $(CFLAGS) main.c -o main.o
+	$(LD) $(LDFLAGS) crypto/aesb.o crypto/aesb-x86-impl.o crypto/c_blake256.o crypto/c_groestl.o crypto/c_keccak.o crypto/c_jh.o crypto/c_skein.o crypto/oaes_lib.o cryptonight.o log.o net.o minerutils.o gpu.o main.o $(LIBS) -o miner
+
+clean:
+	rm -f *.o crypto/*.o miner</pre>
+
+<hr />
+<a name="jansson">
+<h5>the jansson library</h5>
+<pre>miner.h:5:21: fatal error: jansson.h: No such file or directory</pre> 
+<p>Install lib jannson and dev sources. Pretty simple.</p>
+<pre>sudo apt-get install libjansson-dev</pre>
+
+<hr />
+<a name="atomic">
+<h5>atomic operations unsupported by older gcc versions</h5>
+<pre>main.c:9:23: fatal error: stdatomic.h: No such file or directory</pre> 
+<p>Oh no. gcc 4.8 and below don't have atomic operators. I guess every minor gcc revision breaks backwards compatibility now. The work around is to use a portable version of stdatomic.h extracted from the FreeBSD libc, for Clang 3.1+ and GCC 4.7+. Just put stdatomic.h in the wolf-xmr-miner directory.</p>
+<pre><a href="https://gist.github.com/nhatminhle/5181506">stdatomic.h</a> (https://gist.github.com/nhatminhle/5181506) (<a href="/stdatomic.h">local backup copy</a>)</pre> 
+<p>Now we have to edit the files which use stdatomic.h to point to our standalone version (fuck gcc 4.9, etc, etc). So open up main.c, comment out the existing include and put in yours like this,</p>
+<pre>#include &lt;stdio.h>
+#include &lt;stdint.h>
+#include &lt;string.h>
+#include &lt;signal.h>
+#include &lt;pthread.h>
+#include &lt;stdbool.h>
+#include &lt;jansson.h>
+//#include &lt;stdatomic.h>
+#include &lt;/home/superkuh/app_installs/monero/wolfxmrminer/wolf-xmr-miner/stdatomic.h>
+#include &lt;cpuid.h></pre>
+
+<hr />
+<a name="opencl2">
+<h5>OpenCl isn't found while linking</h5>
+<pre>gcc -pthread -O0 -ggdb3 crypto/aesb.o crypto/aesb-x86-impl.o crypto/c_blake256.o crypto/c_groestl.o crypto/c_keccak.o crypto/c_jh.o crypto/c_skein.o crypto/oaes_lib.o cryptonight.o log.o net.o minerutils.o gpu.o main.o -ljansson -lOpenCL -ldl -L/opt/AMDAPP/lib/ -o miner
+/usr/bin/ld: cannot find -lOpenCL
+collect2: error: ld returned 1 exit status
+</pre> 
+<p>Make sure to set your environmental variables to your OpenCl 2.0 lib directories so ldd can find that shit. But that's not really how to fix this one. It should already be fixed if you followed the Makefile edits at the top of this page, ie: -L/opt/AMDAPP/lib/x86_64/</p>
+<pre>LIBRARY_PATH=:/opt/AMDAPP/lib/x86_64/
+LD_LIBRARY_PATH=:/opt/AMDAPP/lib/x86_64/
+</pre> 
+<!--
+<p>It also might be useful, just in general, to set AMDAPPSDKROOT to where yours is. I add it to my .bashrc like,</p>
+<pre>export LD_LIBRARY_PATH=/usr/lib/fglrx:.:/opt/AMDAPP/lib/x86_64/</pre>
+-->
+<hr />
+<h5>config file settings</h5>
+<p>So now it's compiled. Lets try to run it.</p>
+<a name="config">
+<pre>./miner
+[08:34:29] Usage: ./miner &lt;config file></pre> 
+<p>There's an example config file called xmr.conf. It'd be like, ./miner xmr.conf. Of course this will never just work. You'll probably get one of these errors below.</p>
+<pre>[08:56:56] Setting up GPU(s).
+[08:56:56] Error -61 when calling clCreateBuffer to create hash scratchpads buffer.
+[08:56:56] Successfully connected to pool's stratum.
+[08:56:57] New job at diff 5000
+Segmentation fault (core dumped)</pre>
+<p>The clCreateBuffer error is because the "rawintensity" value in the .conf file is too high. This is likely to happen if you're also using the GPU to display your desktop on one or more monitors. You can try turning this down by trial and error from the example config. The example below works well with a 7950 running two 1080p desktops.</p>
+<p>Bump threads up to 2, turn rawintensity down to 384, and worksize down to 8. It'll get about 400 H/s. This example config also includes CPU mining,</p>
+<pre>{
+	"Algorithms":
+	[
+		{
+			"name": "CryptoNight",
+			"devices":
+			[
+				{
+					"index": 0,
+					"corefreq": 500,
+					"memfreq": 1200,
+					"fanspeed": 65,
+					"powertune": 20,
+					"threads": 2,
+					"rawintensity": 384,
+					"worksize": 8
+				},
+				{
+					"index": -1,
+					"threads": 2,
+					"rawintensity": 16,
+					"worksize": 16
+				}
+			],
+			"pools":
+			[
+				{
+					"url": "stratum+tcp://monerohash.com:3333",
+					"user": "4yourmoneroaddressss444444444444444444444444444444444444444444444444444444444444444444444444444",
+					"pass": "x"
+				}
+			]
+		}
+	]
+}</pre>
+<hr />
+
+<a name="wolf-skein">
+<h5>AMD wolf-skein.cl modifications</h5>
+<p>Unfortunately it's still not going to work. Instead you're going to get an error like,</p>
+<pre>./miner xmr-superkuh.conf
+[09:41:20] Setting up GPU(s).
+[09:41:20] Error -11 when calling clBuildProgram.
+[09:41:20] Build Log:
+"./wolf-skein.cl", line 33: error: function "amd_bitalign" declared implicitly
+  	if(y &lt; 32) return(as_ulong(amd_bitalign(x, x.s10, 32 - y)));
+  	                           ^
+
+"./wolf-skein.cl", line 33: error: bad argument type to opencl as_* function:
+          expected src and dst have the same size
+  	if(y &lt; 32) return(as_ulong(amd_bitalign(x, x.s10, 32 - y)));
+  	                           ^
+
+"./wolf-skein.cl", line 34: error: function "amd_bitalign" declared implicitly
+  	else return(as_ulong(amd_bitalign(x.s10, x, 32 - (y - 32))));
+  	              &lt;       ^
+
+"./wolf-skein.cl", line 34: error: bad argument type to opencl as_* function:
+          expected src and dst have the same size
+  	else return(as_ulong(amd_bitalign(x.s10, x, 32 - (y - 32))));
+  	                     ^
+
+4 errors detected in the compilation of "/tmp/OCLCZlPgq.cl".
+
+Frontend phase failed compilation.
+
+[09:41:20] Successfully connected to pool's stratum.
+[09:41:21] New job at diff 5000
+Segmentation fault (core dumped)
+</pre>
+
+<p>Figuring out this one took a lot of patience. Eventually I found claudioandre's post in a github thread about johntheripper, <a href="https://github.com/magnumripper/JohnTheRipper/issues/1834">https://github.com/magnumripper/JohnTheRipper/issues/1834</a>, "Just for the record: the solution is:
+#pragma OPENCL EXTENSION cl_amd_media_ops : enable". The thread's OpenCl error sounded a lot like my error. My problem was in wolf-skein.cl so I figured I'd apply his solution in there. Basically just add in,<p>
+
+<pre>#pragma OPENCL EXTENSION cl_amd_media_ops : enable</pre>
+
+<p>near the top of wolf-skein.cl so it looks like,</p>
+
+<pre>#ifndef WOLF_SKEIN_CL
+#define WOLF_SKEIN_CL
+
+#pragma OPENCL EXTENSION cl_amd_media_ops : enable
+
+// Vectorized Skein implementation macros and functions by Wolf
+
+#define SKEIN_KS_PARITY	0x1BD11BDAA9FC1A22</pre>
+
+<p>Once done it will finally run and the world is saved and everyone is happy, etc, etc. I assume amd_bitalign() is provided as a part of cl_amd_media_ops which isn't "enabled" by default for some reason.</p>
+
+<pre>./miner xmr-superkuh.conf
+[10:03:19] Setting up GPU(s).
+[10:03:31] Successfully connected to pool's stratum.
+[10:03:31] New job at diff 5000
+[10:03:38] Thread 1, GPU ID 0, GPU Type: Tahiti: 198.58H/s
+[10:03:38] Thread 0, GPU ID 0, GPU Type: Tahiti: 191.11H/s
+[10:03:42] Share accepted: 1/1 (100.00%)
+...
+[11:11:06] New job at diff 55850.6
+[11:11:06] Thread 2, (CPU): 38.96H/s
+[11:11:06] Thread 3, (CPU): 39.21H/s
+...
+[11:12:06] Thread 0, GPU ID 0, GPU Type: Tahiti: 200.72H/s
+[11:12:07] Thread 1, GPU ID 0, GPU Type: Tahiti: 191.82H/s
+[11:12:12] Thread 0, GPU ID 0, GPU Type: Tahiti: 198.29H/s
+[11:12:13] Thread 1, GPU ID 0, GPU Type: Tahiti: 193.27H/s
+[11:12:18] Thread 0, GPU ID 0, GPU Type: Tahiti: 195.93H/s
+[11:12:19] Thread 1, GPU ID 0, GPU Type: Tahiti: 193.26H/s
+[11:12:23] Share accepted: 34/34 (100.00%)
+[11:12:23] Total Hashrate: 467.37H/s
+
+</pre>
+
+<p>Here's the performance with two 1080p videos playing in vlc on 2 monitors at the same time as mining,</p>
+<pre>[06:48:15] Thread 1, GPU ID 0, GPU Type: Tahiti: 194.36H/s
+[06:48:20] Thread 0, GPU ID 0, GPU Type: Tahiti: 193.59H/s
+[06:48:21] Thread 1, GPU ID 0, GPU Type: Tahiti: 193.54H/s
+[06:48:25] Share accepted: 494/494 (100.00%)
+[06:48:25] Total Hashrate: 452.16H/s</pre>
+
+<hr />
+
+<p>Now you might want to care about GPU temp, fanspeed, etc.</p>
+<pre># show core temp
+aticonfig --od-gettemperature
+# shows fan speed
+aticonfig --pplib-cmd "get fanspeed 0"
+# sets fan speed to 100%
+aticonfig --pplib-cmd "set fanspeed 0 100"
+# show current clockspeeds
+aticonfig --odgc
+# overclock core to 900Mhz, memory at 1200Mhz
+aticonfig --odsc=900,1200</pre>
+
+<hr />
+
+<p>To leave <a href="/hello/?posted">a comment</a> just append "/@say/Whatever you have to say" to the end of the URL.</p>
+<p style="font-size: 10px">If you found this useful and are feeling generous donations can be sent to,</p>
+<pre style="font-size: 8px">XMR: 45jEp31mt4JZaf7UxhZruD38miLv8ZvAc9zbjfW4BwTzSS1CL38Xfo9TEhD78u5Wfudt13h7m3F47SEKkVJ57J8fEzdaTGb
+BTC: 18bctM9KQG3e5hHP8r1w5NQPd8CCByiNAf</pre>
+
+</div>
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+</body>
+</html>
+

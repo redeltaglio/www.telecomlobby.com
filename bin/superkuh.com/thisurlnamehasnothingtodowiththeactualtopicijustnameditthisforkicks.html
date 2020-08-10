@@ -1,0 +1,561 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Broadband/Wideband Antenna</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+
+
+<!-- Hi. Anything I've commented out is probably new and uncomfirmed, outdated, or turned out to be wrong. -->
+<body>
+
+<div id="center" class="column">
+
+<div style="float:right;margin-left:1em;"><h5>Last updated: 2020-02-26 - Added new/better TASH reference (<a href="http://erewhon.superkuh.com/library/Electromagnetics/A%20monopole%20with%20a%20twist%20revisited_%20TASH_%20T%20Warnagiris_%202005.pdf">2</a>).</h5></div>
+
+<!-- <h5>Last updated: 2017-04-14 - Seperated balun and impedance transformer sections</h5> -->
+
+<div>
+
+<h2>Broadband/Wideband Antenna</h2>
+
+<a href="http://erewhon.superkuh.com/discone-antenna.jpg"><img src="http://erewhon.superkuh.com/discone-antenna_sm.jpg"></a><a href="http://erewhon.superkuh.com/spiral-antenna.jpg"><img src="http://erewhon.superkuh.com/spiral-antenna_sm.jpg"></a><!--<a href="http://erewhon.superkuh.com/2-arm-conical-spiral-antenna_crop.jpg"><img src="http://erewhon.superkuh.com/2-arm-conical-spiral-antenna_crop_sm.jpg"></a><a href="http://erewhon.superkuh.com/2-arm-conical-spiral-antenna_crop.jpg"><img src="http://erewhon.superkuh.com/2-arm-conical-spiral-antenna_crop_sm.jpg"></a>--><a href="http://erewhon.superkuh.com/conical-spiral-actual-use.jpg"><img src="http://erewhon.superkuh.com/conical-spiral-actual-use_sm2.jpg"></a><a href="http://erewhon.superkuh.com/planar-disk-antenna.jpg"><img src="http://erewhon.superkuh.com/planar-disk-antenna_sm.jpg"></a><a href="http://erewhon.superkuh.com/Split-Ring-Resonator_Notch-Filter_Vivaldi-Antenna.jpg"><img src="http://erewhon.superkuh.com/Split-Ring-Resonator_Notch-Filter_Vivaldi-Antenna_sm.jpg"></a><br />
+<a href="/vivaldi-tapered-slot-antenna-and-figures.jpg"><img src="/small-vivaldi_sm.jpg" /></a><a href="http://erewhon.superkuh.com/milk-bucket-1626MHz-helicone.jpg"><img src="http://erewhon.superkuh.com/antennas-helicone.jpg" /></a><a href="http://erewhon.superkuh.com/weatherized-horn.jpg"><img src="http://erewhon.superkuh.com/weatherized-horn_sm.jpg"></a><a href="/k-antenna-horn.jpg"><img src="/k-antenna-horn_sm.jpg" /></a><a href="/TASH-antenna-test.jpg"><img src="/TASH-antenna-test_sm.jpg" /></a><a href="/Zinc-Prototype-K-antenna-TEM-Horn-S11-Smith-Plots.jpg"><img src="k-antenna-zinc-prototype_sm.jpg"></a><a href="/bicone.html"><img src="/bicone-06_sm.jpg"></a>
+
+
+
+
+
+<p>I think I like making antenna even more than using antenna. There's endless depth to it and it doesn't really require a ton of math or coding. It is like a free-form puzzle game: how do you redirect the largest volume of electromagnetic fields with the smallest volume structure over the largest range of wave sizes. For antenna sizes larger than 1 wavelength the answer is almost always one or more focusing reflector surfaces. But when it is under one wavelength things get interesting.</p>
+
+<!--
+<p>A resonant antenna has eletrical currents bouncing back and forth between elements in the antenna. It is good for one narrow frequency band. The RF currents face a complex impedance made of reactance and resistance. At resonance the reactance goes to zero so the impedance is purely resistive. If the antenna element is too short or too long it becomes reactive. So there will be a frequency somewhere that has a purely resistive impedance and that is the resonant frequency.</p>
+
+<p>Broadband antenna have some way of presenting a purely resistive impedance over large ranges relative to the center frequency. Many, but not all, broaband antenna utilize a traveling wave mechanism to achieve this. The RF currents do not bounce back and forth, or resonate, but instead only travel in one direction until the physical dimensions of the antenna are appropriate for radiation/reception.</p>
+-->
+
+<!--<p>Most broadband antenna use smoothly tapered sizes of conducting surfaces to make the transition of the impedance of free space's 377 Ohm to something better suited to modern electronics like 50 or 75 Ohm. The antenna elements themselves are designed so that the shape's capacitive (C) and reactive (R) contributions to the impedance equal the desired 50 Ohm. The problem with that is the shape's capacitive and reactive impedances vary at different rates. So they only cancel each other out to the right degree over a limited frequency range.</p>
+-->
+
+<p>A broadband antenna is one that has at least -15 dB return loss continuously over a range at least ~40% (1.4:1) of the center frequency. Often technical papers relax this to -10 dB return loss (~2:1 SWR) or even -5 dB return loss (~3:1). They're very convient for radio monitoring but come with their own set of challenges in both implementation and performance. The above show some of the broadband antenna I've made.</p>
+
+<!--<p>Terminating with a resistor is cheating and stupid.</p>-->
+
+
+<h3>Challenges and solutions</h3>
+
+<h5>Radio Frequency Interference</h5>
+<p>By design broadband antenna pick up everything. This includes powerful radio frequency interference (RFI) that overloads your frontend amplifier. This can be in the form of quieting due to amplifier compression and/or as images at harmonics of the powerful signal due to the mixer filters not attenuating enough. Because a broadband antenna is pretty useless with a bandpass generally you need to use <a href="/radio-filter-simulations.html">bandstop filters with high upper passbands</a> to mitigate this problem. So sometimes your filter determines usable bandwidth regardless of antenna impedance bandwidth.</p>
+
+<h5>Pattern Bandwidth</h5>
+<p>To avoid using a restrictive filter you can use an antenna that has high gain/directionality. But then the pattern bandwidth needs to be even larger than the impedance bandwidth otherwise the antenna will have sidebands outside of the design range that pick up strong interferers. The quality of the pattern bandwidth often depends on balancing contributions from both electric *and* magnetic dipoles in the same design. In horns this is called a hybrid mode feed. In the K-antenna TEM horn a  literal magnetic loop is embedded in the structure to mix with horn surface arms.</p>
+
+<!--
+<h5>Balun Bandwidth</h5>
+<p>A lot of wideband/broadband antenna and their feed structures have weird impedances that require a balun to match to available coaxial cable and receivers. <a href="/balun-bandwidths.png">Often times</a> these baluns only work over a fraction of the bandwidth stated for the antenna or feed itself. The infinite balun of a coaxial spiral or conical spiral is the only simple large bandwidth balun but it is physically long leading to resistance loses. K-antenna and other TEM horns can use mechanically complex Klopfenstein (1/2 wavelength long) or "tulip" (1/4 wavelength long) tapers of the outer conductor in a coaxial cable to a parallel plate configuration. Other times exponential parallel plate to stripline transitions are.</p>
+-->
+<!-- 4-Square, 4-Point, and cloverleaf crossed dipoles can have excellent pattern bandwidth but their complex feeds require multiple stepped impedance transmission lines made using microstrips on FR4. Any-->
+
+<!--
+<p>Besides the two mentioned above the number of broadband balun types could fill it's own page. So I won't start.</p>
+-->
+
+<h5>If Impedance Transformers are required...</h5>
+<p>A lot of wideband/broadband antenna and their feed structures have weird impedances that require some means of smoothly changing the line impedance to prevent reflections when connecting to common coaxial cable and receivers. In many cases these impedance transformers only work for a reduced, and sometimes fairly narrow, frequency range (ie, 1/4 wave long tapered impedance sections).</p>
+
+<p>Tapered helical antennas tend to have an impedance of about 100 Ohm. But there's a trick to feeding it that can sometimes be generalized to other antenna types. By feeding both ends of the monofilar helix, one at the normal point and one at the tip, two 50 ohm feeds of different frequency and opposite circular polarization can be combined for a 50 ohm output. Multiple feed antenna types like the "eleven antenna" or spirals with more than two arms use multiple coaxial cables as well. But this just shifts the broadband requirement to the 180 hybrid mixer or balun used to combine them.</p>
+
+<h5>Balun Bandwidth</h5>
+
+<!-- <p class="quote">One of the most challenging
+design problems for wideband arrays is the design of a practical feed that does not
+deteriorate the natural wideband response of the array. Most wideband arrays have
+radiating elements that use balanced feeds, meaning that the feed point consists of
+two symmetrical nodes that are fed with a differential signal. This is in contrast to
+an unbalanced feed, where one node is connected to the signal line, and the other
+node is grounded. A simple example is a dipole, which has a balanced feed, versus a
+monopole which has an unbalanced feed.</p>
+-->
+
+<p>Usually your transmission line is an unbalanced line (ie, coaxial cable) but the antenna often balanced. In order to prevent currents on the shield of the coax from interacting with the antenna a balun is required. <a href="/balun-bandwidths.png">Often times</a> these baluns only work over a fraction of the bandwidth stated for the antenna or feed itself. The infinite balun of a coaxial spiral or conical spiral is the only simple large bandwidth balun but it is specific to using coax as the antenna element(s) and the length leads to resistance loses. K-antenna and other TEM horns can use mechanically complex Klopfenstein (1/2 wavelength long) or "tulip" (1/4 wavelength long) tapers of the outer conductor in a coaxial cable to a parallel plate configuration. Other times exponential parallel plate to stripline transitions are used. <!-- 4-Square, 4-Point, and cloverleaf crossed dipoles can have excellent pattern bandwidth but their complex feeds require multiple stepped impedance transmission lines made using microstrips on FR4. Any--></p>
+
+
+<!--
+<h5>Polarization Bandwidth</h5>
+<p>0. Angle of incoming wave vs. polarization, ie. good polarization @ broadside/perpendicular but increasingly bad at lower angles. 1. cross polarization bandwidth 2. do you care about cross polarization, or is it multi-mode and better (tx/rx seperation) 3.</p>
+-->
+
+<h5>Dispersion</h5>
+<p>A lot of wide bandwidth antenna have the conductive
+ elements that scale from the small to the large. Different parts of the antenna are used in reception of different frequencies. Usually the feed is near the small end and so the high frequency component of an RF impulse is received first by a small time. This smearing of the different frequency components out over time is called dispersion. Some antenna like planar/conical spirals, log periodic dipole arrays are particularly bad about this. They are not optimal for UWB pulse modes. Antenna that have bad dispersion generally have a variable phase center with respect to frequency and have to be moved if used as reflector feeds. <!--Talk about group delay. Mention low dispersion tapered conical monopole over a large ground plane.--></p>
+
+<!--make note about using dispersion for sub-element positioning using time delay in spiral antenna. -->
+
+<h3>Typical specifications by type</h3>
+
+<h4>Directional</h4>
+<ul>
+<li><b>tapered helix in conical horn</b>: moderate construction, very directional, no side/backlobes, 3:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Dual-Band%20Horn%20Array%20Design%20Using%20a%20Helical%20Exciter%20for%20Mobile%20Satellite%20Communication%20Terminals_%20Young-Bae%20Jung_%20Soon-Young%20Eom_%20IEEE%202012.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/The%20Heliocone_%20A%20Circularly%20Polarized%20Antenna%20with%20Low%20Sidelobe%20Level_%20Keith%20R%20Carver_%20proc%201967.pdf">2</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Why%20Does%20Reflector%20Enhance%20the%20Gain%20of%20Helical%20Antennas_%20A%20R%20Djordjevic_%20M%20M%20Ilic_%20A%20G%20Zajic%e2%80%a0_%20D%20I%20Olcan_%20M%20M%20Nikolic_%20EuCAP%202007.pdf">3</a></li>
+<li><b>ridged horn</b>: hard construction, very directional, small back and sidelobes: 10:1 bandwidth</li>
+<li><b><a href="/k-antenna-horn.jpg">K-antenna</a></b> (<a href="/K-antenna-6inch-foam-dielectric-support.jpg">2</a>): moderate construction, very directional, decently small backlobe, 10:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Design%20of%20an%20UWB%20Combined%20Antenna%20and%20an%20Array%20of%20Miniaturized%20Elements%20with%20and%20without%20Lens_%20A%20Mehrdadian_%20K%20Forooraghi_%202013.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Ultra%20Wideband%20Antennas%20for%20High%20Pulsed%20Power%20Applications_%20B%20Cadilhon_%20B%20Cassany_%20P%20Modin_%20J-C%20Diot_%20V%20Bertrand_%20L%20Pecastaing_%20Ch15%202011.pdf">2</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/K-antenna-diagram.png">3</a></li>
+</ul>
+
+
+<h4>Mostly directional</h4>
+<ul>
+<li><b>TEM horn</b>: easy construction, directional, out of band sidelobes, 15:1, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Miniaturization%20of%20TEM%20Horn%20Antenna%20Using%20Spherical%20Modes%20Analysis_%20M%20A%20Elmansouri_%20D%20S%20Filipovic_%202014.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Design%20and%20Optimization%20of%20Uwb%20Antenna%20For%20Air%20Coupled%20Gpr%20Applications_%20Amr%20Ahmed_%20Thesis%202014.pdf">2</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Ultra%20Wideband%20Antennas%20for%20High%20Pulsed%20Power%20Applications_%20B%20Cadilhon_%20B%20Cassany_%20P%20Modin_%20J-C%20Diot_%20V%20Bertrand_%20L%20Pecastaing_%20Ch15%202011.pdf">3</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Extreme%20Performance%20TEM%20Horn_%20J%20A%20G%20Malherbe_%20MOP%202008.pdf">4</a></li>
+<li><b>log-periodic</b>: easy construction, directional, bad sidelobes, 10:1 bandwidth</li>
+<li><b><a href="http://erewhon.superkuh.com/conical-spiral-actual-use.jpg">conical spiral</a></b>: hard construction, directional , moderate back/sidelobes , 10:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Conical%20Linear%20Spiral%20Antenna%20for%20Tracking,%20Telemetry,%20and%20Command%20of%20Low%20Earth%20Orbit%20Satelliets_%20K%20F%20A%20Hussein_%202012.pdf">1</a></li>
+<li><b><a href="http://erewhon.superkuh.com/Split-Ring-Resonator_Notch-Filter_Vivaldi-Antenna.jpg">vivaldi (tapered slot)</a></b>: easy construction, directional, bad sidelobes out of band, 10:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Development%20of%20an%20Electrically%20Small%20Vivaldi%20Antenna_%20162Mhz%20to%201121Mhz_%20Center%20for%20Remote%20Sensing%20of%20Ice%20Sheets_%202007.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/12-to-1%20Bandwidth%20All-Metal%20Vivaldi%20Array%20Element_%20Rick%20Kindt_%20Ray%20Pickles_%202009.pdf">2</a></li>
+<li><b>eleven antenna</b> - very hard construction, 60 deg 10:1 pattern bandwidth, low backlobe, 10:1 impedance bandwidth, ref: dual crossed folded zig-zag log periodics inclined over ground plane</li>
+<li><b>dual rhombic</b>: easy wire construction, mostly directional, not great sidelobes, 1:1, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Dual%20Rhombic%20For%20VHF-UHF_%20Bill%20Parker%20W8DMR_%2073Mag%201977.pdf">1</a>
+<li><b>tightly coupled dipole arrays</b>: hard construction (PCB) w/complex baluns, maintains pattern while scannable over 60 deg from zenith at 6.5:1 bandwidth, ref: <a href="http://superkuh.com/library/Electromagnetics/Wideband%20Low-Profile%20Antenna%20Arrays_%20Fundemental%20Limits%20and%20Practical%20Implementations_%20Jonathan%20Doane_%20Dissertation%202013.pdf">1</a>,<a href="http://superkuh.com/library/Electromagnetics/Novel%20Implementations%20of%20Wideband%20Tightly%20Coupled%20Dipole%20Arrays%20for%20Wide-Angle%20Scanning_%20Ersin%20Yetisir_%20Dissertation_%202015.pdf">2</a>,<a href="http://superkuh.com/library/Electromagnetics/UWB%20Low-Profile%20Tightly%20Coupled%20Dipole%20Array%20With%20Integrated%20Balun%20and%20Edge%20Terminations_%20I%20Tzanidis_%20K%20Sertel_%20J%20L%20Volakis_%202013.pdf">3</a></li>
+<li><b>quadrafilar helix</b>: complex construction, mostly directional, okay sidelobes, ~5:1 great pattern bandwidth</li>
+</ul>
+
+
+<!--
+<li><b></b></li>
+-->
+
+<h4>Vaguely omnidirectional</h4>
+<ul>
+<li><b><a href="http://erewhon.superkuh.com/planar-disk-antenna.jpg">dual planar disk</a></b>: easy construction, directional at high end; omni at low, like a dipole at low end. 10:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Planar%20Disk%20Antennas_%20Kent%20Britain%20WA5VJB%20G8EMY.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/Build%20a%20Broadband%20Pizza%20Pan%20Dipole_%20Pizza%20pan%20vertical_%20WA5VJB_%202016%20.pdf">2</a></li>
+<li><b><a href="http://erewhon.superkuh.com/spiral-antenna.jpg">planar spiral</a></b>: moderate construction, omnidirectional (hemispheric), big backlobe (unless cavity backed), 10:1 bandwidth</li>
+<li><b>planar ultrawideband modular antenna (PUMA)</b>: very hard construction, omnidirectional (hemispheric), good side/backlobes, 5:1, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/The%20Planar%20Ultrawideband%20Modular%20Antenna%20PUMA%20Array_%20S%20S%20Holland_%20M%20N%20Voucakis_%20IEEE%202012.pdf">1</a></li>
+<li><b>cloverleaf</b> (modified 4-sq): very hard construction, omnidirectional (hemispheric), best pattern shape, 1:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/The%20Cloverleaf%20Antenna_%20A%20Compact%20Wide-bandwidth%20Dual-polarization%20Feed%20for%20CHIME_%20Meiling%20Deng_%20Thesis_%202014.pdf">1</a></li>
+<!--<li><b>current surface array</b> (single layer): very hard construction, controllable pattern, 8.3:1 bandwidth, ref:</li>-->
+
+<li><b>sleeve monopole with capacitive hat</b> (goubau-like): hard construction, omnidirectional (hemispheric), okay pattern shape, 3:1 bandwidth, ref: <a href="http://superkuh.com/library/Electromagnetics/A%20Compact,%20Capacitively-Fed%20UWB%20Antenna%20With%20Monopole-Like%20Radiation%20Characteristics_%20M%20Li_%20N%20Behdad_%202015.pdf">1</a>,<a href="http://superkuh.com/library/Electromagnetics/Low%20Profile%20Disk%20and%20Sleeve%20loaded%20Monopole%20Antennas_%20C%20B%20Ravipati_%20C%20J%20Reddy_%202005.pdf">2</a></li>
+
+<!--
+<li><b>sleeve monopole with capacitive hat</b> (goubau-like): hard construction, omnidirectional (hemispheric), okay pattern shape, 3:1 bandwidth, ref: <a href="">1</a>,<a href="">2</a></li>
+<li><b>sleeve monopole with capacitive hat</b> (goubau-like): hard construction, omnidirectional (hemispheric), okay pattern shape, 3:1 bandwidth, ref: <a href="">1</a>,<a href="">2</a></li>
+-->
+
+
+</ul>
+
+<h4>Omnidirectional</h4>
+<ul>
+<li><b><a href="http://erewhon.superkuh.com/discone-antenna.jpg">discone</a></b>: moderate construction, omnidirectional, 10:1 bandwidth</li>
+<li><b><a href="/bicone.html">bicone</a></b>: moderate construction, omnidirectional, 10:1 bandwidth</li>
+<li><b><a href="/TASH-antenna-test.jpg">tapered area small helix (TASH)</a></b>: easy construction, omnidirectional, 10:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/The%20Chicken%20Wire%20Wonder_%20A%20Unique%20Broadband%20Vertical%20Antenna%20for%20the%20HF%20Bands_%20Tom%20Warnagiris%20K3GSY_%20QEX%202009.pdf">1</a>,<a href="http://erewhon.superkuh.com/library/Electromagnetics/A%20monopole%20with%20a%20twist%20revisited_%20TASH_%20T%20Warnagiris_%202005.pdf">2</a></li>
+<li><b>two-stage conical monopole w/shorting pins</b>: moderate construction, omnidirectional, 22:1 bandwidth, ref: <a href="http://erewhon.superkuh.com/library/Electromagnetics/Super-wideband%20and%20compact%20omnidirectional%20antenna%20with%20simple%20structure%20and%20improved%20radiation%20properties_%20X%20Chen_%20L%20Yang_%20G%20Fu_%202016.pdf">1</a>,<a href="http://superkuh.com/library/Electromagnetics/A%20Novel,%20Low-Profile,%20Vertically-Polarized%20UWB%20Antenna%20for%20WBAN_%20M%20Koohestani_%20J%20F%20Zurcher_%20A%20A%20Moreira_%20A%20K%20Skrivervik_%20TAP%202014.pdf">2</a></li>
+<li><b>semi-bicone</b>: hard construction, mostly omnidirectional, 10:1 bandwidth, a <a href="/semi-bicone.jpg">photo of one</a> to explain.</li>
+</ul>
+
+
+
+<img src="/library/Electromagnetics/antenna-type-vs-impedance-bandwidth.png" />
+
+<p><a href="https://www.youtube.com/watch?v=FDMU7_S1wiM">cfurse's youtube lecture video on broadband antenna</a></p>
+
+<!--
+
+<h4>Factors besides impedance dermining bandwidth.<h4>
+
+<h6>Pattern Bandwidth</h6>
+<p>For the directional antenna some applications might define the pattern bandwidth in addition to the impedance bandwidth if the beam shape and/or side/backlobes change with frequency. The quality of the pattern bandwidth often depends on balancing contributions from both electric *and* magnetic dipoles in the same design. In horns this is called a hybrid mode feed. In the K-antenna a magnetic loop is embedded in the structure to mix with the dipole-like curved arms of the horn.</p>
+
+<h6>Balun Bandwidth</h6>
+<p>A lot of "wide band" antenna and their feed structures have weird impedances that require a balun to match. Often times these baluns only work over a fraction of the bandwidth stated for the antenna or feed itself. The infinite balun of a coaxial spiral or conical spiral is the only simple large bandwidth balun. TEM horns use the mechanically complex Klopfenstein (1/2 wavelength long) or "tulip" (1/4 wavelength long) tapers of the outer conductor in a coaxial cable. As long as I'm talking about feeds, tapered helical antennas tend to have a resistive impedance of about 100 Ohm. By feeding both ends of the monofilar helix, one at the normal point and one at the tip, two 50 ohm feeds of different frequency and opposite polarization can be had.</p>
+
+<h6>Dispersion</h6>
+<p>A lot of wide bandwidth antenna have the conductive elements that scale from the small to the large. Different parts of the antenna are used in reception of different frequencies. Usually the feed is near the small end and so the high frequency component of an RF impulse is received first by a small time. This smearing of the different frequency components out over time is called dispersion. Some antenna like planar/conical spirals, log periodic dipole arrays are particularly bad about this. They are not optimal for UWB pulse modes.</p>
+
+<h6>Reflectors and Refractors</h6>
+<p>I don't include here things like parabolic/corner/etc reflectors, or fresnel zone plate/luneburg lens/etc refractors because there is no inherent feed structure associated with them. Only the feed type chosen will determine the bandwidth.</p>
+
+-->
+
+<!--
+
+Kinds of frequency bandwidth:  pattern bandwidth, S11 impedance bandwidth,
+
+-->
+
+<!--
+<h3>Special considerations: non-foster impedance matching</h3>
+<p>The useable frequency range of an antenna is heavily influenced by the matching of the antenna's impedance over the frequency range to the feed's impedance. Most broadband antenna use smoothly varied sizes of conducting elements to make the transition of the impedance of free space's 377 Ohm to something better suited to modern electronics like 50 or 75 Ohm. The antenna elements themselves are designed so that the shape's capacitive (C) and reactive (R) contributions to the impedance equal the desired 50 Ohm impedance. The problem with that is the shapes capacitive and reactive impedances vary at different rates. So they only cancel each other out to the right degree over a limited frequency range.</p>
+<p>One solution to canceling out the capacitive impedance of an antenna structure is to actively inject energy with an external circuit to exactly offset the resistance to the change in voltage that capacitive impedance is. This is called non-foster impedance matching. It is essentially equivalent to adding negative capacitive impedance to the circuit. Negative inductances (current sources) can also be made of active components.</p>
+<p>There are many known non-foster impedance matching active circuits in the literature but even the designers often note that the implementations don't quite meet the model predictions if just -C or -R circuits are used. It has to be both. Using these circuits at the antenna feedpoint it's possible to have your feed match the impedance of the antenna
+-->
+
+<!--
+ref: <a href="">1</a>,<a href="">2</a>,<a href="">3</a>
+-->
+</div>
+
+
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html" type="hidden"></p>
+		</form>
+
+
+</div>
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+
+</body>
+</html>
+<secret>
+

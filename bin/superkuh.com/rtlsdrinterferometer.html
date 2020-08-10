@@ -1,0 +1,898 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>11 GHz Solar Intensity Interferometer w/rtl-sdr and GNU Radio</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+
+
+<!-- Hi. Anything I've commented out is probably new, very wrong, or outdated. -->
+<body>
+
+<div id="center" class="column">
+<div style="float:right;margin-left:1em;">
+<h3>Page Sections</h3>
+<ul>
+<li>Intro (here)</li>
+<li><a href="#implementation">Implementation</a>
+	<ul>
+	<li><a href="#software">Software</a>
+		<ul>
+			<li><a href="#download">GRC Flowgraphs</a></li>
+			<li><a href="#scripts">Scripts</a></li>
+		</ul>
+	</li>
+	<li><a href="#ccp">Computer Pointing</a></li>
+	</ul>
+</li>
+
+<!--<li><a href="#interferometry">Interferometry</a></li>-->
+<li><a href="#references">Reference</a></li>
+</ul>
+
+</div>
+
+<a name="intro">
+<h4>My rtlsdr receiver + w/gnuradio implementation of the 11 GHz VSRT solar interferometer</h4>
+
+<img style="float:left;margin-right:1em;" src="http://erewhon.superkuh.com/dishes_sm.jpg">
+<!--<img src="http://erewhon.superkuh.com/11GHz_interferometer.jpg">-->
+
+<!--<div style="float:right;margin-left:0.5em;"><pre>$75 2x 18" satellite dishes w/mounts shipped
+$10 2x Ku LNFB (PLL321 S-2, ~30ppm error)
+$10 rtlsdr receiver (r820t or e4k, ~30ppm error)
+$10 power combiner (cheaper ones work too)
+$5 coaxial power injector (LPI 2200)
+$20 coaxial power supply (LPI 188PS) + diodes
+$20 100ft RG6 quadshield + F connectors
+$130 Two Dish Position Motors (HH90)
+$60 DVB-S PCI card (Skystar 2, DiSEqC 1.2)
+$10 DiSEqC 1.2 switch
+$80 PVC, metal stock, drill bits</pre></div>-->
+
+
+<p>As far as I understand it, the  <a href="http://www.haystack.mit.edu/edu/undergrad/VSRT/">VSRT</a> design is a subset of intensity interferometer that uses the frequency error between multiple 11 GHz satellite TV "low noise downconverter block" (LNBF) clocks to create a beat frequency in the total power integrated. I am basically copying the MIT <a href="http://www.haystack.mit.edu/">Haystack</a> <a href="http://www.haystack.mit.edu/edu/undergrad/VSRT/">Very Small Radio Telescope</a> (VSRT) but replacing the discrete component integrator and USB video input device with an rtlsdr dongle. The idea is to spend as little on hardware as possible.</p>
+
+<p>With modern LNBF the error between same model parts is about 30 ppm which results in beat frequencies of ~100 KHz at the 10 GHz of the mixers. With this kind of front-end there are no nulls but the fringe modulation can still be read out as variations in count of histogram bins that contain the beat frequency (in the total power fft). This intensity measurement proxy traces out the the envelope of the fringes and varies as a sinc function of distance between antenna. Knowing this and the distance can give you high angular diameter and position measurements of very bright radio sources.</p>
+
+<pre>$75 2x 18" satellite dishes w/mounts shipped
+$10 2x Ku LNFB (<a href="/library/Tools/mine/Inside-AVENGER-PLL-321S.pdf" >PLL321 S-2</a>, ~30ppm error, RDA3560 w/27Mhz xtal.)
+$10 rtlsdr receiver (r820t or e4k, ~30ppm error)
+$10 power combiner (cheaper ones work too)
+$5 coaxial power injector (LPI 2200)
+$20 coaxial power supply (LPI 188PS) + diodes
+$20 100ft RG6 quadshield + F connectors
+$130 Two Dish Position Motors (HH90)
+$60 DVB-S PCI card (Skystar 2, DiSEqC 1.2)
+$10 DiSEqC 1.2 switch
+$80 PVC, metal stock, drill bits</pre>
+
+<h5>Historical and other context.</h5>
+
+<p>For a detailed mathematical explanation of VSRT see MIT Haystack's <a href="http://www.haystack.edu/edu/pcr/vsrt-ret/VSRT_Introduction_Summer2009.pdf">VSRT Introduction</a>.</a> There is also a <a href="https://groups.google.com/forum/#!topic/sara-list/KBZdgfHWY3Q">thread</a> on the Society for Amateur Radio Astronomers list discussing the VSRT design. The more general concept of intensity interferometry, where you correlate total power instead of frequency, was originally developed by Hanbury-Brown &amp; Twiss. Roger Jennison was around too. "<a href="http://books.google.com/books?id=v2SqL0zCrwcC&source=gbs_navlinks_s">The Early Years of Radio Astronomy: Reflections Fifty Years after Janskys Discovery</a>" by W T Sullivan (2005) is an excellent source about Hanbury Brown and Twiss's side of it. The chapter "<a href="/library/Space/Radio%20Astronomy/intensity-interferometry.pdf">The Invention and Early Devlopment of The Intensity Interferometer</a>" (pdf) is fascinating. Also see "<a href="/library/Space/Radio%20Astronomy/The%20Development%20of%20Michelson%20and%20Intensity%20Long%20Baseline%20Interferometry_%20R%20Hanbury%20Brown.pdf">The Development of Michelson and Intensity Long Baseline Interferometry</a>" (pdf). It covers not only the technical concepts but also historical context, detailed hands-on implementations, and other personal anectdotes. And check out Jennison's book "<a href="http://erewhon.superkuh.com/library/Space/Radio%20Astronomy/Radio%20Astronomy_%20Roger%20C%20Jennison_%201966.pdf">Radio Astronomy</a>" (1966)) as he invented the process of phase closure which uses a third antenna signal combined mathematically to recover some of the missing phase information. Arranged in a triangle of projected baselines the phase errors cause equal but opposite phase shifts in ajoining baselines, canceling out in the "closure phase". The MIT Haystack groups managed to <a href="http://www.haystack.mit.edu/edu/undergrad/VSRT/VSRT_Memos/024.pdf">resolve individual sunspots groups moving across the solar disk</a> using with the technique with the VSRTs.</p>
+
+<br clear="all" />
+
+<!--<a href="/tp-modes.grc"><img src="/tp-modes.png"></a>-->
+<img style="float:left;margin-right:1em;margin-top:1em;" src="http://erewhon.superkuh.com/lnbf_intensity_interferometer_diagram.png" />
+
+<hr style="margin-top:1em;" />
+
+<p class="quote">"An interferometer is an instrument
+that combines two signals (normally from two detectors) in a manner that the signals
+interfere to produce a resultant signal. The resultant signal is usually the vector sum of the
+two signals, but in some cases it is the product or some other mix. The traditional
+interferometer, usually studied and analyzed in physics courses, combines the two signals
+in a way that both amplitude and phase information are used. By varying the positions of
+the two detectors, it is possible to synthesize an effective aperture that is equivalent to the
+separation of the detectors and to reconstruct the impinging wavefront, thus providing
+significant information about the extent and structure of the signal source. The
+traditional phase-sensitive interferometer requires retention of the signal phase at each
+detector – the phase-sensitive interferometry technique will not be discussed in detail
+here."</p>
+<p class="quote">"A special case of the interferometer is the intensity interferometer, which performs an
+intensity correlation of signals from the two detectors. Although in the intensity
+interferometer the phase information from the two antennas is discarded, the correlation
+of the two signals remains useful. Aperture synthesis is not practical, but some important
+source characteristics may be determined."</p>
+
+
+<hr /><br clear="all" /> 
+
+
+
+<p>I think the VSRT is a special case of intensity interferometer  where you don't try to align samples by time after recording. Instead you just look for the baseline distance sinc pattern in total power at the beat frequency of the unsynchronized clocks.</p>
+
+
+<!--<p>Sun -&gt; 2x offset parabolic dishes -(10.7-11.7 GHz)-&gt; 2x 11 GHz LNBF -(950-1950 MHz GHz)-&gt; Power Combiner -&gt;
+rtlsdr receiver -(1.6 GHz)-&gt; gnuradio sums total power -&gt; [gnuradio fourier transform -&gt;]
+ Low pass filter w/10x-decimation-(0-200Khz)-&gt;  40 KHz bandpass @ beat frequency -(100KHz +-20KHz)-&gt; relative interferometric power</p>-->
+
+<a name="implementation">
+
+<h2>Implementation so far.</h2>
+
+<p>So far I've only done it with manual pointing screwed to a board. The interferometry correlation is done with a satellite tv market stripline power combiner at the intermediate frequency (IF, ~950-1950 MHz) and then an rtlsdr dongle is used to measure the total power of a 2.4 MHz bandwidth of the intermediate frequency range. I use a gnuradio-companion flowgraph to take the total power and then do a fourier transform of the total power. In this fourier transform the fringes show up as a modulation of the count in the FFT bins which correspond to the difference in frequency between the two downconverters. In my case this is about ~100 KHz.<p>
+
+<p>In the Haystack VSRT memos a line drop amplifier, or two, are sometimes put behind the respective LNBF IF coax outputs or the power combiner. With the rtlsdr dongle and relative short (&lt;10m) baselines of RG6 this isn't required.</p>
+
+<a name="software">
+<p>The GUI allows for setting the exact 2.4 MHz bandwidth of the IF range to sample and the total power FFT bin bandpass to where and what the LNBF beat frequency is. The file name is autogenerated to the format,</p>
+
+<pre>prefix + datetime.now().strftime("%Y.%m.%d.%H.%M.%S") + ".log"</pre>
+
+<p>The time embedded in the filename is later used by a perl script, vsrt_log_timeplot.pl, which converts and metadata tags the binary records to gnuplot useable text csv format for making PNG plots.</p>
+
+
+<a name="download">
+<h3>Download</h3>
+<ul>
+<li><a href="/tp-modes.grc">total power modes (tp-modes.grc)</a></li>
+<li><a href="/vsrt_log_timeplot.pl">vsrt_log_timeplot.pl</a></li>
+</ul>
+
+
+
+<a href="http://erewhon.superkuh.com/gnuradio/myinterferometerflowgraph.png"><img src="http://erewhon.superkuh.com/gnuradio/myinterferometerflowgraph_sm.png"></a>
+
+<h4>Who else helped</h4>
+
+<!--<a href="/sim-intensity-interferometer.png"><img style="float:right;margin-left:1em;" src="/sim-intensity-interferometer_sm.png" /></a>-->
+
+<a href="http://erewhon.superkuh.com/sim-intensity-interferometer-2.png"><img style="float:left;margin-right:1em;" src="http://erewhon.superkuh.com/sim-intensity-interferometer-2_sm.png" /></a>
+
+<p>I consulted with patchvonbraun a lot for the software/gnuradio side. He gave me an example of how to use the WX GUI Stripchart and I would not have guessed I needed to square the values from the beat frequency bins <em>after</em> the first squaring for taking total power. He made a generic simulator for dual free running clocks LNBF intensity interferometers. You don't even need to have an rtlsdr device to run it; only an up to date install of gnuradio. It is an easy  way to understand how to do interferometry without a distributed clock signal.</p>
+
+<p>patchvonbraun's: <a href="/gnuradio/simulated-intensity-interferometer.grc">simulated-intensity-interferometer.grc</a></p>
+
+<!--<img src="/simulated-intensity-interferometer.png" />-->
+
+
+
+
+<br clear="all" />
+
+<h3>Physical</h3>
+
+<a href="http://erewhon.superkuh.com/tp-modes_gui.png"><img style="float:left;margin-right:1em;" src="http://erewhon.superkuh.com/tp-modes_gui_sm.png"></a>
+
+<p>With this setup on a 1 meter baseline and a intermediate tuning frequency of 1.6 GHz IF (10700 MHz+(1600 MHz−950 MHz)= 11350 MHz) the main beamwidth would be about 70*(c/11GHz)/1m), or 1.9 degrees. This does not resolve the solar disk (~0.5 deg) during drift scans. <!-- I think that since it is an adding interferometer the sun will not "average out" even if my beamwidth makes it an extended source covered by mutiple sidelobes.--> <!--I will not see signs of individual active regions as that'll probably require an extended baseline of at least 4m.-->I have been told that the magnitude goes down in a SINC pattern as you widen the baseline and approach resolving the source but I will not resolve the sun initially. In the VSRT Memos "<a href="http://www.haystack.mit.edu/edu/undergrad/VSRT/VSRT_Memos/024.pdf">Development of a solar imaging array of Very Small Radio Telescopes</a>" a computationally complex way to resolve individual action regions is done with a 3rd dish providing "phase closure" in the array on a slanted north-south baseline in addition to the existing east-west baseline. I try to point my dishes so that the Earth is passing the sun through the beam at ~12:09pm (noon) each day. To aid in pointing a cross of reflective aluminum tape is applied center of the dish. This creates a cross of light on the LNBF feed when it is in the dish focal plane and the dish is pointed at the sun. The picture below is from later in the day, the one of the left shows the sun drifting out of the beam as it sets. I made my LNBF holders out of small pieces of wood compression fit in the dish arm. There are grooves for the RG6 coax to fit ground out with a rotary tool. The PVC collars have slots cut in the back with screws going into the wood to set the angle.</p>
+
+<img src="http://erewhon.superkuh.com/light-cross-feed.jpg" />
+
+<br clear="all" />
+
+<p>The screenshot shows a short run near sunset on an otherwise cloudy day. The discontinuities are me running outside and manually re-pointing the dishes. But it does highlight how the beat frequency of the 2 LNBF varies as they warm up when turned on. It starts down at ~90 KHz but within 10 minutes it rises to ~115 KHz. After it reaches equilibrium the variation is ~ -+1 KHz. I could change the existing 80-120 KHz bandpass to a 110-120 KHz bandpass and have better sensitivity. But that bandwidth is something that has to be found empirically with each LNBF pair and set manually within the GUI for now.</p>
+
+<p>patchvonbraun said it was feasible to identify the frequency bins with the most counts and that there was an example within the simpla_ra code,</p>
+<p class="quote">"You could even have a little helper function, based on a vector probe, that finds your bin range, and tunes the filter appropriately."</p>
+
+<p>The below close up of indoor testing showing how everything is connected on the rtlsdr side showing the power injector, e4k based rtlsdr (wrapped in aluminum tape), and the stripline based satellite power combiner for correlation. The two rg6 quadshield coaxial lines going from the power combiner to the ku band LNBF are as close to the same length as I could trim them.  I use a 1 amp 18v power supply and coaxial power injector to supply power to the LNB and any amplifiers. This voltage controls linear polarization (horiztonal/vertical) and it can be changed by putting a few 1 amp 1N4007 in series with the power line to drop the voltage.</p>
+
+<img src="http://erewhon.superkuh.com/powerinjection.jpg">
+
+
+<a name="scripts">
+
+<h3>Accessory scripts.</h3>
+<p>tp-modes.grc produces binary logs that are pretty simple. The count of the LNBF beat frequency bins in the bandpass are saved as floats represented as 4 pairs of hexadecimal. When the integration time is set to the default 1 second then one 4 byte data point is written to the log every 0.5 seconds. I highly recommend not changing this for now. There is no metadata or padding. Here's a screenshot of a run using the utility "bless",</p>
+
+<img src="http://erewhon.superkuh.com/bless-vsrt.png" />
+
+<p>In order to convert the binary logs of 4 byte records into something gnuplot can parse I use a simple perl script,</p>
+
+<pre>#!/usr/bin/perl
+use warnings;
+use strict;
+
+my $data = '/home/superkuh/vsrt_2013.06.13.12.26.47.log';
+my $bytelength = 4; 
+my $format = "f"; # floats (little endian)
+my $num_records;
+
+if ($ARGV[0]) {
+	$data = $ARGV[0];
+} else {
+	print "you need to pass the log file path as an argument.";
+	exit;
+}
+
+open(LOG,"$data") or die "Can't open log.\n$!";
+binmode(LOG);
+
+my $i = 0;
+until ( eof(LOG) ) {
+	my $record;
+	my $decimal;
+	read(LOG, $record, $bytelength) == $bytelength
+		or die "short read\n";
+	$decimal = unpack($format, $record);
+	printf("$i,\t$decimal\n", $decimal);
+	$i++;
+}</pre>
+
+<p>Now I have the filename which gives the time the gnuradio-companion grc file started running. This is <em>not</em> the time I hit the record button and started logging. The offset is a second or two. Ignoring that, it is possible to use the start time encoded in the log file name to figure out when a particular measurement was taken. To do that I have to know the interval between entries saved to the binary log.</p>
+
+<pre>$ date && ls -l /home/superkuh/vsrt_2013.06.14.12.03.00.log && sleep 60 && date && ls -l /home/superkuh/vsrt_2013.06.14.12.03.00.log
+Fri Jun 14 13:05:24 CDT 2013
+-rw-r--r-- 1 superkuh superkuh 29644 2013-06-14 13:05 /home/superkuh/vsrt_2013.06.14.12.03.00.log
+Fri Jun 14 13:06:24 CDT 2013
+-rw-r--r-- 1 superkuh superkuh 30124 2013-06-14 13:06 /home/superkuh/vsrt_2013.06.14.12.03.00.log
+
+((30124−29644)/4)/60 = 2
+
+$ date && ls -l /home/superkuh/vsrt_null.log && sleep 60 && date && ls -l /home/superkuh/vsrt_null.logFri Jun 14 13:44:36 CDT 2013
+-rw-r--r-- 1 superkuh superkuh 8 2013-06-14 13:44 /home/superkuh/vsrt_null.log
+Fri Jun 14 13:45:36 CDT 2013
+-rw-r--r-- 1 superkuh superkuh 488 2013-06-14 13:45 /home/superkuh/vsrt_null.log
+
+((488−8)/4)/60 = 2</pre>
+
+<p>To know what time a log record corresponds to, take the time from the filename and then add 0.5 seconds * the index of the 4 byte entry in the binary log. This should be possible to write into the until loop so it outputs time instead of just index $i. The below example is a hacky version of my log parser that does just this. Here's an <a href="/example_records.txt">example output</a>.</p>
+
+<pre style="float:right;"># UTC Epoch	# Beat Freq Bins
+1371229380.0,	1.38292284646013e-06
+1371229380.5,	1.37606230055098e-06
+1371229381.0,	1.374015937472e-06
+1371229381.5,	1.366425294691e-06
+1371229382.0,	1.35845414206415e-06
+1371229382.5,	1.36476899115223e-06
+1371229383.0,	1.36480070977996e-06
+1371229383.5,	1.36444589315943e-06
+1371229384.0,	1.35775212584122e-06
+1371229384.5,	1.36395499339415e-06
+1371229385.0,	1.35322613914468e-06
+1371229385.5,	1.36412847950851e-06
+1371229386.0,	1.36531491534697e-06
+1371229386.5,	1.3664910056832e-06
+1371229387.0,	1.36144888074341e-06
+1371229387.5,	1.35596496875223e-06
+1371229388.0,	1.35830066483322e-06
+1371229388.5,	1.3654090480486e-06
+1371229389.0,	1.358990175504e-06
+1371229389.5,	1.37098015784431e-06
+1371229390.0,	1.387945303577e-06
+1371229390.5,	1.38286770834384e-06
+1371229391.0,	1.36734763600543e-06
+1371229391.5,	1.36036248932214e-06
+...</pre>
+
+<pre>#!/usr/bin/perl
+use DateTime;
+use warnings;
+use strict;
+
+# The simplest possible gnuplot plot using this program's output.
+# ./vsrt_log_timeplot.pl /home/superkuh/vsrt_2013.06.14.12.03.00.log > whee2.log
+# gnuplot> plot "./whee2.log" using 1:2 title "VSRT Test" with lines
+
+my $data = '/home/superkuh/vsrt_2013.06.13.12.26.47.log';
+my $bytelength = 4; 
+#my $format = "V"; # oops, not this unsigned 32 bit (little endian)
+my $format = "f"; # float
+my $num_records;
+
+if ($ARGV[0]) {
+	$data = $ARGV[0];
+} else {
+	print "you need to pass the log file path as an argument.";
+	exit;
+}
+
+my $dt; # declare datetime variable globally
+extracttime($data); # $dt now has date object.
+
+open(LOG,"$data") or die "Can't open log.\n$!";
+binmode(LOG);
+
+my $i = 0;
+until ( eof(LOG) ) {
+	my $record;
+	my $decimal;
+	read(LOG, $record, $bytelength) == $bytelength
+		or die "short read\n";
+
+	$decimal = unpack($format, $record);
+
+	# This is a stupid/fragile way to deal with datetime
+	# not having enough precision. It only works if the
+	# record to record interval is always 0.5 seconds.
+	my $recordtime = $dt->epoch();
+	if (0 == $i % 2) {
+		printf("$recordtime.0,\t$decimal\n", $decimal);
+	} else {
+		printf("$recordtime.5,\t$decimal\n", $decimal);
+	}
+
+	$dt->add( nanoseconds => 500000000 );
+	$i++;
+}
+
+sub extracttime {
+	my $timestring = shift;
+	# /home/superkuh/vsrt_2013.06.13.12.26.47.log
+	$timestring =~ /(\d{4}\.\d{2}\.\d{2})\.(\d\d\.\d\d\.\d\d)/;
+	my $year_month_day = $1;
+	my $time = $2;
+
+	my ($year,$month,$day) = split(/\./, $year_month_day);
+	$time =~ s/\./:/g;
+	my ($hour,$minute,$second) = split(/:/, $time);
+
+	$dt = DateTime->new(
+		year       => $year,
+		month      => $month,
+		day        => $day,
+		hour       => $hour,
+		minute     => $minute,
+		second     => $second,
+		time_zone  => 'America/Chicago',
+	);
+
+	$dt->set_time_zone('UTC');
+	return 1;	
+}</pre>
+
+<p>Now I just have to make up a good gnuplot format and integrate the calls into the perl script.</p> 
+
+<!-- <a name="interferometry">
+<h3>But where are the fringes?!</h3>
+<p>Okay, I admit it. I don't have any yet. I'm getting there, though. Anyway, when I get all the software written and do start getting multiday averaged data and piping it into gnuplot this what I might see with respect to fringe modulation of counts in the FFT beat frequency bins.</p>
+
+<pre>70*(c/11GHz)/1m) = 1.9 degree ~3dB beamwidth
+(15 deg/hour)/(1.9 deg) = 7.9/hour 
+(7.9/hour)/(60 min/hour) = 0.132 fringe/minute</pre>
+
+<p>That doesn't resolve the sun and I'll need to expand my baseline to ~4m sometime.</p>
+
+<pre>70*(c/11GHz)/4m) = 0.48 degree ~3dB beamwidth
+(15 deg/hour)/(0.48 deg) = 31.25/hour 
+(31.25/hour)/(60 min/hour) = 0.52 fringe/minute</pre>
+-->
+
+<a name="ccp">
+
+<h2>Computer controlled pointing, mechanical and software differences</h2>
+
+
+<img style="float:left;margin-right:1em;margin-top:1em;" src="http://erewhon.superkuh.com/MIT-Haystack-VSRT-Positioning.jpg" />
+
+<a name="physical">
+<p>Manually repositioning the dishes swamps out the signal of interest as the target leaves the beamwidth. For any decent measurements I need computer controlled pointing. This means the Haystack idea of two coupled Diseqc 1.2 compatible motor positioners mounted one on the other. In their design both dishes are mounted on a single PVC tube hooked to one of the positioners with a metal extension. My satellite dish mounts can't rotate like theirs so I'll have to <a href="http://erewhon.superkuh.com/sketch_11ghinterfereometer_fixed.png">modify this design a bit</a>. They use a serial relay to "push" the buttons on a physical Diseqc 1.2 motor controller remote. That seemed a bit convoluted to me. I bought a <a href="http://erewhon.superkuh.com/skystar2.jpg">SkyStar2 DVB-S pci card</a> and under linux send raw Diseqc commands out by calling <a href="http://panteltje.com/panteltje/satellite/">xdipo</a> which accesses the linux DVB interface. It has both a GUI and cli interface. Unfortunately xdipo cannot send through Diseqc switches. I had to add manual motor commands to <a href="https://bitbucket.org/CrazyCat/tune-s2">tune-s2</a> which did support switches but not manual motor commands. This version which supports manual stepping mode is available at <a href="https://github.com/superkuh/tune-s2-stepping">https://github.com/superkuh/tune-s2-stepping</a>.
+
+<p>Another alternative Diseqc motor controller I didn't persue would be using a 192 KHz USB soundcard and the <a href="http://www.juras-projects.org/eng/software.php">DiSEqC Audio Generator</a> software from Juras-Projects. The documentation for the hardware side of the audio generator is 404 now, but <a href="/audiodiseqc.html">Juras responded to an email of mine with the schematics attached</a>.</p>
+
+
+<!--<img style="float:right;margin-left:1em;margin-top:1em;" src="/sketch_11ghinterfereometer_sm.png" />-->
+
+<a href="http://erewhon.superkuh.com/sketch_11ghinterfereometer_fixed.png"><img style="float:right;margin-left:1em;margin-top:1em;" src="http://erewhon.superkuh.com/sketch_11ghinterfereometer_fixed_sm.png" /></a>
+
+
+<p>Since the bent motor shafts that came will my motors looked really difficult to drill through I thought I'd use straight hex holed shafts to make everything mechanically simpler. I found <a href="http://www.reidsupply.com/sku/HHS-18/">http://www.reidsupply.com/sku/HHS-18/</a> and ordered a couple. Unfortunately my measurements of the dish motor shaft flat-to-flate size were off. The Reid hex holed shaft hole is just a tiny bit too large. This was easily fixed by wrapping a couple turns of masking tape around the shaft to increase the diameter. This is often how fishing rod handles are made. I also encountered this construction technique on Jarrod Kinsey's <a href="http://www.jarrodkinsey.org/co2laser/co2laser.html">CO2 laser pages</a>.</p>
+
+<p>The hardest part of all this is drilling an 8mm hole precisely normal to the curved outside surface of the hex hole shaft. The first step is to flatten the area with a hand file. This took me about 10 minutes. I had previously ordered and received two carbide drill bits, one small to sub-drill the intial hole and then one 8mm for the final hole. A drill press and small vice are quired to actually drill the holes. And even then it's really tricky. My first two attempts resulted in holes not quite normal to the surface of the hex flat. I could only use roll or taper pins to secure the shaft. Luckily I bought 2x shafts just in case.</p>
+
+<p>I also had to drill 4 additional 8mm holes in the 2x satellite dish motor mounts to make holes for level mounting instead of at a tilt. The VRST guys got lucky with their sat motor mounts having a long slot.</p>
+
+<p>The diameter of easily available PVC is slightly to small for the dish mounting clamp. This is remedied like the motor shafts; by wrapping wide masking tape to size and optionally epoxy coating/sanding it.</p>
+
+<a href="http://erewhon.superkuh.com/motor-mechanics-zoom.png"><img src="http://erewhon.superkuh.com/motor-mechanics-zoom_sm.png" /></a> <a href="http://erewhon.superkuh.com/parts2.jpg"><img src="http://erewhon.superkuh.com/parts2_sm.jpg" /></a> <a href="http://erewhon.superkuh.com/parts.jpg"><img src="http://erewhon.superkuh.com/parts_sm.jpg" /></a> 
+<a href="http://erewhon.superkuh.com/skystar2.jpg"><img src="http://erewhon.superkuh.com/skystar2_sm.jpg" /></a>
+
+<p>The dish motors used in the VSRT project were Stab HH90. These have come down in cost since the VSRT memos were written and are still widely available.</p>
+
+<pre> 065	<a href="http://www.ebay.com/itm/330858601252">Stab HH90</a> dish pointing motor #1
+ 065 	<a href="http://www.ebay.com/itm/330858601252">Stab HH90</a> dish pointing motor #2
+$130 total</pre>
+
+<p>In order to control these motors a system to send <a href="/library/Space/Radio Astronomy/Raw DiSEqC 1.2 commands_ BGonaSTICK.txt">DISEqC 1.2 commands</a> is needed. The first option would be to faithfully replicate the  VSRT implementation. They do it in a rather roundabout way but at least it is tested and known to work with their software. Unfortunately the specific hardware used has become rare, is mostly shipped from overseas, or is expensive.</p>
+
+<pre> 045	<a href="http://ftaelectronic.com/store/index.php/satellite-hardware/motors/motor-positioners/stab-mp01-mini-positioner.html">STAB MP01</a> Positioner Control #1
+ 045	<a href="http://ftaelectronic.com/store/index.php/satellite-hardware/motors/motor-positioners/stab-mp01-mini-positioner.html">STAB MP01</a> Positioner Control #2
+ 080	<a href="http://www.weedtech.com/wtssr-m.html">WTSSR-M</a> Serial port Solid State Relay 
+ 000	VSRT Java software (windows)
+
+ 030	Two <a href="https://www.onlinemetals.com/merchant.cfm?pid=9668&step=4&showunits=inches&id=814&top_cat=197">5" x 9" x 0.125"</a> thick steel plates
+ 020	Two 15" x 1" x 0.125" thick aluminum counterweight arms
+ 020	Shipping for the metal parts.</pre>
+
+<p>My chosen method of HH90 motor control is a single DVB-S card under linux with DVB API 5.x w/ my modified tune-s2 and optionally <a href="http://panteltje.com/panteltje/satellite/">xdipo</a>. This can be combined with a DiSEqC switch to scale to control of multiple motors relatively cheaply. I do sun alt-az position calculation by using a small <a href="http://pysolar.org/">pysolar</a> python script. I have not yet completed the scripts to turn alt-az positions of the sun at my location into motor step commands. Hopefully I can use some of the USAL fuctions in tune-s2 for that.</p>
+
+
+<pre> 066	Skystar 2 HD pci card
+ 010	DiSEqC switch
+ 000	tune-s2 and xdipo DVB control software (linux)
+
+ 020	<a href="http://www.reidsupply.com/sku/HHS-18/">.753" Hex-Holed Sleeve</a>
+ 010	5" wide masking tape
+ 020	Two 15" x 1" x 0.125" aluminum counterweight arms</pre>
+
+<p>Both require PVC pipe, tools like drills, 8mm drill bits and smaller sub-drill bit, hand saws, files, and potentially a welder (though liberal J-B Weld would probably work).</p>
+
+<h3>Diseqc switches problems and solutions.</h3>
+
+<p>It turns out that xdipo alone cannot deal with motors behind Diseqc switches. This means it can only control one Diseqc motor at once. Controlling two would require 2x Skystar 2 pci cards. Luckily there are other options. CrazyCat's <a href="https://bitbucket.org/CrazyCat/tune-s2">tune-s2</a> supports Diseqc switches and addressing. It normally only provides for motor commands using the <a href="http://en.wikipedia.org/wiki/Universal_Satellites_Automatic_Location_System">USAL</a> system which isn't too helpful. But I was able to modify the code to support manual motor position commands while retaining the switch support. xdipo could still be used in theory by calling tune-s2 to set the Diseqc switch to the appropriate port/motor and then calling xdipo as normal. But it is easier to just use the modified tune-s2 for everything.</p>
+
+<p>This gutted version of tune-s2 for manual motor commands is available at:</p>
+
+<h4><a href="https://github.com/superkuh/tune-s2-stepping">https://github.com/superkuh/tune-s2-stepping</a></h4>
+
+<p>The functions I added are basically just look up arrays with Diseqc bus commands for different steps in the clockwise or counter-clockwise directions. In Diseqc the packets have 4 sections. Check out the Diseqc <a href="/library/Space/Radio%20Astronomy/Diseqc Bus Functional Specification_ EUTELSAT_ 1998.pdf">Bus Functional Specification</a> (pdf) for a better explanation with more detail.</p>
+
+<img src="http://erewhon.superkuh.com/diseqc-packet.png" />
+
+<p>The first, "Framing" byte represent if the command is from the receiver or diseqc device and wether it needs a reply. For my table these are all just "EO" which means it's a packet from the receiver with no response required. Most commands are EO but it goes up to E7. </p>
+
+<p>The second, "Address" specifies which types of Diseqc devices should listen (ex: LNB, switch, motor, polarizer). For motors this is "32"</p>
+
+<p>The third is "Command". This is a huge list of values of which only "68" and "69" are relevant. They are "Drive Motor East" and "Drive Motor West" respectively. The "Command" byte is only relevant to their specific devices specified via the "Address" byte.</p>
+
+<p>The remaining bytes of the packet are "Data" and how they're interpreted depends on the "Command" bytes specifying a specific type of command. For motor movement there are three options. "00" makes the motor turn until a Diseqc stop command is sent. The second mode is positive values for the bytes, "01" to "7F". They represent an amount of time to turn the motor. Or by specifying negative byte values "80" to "FF" the motor is rotated a number of steps. This last is best and detailed in the <a href="/library/Space/Radio%20Astronomy/Diseqc Positioner Application Note_ EUTELSAT_ 1998.pdf">Positioner Application Note</a> (pdf) with an excerpt below,</p>
+
+<p class="quote">The number of steps to make is given by the additional count needed to make the parameter byte reach zero (or overflow to zero if the byte is considered as unsigned). Thus the byte 'FF' (hexadecimal) requests only one step, 'FE' two steps, and for example 'F9' requests 7 steps.</p>
+
+<p>With my motors each step corresponds to about 0.1 deg. Using this information I made up a table of Diseqc packets for each rotation direction.</p>
+
+<pre>struct dvb_diseqc_master_cmd step_east[] =
+{
+	{ { 0xe0, 0x31, 0x68, 0xFF, 0x00, 0x00 }, 4 },  // Drive Motor West 1 step
+	{ { 0xe0, 0x31, 0x68, 0xFE, 0x00, 0x00 }, 4 },  // Drive Motor West 2 step
+	{ { 0xe0, 0x31, 0x68, 0xFD, 0x00, 0x00 }, 4 },  // Drive Motor West 3 step
+	{ { 0xe0, 0x31, 0x68, 0xFC, 0x00, 0x00 }, 4 },  // Drive Motor West 4 step
+	{ { 0xe0, 0x31, 0x68, 0xFB, 0x00, 0x00 }, 4 },  // Drive Motor West 5 step
+	{ { 0xe0, 0x31, 0x68, 0xF6, 0x00, 0x00 }, 4 },  // Drive Motor West 10 step
+	{ { 0xe0, 0x31, 0x68, 0xEC, 0x00, 0x00 }, 4 },  // Drive Motor West 20 step
+	{ { 0xe0, 0x31, 0x68, 0xE2, 0x00, 0x00 }, 4 },  // Drive Motor West 30 step
+	{ { 0xe0, 0x31, 0x68, 0xD8, 0x00, 0x00 }, 4 },  // Drive Motor West 40 step
+	{ { 0xe0, 0x31, 0x68, 0xCE, 0x00, 0x00 }, 4 },  // Drive Motor West 50 step
+	{ { 0xe0, 0x31, 0x68, 0x9C, 0x00, 0x00 }, 4 }   // Drive Motor West 100 step
+};
+
+struct dvb_diseqc_master_cmd step_west[] =
+{
+	{ { 0xe0, 0x31, 0x69, 0xFF, 0x00, 0x00 }, 4 },  // Drive Motor West 1 step
+	{ { 0xe0, 0x31, 0x69, 0xFE, 0x00, 0x00 }, 4 },  // Drive Motor West 2 step
+	{ { 0xe0, 0x31, 0x69, 0xFD, 0x00, 0x00 }, 4 },  // Drive Motor West 3 step
+	{ { 0xe0, 0x31, 0x69, 0xFC, 0x00, 0x00 }, 4 },  // Drive Motor West 4 step
+	{ { 0xe0, 0x31, 0x69, 0xFB, 0x00, 0x00 }, 4 },  // Drive Motor West 5 step
+	{ { 0xe0, 0x31, 0x69, 0xF6, 0x00, 0x00 }, 4 },  // Drive Motor West 10 step
+	{ { 0xe0, 0x31, 0x69, 0xEC, 0x00, 0x00 }, 4 },  // Drive Motor West 20 step
+	{ { 0xe0, 0x31, 0x69, 0xE2, 0x00, 0x00 }, 4 },  // Drive Motor West 30 step
+	{ { 0xe0, 0x31, 0x69, 0xD8, 0x00, 0x00 }, 4 },  // Drive Motor West 40 step
+	{ { 0xe0, 0x31, 0x69, 0xCE, 0x00, 0x00 }, 4 },  // Drive Motor West 50 step
+	{ { 0xe0, 0x31, 0x69, 0x9C, 0x00, 0x00 }, 4 }   // Drive Motor West 100 step
+};</pre>
+
+<p>For addressing specific ports of the Diseqc switch tune-s2's normal functions are used. They are called before the motor position commands are sent. Usage of the modified tune-s2 is pretty simple. The only differences are two new cli switches and not needing to give it tuning parameters.</p>
+
+<pre>-step-east 
+-step-west</pre>
+
+They each take any value from 0 to 10 like, 
+
+<pre>./tune-s2 -step-west 0 -committed 1</pre>
+
+<p>This would cause the satellite dish motor on port 1 of the Diseqc switch to step 1 position counter-clockwise. To send the same command of stepping 1 position counter-clockwise to the other motor,</p>
+
+
+<pre>./tune-s2 -step-west 0 -committed 2</pre>
+
+<p>The stepping argument values 0 through 10 are mapped on a fairly arbitrary set of actual steps. This results from just doing array index look ups in the above packet tables,</p>
+
+<pre>0->1
+1->2
+2->3
+3->4
+4->5
+5->10
+6->20
+7->30
+8->40
+9->50
+10->100</pre>
+
+<pre>http://www.satnigmo.com/2254/how-to-configure-emp-centauri-diseqc-switches/</pre>
+
+<h4>Calculating solar position and using that to decide how many steps to step per axis</h4>
+
+<p>Figuring out where the sun is in the sky in terms of an alt-az format is made simple by <a href="http://pysolar.org/">pysolar</a>. Figuring out how to turn that position into sequences of steps on the motors is much, much harder.</p>
+
+<pre>#! /usr/bin/env python
+import Pysolar
+import datetime
+d = datetime.datetime.utcnow()
+lat = 40.0
+long = -90.0
+sol_alt = Pysolar.GetAltitude(lat, long, d)
+sol_long = Pysolar.GetAzimuth(lat, long, d)
+print sol_alt
+print sol_long</pre>
+
+
+<p>These values are relative to the pysolar reference frame which is given by their diagram,</p>
+<img src="http://erewhon.superkuh.com/pysolar_reference_frame.png" /><pre style="float:left;margin:1em;">$ ./solpos.py 
+41.4925424732
+-35.8472087363</pre>
+
+<p>My setup is pointed directly south. So for this example time that means I need to calculate the number of steps required to turn the (top) altitude motor 41.5 <em>up</em> from level and the (bottom) azimuth motor 35.8 degrees to the <em>left</em> (east).</p>
+
+<!--<img src="/" />-->
+
+<!--
+<pre># Frequency (MHz),Level (dB)		# Frequency (MHz),Level (dB)
+54.00196,-45.6883596633			54.00196,-62.1023728582
+54.0039,-45.7144431488			54.0039,-62.7271718357</pre>
+</p>
+-->
+
+
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/rtlsdrinterferometer.html" type="hidden"></p>
+		</form>
+
+
+</div>
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+
+</body>
+</html>
+

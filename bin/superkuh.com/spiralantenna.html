@@ -1,0 +1,733 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Archimedean Spiral Antenna w/RTLSDR</title>
+	<link rel="stylesheet" type="text/css" href="/meh.css" />
+</head>
+<!-- Hi. Anything I've commented out is probably new, very wrong, or outdated. -->
+<body>
+<div id="center" class="column">
+<div style="float:right;margin-left:1em;"><h5>Last updated: 2013-01-13 <!--- <a href="#template">template</a></h5>--></div>
+<h1>Dodgy plans to make Archimedean spiral antenna for RTLSDR (software defined radio receiver)</h1>
+<a name="spiral" />
+<h3>Resources Utilized</h3>
+<p>[<a href="http://www.antenna-theory.com/">antenna-theory.com</a>: <a href="http://www.antenna-theory.com/antennas/travelling/spiral.php">Spiral Antennas</a>, <a href="http://www.youtube.com/watch?v=JaJkZgiyTas">video</a>, <a href="http://www.antenna-theory.com/definitions/infinite.php">infinite balun description</a>], <a href="http://superkuh.com/library/Electromagnetics/Spiral%20Antenna/">misc papers on spiral antenna, including Dyson's 1959</a>, Modern Antenna Design_ Thomas A Milligan_ 2005 p.521-543, Antenna Engineering Handbook_ John Volakis_ 2007 Ch. 13-1 to 13-34  Ch. 13-55 to 13-64<!--p.374-401 and p.422-431-->, Foundations of Antenna Theory and Techniques_ Vincent Fusco_ 2005 p.212, <a href="http://erewhon.superkuh.com/library/Electromagnetics/Spiral%20Antenna/Analysis%20of%20Archimedean%20Spiral%20Antenna_%20Chapter%202_%20Caswell.pdf">Analysis of Archimedean Spiral Antenna</a></p>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/spiralantenna.html" type="hidden"></p>
+		</form>
+
+
+
+<hr />
+
+<p>An Archimedean spiral made of two equal lengths of coaxial cable seems to be the easiest circularly polarized antenna to make that'll cover a broad range of the rtlsdr dongles' E4000 tuners.</p>
+
+<h3>The actual build</h3>
+<img src="http://erewhon.superkuh.com/gnuradio/spiralantenna_proto_sm.jpg" />
+<p>Assembly on the stacked PVC was annoyingly hard so I made it on plastic foam board first. I am taking data now and I am surprised by it's sensitivity down in the &lt;100 Mhz range. I haven't watched long enough to find problems and on some higher frequencies it's 2-4dB less power than using a band appropriate quarter wave antenna. A lot of the variation could be from the directionality of the spiral antenna; I have it standing on edge perpendicular to the ground with the two lobes pointing north-south with the nulls towards the nearest metropolitan area.</p>
+<a href="http://erewhon.superkuh.com/gnuradio/spiralconstruction.gif"><img style="float:left;margin-right:1em;" src="http://erewhon.superkuh.com/gnuradio/spiralconstruction_sm.gif" /></a>
+<p>I made the guide by laying down two pieces of tape on 1/4" insulation foam board and marking it with sharpie. I started winding the first spiral arm in the middle (at the feed) and used tape to temporarily reinforce the shape while doing the innermost bend. The innermost bend had to be pre-shaped by bending the RG6 coax with pliars. I think I avoided kinking the dielectric. After the first few winds just tacking in place with hot glue worked. Just don't take it out into the sun without adding permanent fixation in the form of silicone glues or PVC and zip ties. I had the low temperature hot glue soften and detach requiring 30 minutes of repair work.</p>
+<p>The inner feedpoint connection between the center conductor of the feed arm and the outer conductor of the other was made with regular and special aluminum silver solders after the two arms had been hot glued down to the board using a regular soldering iron. The rtlsdr dongle I'm using is hooked up with a 10m long USB active repeater extension cable and F crimp connectors.</p> <br clear="all" />
+<img src="http://erewhon.superkuh.com/gnuradio/spiralantenna_kitchen.jpg" />
+<p>I was able to decode WBFM in stereo with RDS decoding at 2.048MS/s so I don't think it's dropping many samples. For a choke I wound the usb cable ~10 times around a microwave oven transformer.</p>
+
+<p>See the live data at my <a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200Mhz radio scanner</a> page. Her's an alternate single plot of <a href="http://superkuh.com/gnuradio/live/spectral-map_52-1108.png">52-1108 Mhz</a>. The antenna is inside an apartment with an electrical system so noisy the wall sockets literally make barely audible buzzing and clicking sound. I'm hoping to put it on a sun tracking mount outside soon.</p>  
+
+<p>After a week of data I have to admit some negative differences in some frequency ranges despite much improved performance for the low frequency end (ex:<a href="http://erewhon.superkuh.com/gnuradio/live/graph_84400000.png">84Mhz</a>). The spiral antenna usage starts just before day 253 (Sept 11th) for reference. As compared to the set of 3 quarter-wave antenna used before drops of up to ~8 dB (relatively rare, ex: <a href="http://erewhon.superkuh.com/gnuradio/live/graph_708400000.png">709Mhz</a>) but more typically 2 to 3 dB (more common and tens of Mhz wide, <a href="http://erewhon.superkuh.com/gnuradio/live/graph_156400000.png">156Mhz</a>) occur. But those verticals were next to a desk with a noisy LCD monitor where the large spiral cannot fit when I point the spiral at the monitors I get similar data. I don't know anything about absolute performance of this antenna yet.</p>
+<a href="http://superkuh.com/gnuradio/live/spectral-map.png"><img src="http://superkuh.com/spectral-map_inline.png" /></a>
+<p>In addition to the lower RFI of the different placement I think some lower signal is because of the variable spacing between the two coaxial cables. It's tough to wind it just right. That might effect the distributed capacitance and inductance which might result in reflections from the impedance changes. So frequencies with their action regions near the gap spacing variation might have low sensitivity. I notice that when I reposition an out of place arm some frequencies will improve... but others degrade. I'm doing a bit of trial and error to tune it for even performance. Or it could be the effects of a not-perfectly-complementary structure where the gap spacing does not equal the conductor width that I'll just have to live with. Some sort of standardized spacer would help. I've been moving and reorienting the antenna in and outdoors since day 253 as well, so some of the variability is from that.</p>
+<p>Qualitatively, I've been able to do wideband FM stereo decoding with RDS, gr-air-modes ADB-S decoding, 6m ssb, fm police/emergency chatter, pager pocsag, and LTE Cell scan stuff as easily as I did with 1/4 wave verticals before.</p> 
+
+<h3>Pre-build design and theory</h3>
+<!--<img src="http://erewhon.superkuh.com/gnuradio/150_3000_spiral.png" />-->
+<a href="http://erewhon.superkuh.com/gnuradio/150_3000_spiral_stringsupport_2.png"><img src="http://erewhon.superkuh.com/gnuradio/150_3000_spiral_stringsupport_2_sm.png" /></a>
+
+<pre>150-3000(?)Mhz, 11.5 turns, (0.5cm r_1 / 0.5 cm w) = 1, (s/w) = 2, <a href="http://erewhon.superkuh.com/gnuradio/150-3000Mhz_spiral-antenna.skp">SketchUp 7 model</a> (6.2MB)
+
+r = r_1 + aφ
+
+r_1 = 0.005m, 1/2 distance between spiral elements
+r_2 = 0.365m, from spiral center to outermost spiral tip
+a = 0.03m, growth rate, distance increased from origin in one full turn
+φ = angle, one turn: 2π or 360 degrees, to one "a"
+w = 0.005m (5mm), arm width of spiral conductor
+s = 0.01m (10mm), spacing between each turn
+N = 11.5, number of turns
+
+Low frequency limit guesses:
+
+	the speed of light / (2 * pi * 0.365m) = 130.7 Mhz <!--the speed of light / (2 * pi * ((r_1) + (N * a)))= c / (2 * pi * ((0.005 m) + (11.5 * 0.03 m))) = 136 Mhz-->
+
+	circumference of circle at widest point should be 1.25λ of lowest frequency
+	(2*pi*0.365m)/1.25 = 1.834m, c/1.834m = 163.5 Mhz <!--1.834m/(2pi)= 29.19cm radius -->
+
+High frequency limit guesses:
+
+	the speed of light / (4 * r_1 ) 
+	= c / (4 * 0.005 m) = 15 Ghz (max for 1/4th wave across 2*r_1, not realistic?)
+
+	Over-mode noise, &lt;2.6dB ripple when 80% of 0.254λ, 0.20λ &gt; inner diameter
+	150Mhz 	0.2*1.998m  ~= 40cm
+	1.5Ghz 	0.2*19.98cm ~= 4cm
+	2Ghz	0.2*15cm    ~= 3cm
+	3Ghz	0.2*x10cm   ~= 2cm
+	6Ghz	0.2*5cm	    ~= **1cm** (upper limit for 2*r_1, 2*0.5cm, 1cm)
+
+Polarization: RHC polarization on one side and LHC polarization when flipped over.
+Length of coax in one spiral arm = ~12.83m<!--Resistance loss: RG6 @ 900Mhz, 6.0dB ⋅ (12.83m/100ft) = 0.252dB -->
+</pre>
+
+<p>I am not very sure at what the upper frequency limit will be. I think it will be well above the 2.2Ghz limit of the E4000 tuner so I don't care too much.</p>
+
+
+<!--
+<p class="quote">Amplitude and phase ripple is not a significant problem in most applications... we must reduce the inner diameter to limit the over-mode level. For example, to limit it to −16.4 dB (2.6 dB of ripple), we need to reduce the inner diameter to 80% of 0.254λ (0.20λ).</p>
+<p>- Modern Antenna Design by Thomas A Milligan, 2005, p.552</p>
+
+<pre>inner diameter, r_1 = 4cm 
+
+150Mhz 	0.2*1.998m  ~= 40cm 
+500Mhz 	0.2*59.95cm ~= 12cm
+1Ghz	0.2*29.97cm ~= 6cm
+
+1.5Ghz 	0.2*19.98cm ~= 4cm 
+
+1.7Ghz	0.2*17.63   ~= 3.5cm
+2Ghz	0.2*14.99cm ~= 3cm
+3Ghz	0.2*x10cm   ~= 2cm
+6Ghz	0.2*5cm	    ~= 1cm</pre>
+
+<p>So the upper edge is arbitrarily ~1.5Ghz not 3.7Ghz. Above 1.5Ghz it'll still work but the noise will get progressively worse.</p>
+-->
+
+<!--
+
+N = number of arms = 2
+m = mode number, "number of 2π (radians) or 360◦ (degrees) cycles
+		 that occur in the feed phasing when progressing through the arms"
+
+phase for 2 arms = -(2*π*m)/N
+
+	-π*m
+	mode 1, -π
+	mode 2, -π*2
+	mode 3, -π*3
+
+m_radiated = m + kN
+k = . . . , −2, −1, 0, 1, 2, . . .
+
+-->
+
+<h1>Theory Notes</h1>
+<p>To be clear, most of these diagrams and excerpts are from the the books and papers I read. I did not produce them. The reference used is usually cited below the diagram or quote.</p>
+
+
+<h3>Self-complementary structures</h3>
+<p class="quote">"We can make a structure with logarithmically scaled radiating parts along a transmission line and still not achieve a successful broadband antenna. The parts must couple electromagnetically, not just through the connection of the feeder. We place dipoles of the log-periodic dipole antenna close together to produce the coupling needed for rapid attenuation. Similarly, we closely space the turns of a spiral so that the arms couple and there is sufficient length in the active region along which to radiate. Usually, we can account for the rapid attenuation of currents through loss of power in radiation by considering a single mode."</p>
+<p>-- Modern Antenna Design by Thomas A Milligan, 2005, p.541</p>
+
+<img src="http://erewhon.superkuh.com/gnuradio/spiral_diagram.png" />
+
+<h4>Arm width versus inner radius</h4>
+<p>Archimedean spirals aren't fully self similar since they are not scale invariant but apparently they behave a lot like equiangular spiral antenna. To be self-complementary the area of metal conductor and air (dielectric) should be equal; able to be switched with no change in the antenna's structure. For an archimedean spiral this means the width of the spiral arm, w, should be the width of the gap between arms, s. Additionally, the inner radius, r_1, should be equal to both. If it is not, the impedance varies greatly by frequency. In my design r_1 = w, but s/w = 2. I think it is close enough that it'll act self-complementary to a degree. <!--RG6 quadshield, 5mm diameter outer conductor, by using a coaxial cable like Heliax FSJ2-50 with a 9.5mm diameterouter conductor s/w could be pushed to ~1.--></p>
+
+
+<img src="http://erewhon.superkuh.com/gnuradio/spiral_inner-radius_vs_arm-width.png" />
+
+<p class="quote">"When the inner radius is less than the arm width the real part of the input impedance is less than the desired 188 ohms, and when the inner radius is greater than the arm width the real part of the input impedance is greater than expected. Also, when the inner radius is not equal to the arm width, both the real and imaginary parts of the input impedance vary greatly with frequency."</p>
+<p>-- <a href="http://erewhon.superkuh.com/library/Electromagnetics/Spiral%20Antenna/Analysis%20of%20Archimedean%20Spiral%20Antenna_%20Chapter%202_%20Caswell.pdf">Analysis of Archimedean Spiral Antenna</a>, p.4</p>
+
+
+<h3>Active regions</h3>
+
+<img src="http://erewhon.superkuh.com/gnuradio/spiral_ant_schem.png" />
+
+<p class="quote">"A balanced line feeds the spiral from the center. The radiations from the nearly equal and opposite currents at the feed point cancel in the far field. The growing spiral arms separate the currents. When the perimeter of the turn approaches one wavelength, the out-of-phase currents at (edit: A) become in phase at (edit: B), and radiation from the currents no longer cancel in the far field. This condition starts somewhat before the 1λ perimeter point and continues for some distance after it. To radiate (edit: and by reciprocity, receive) efficiently the antenna should have a perimeter of 1.25λ at the lowest operating frequency. The upper-frequency truncation size is determined by a requirement to limit the spacing between (inner) feed points to less than λ/4, although to reduce radiation of higher-mode modes, they should be closer. For higher-mode operation, we increase the outer diameter to (m + 0.25)λ/π, and the spacing between the feed points can be increased to mλ/4."</p>
+<p>-- Modern Antenna Design by Thomas A Milligan, 2005, p.546</p>
+
+<a href="http://erewhon.superkuh.com/gnuradio/spiral_active_region.png"><img src="http://erewhon.superkuh.com/gnuradio/spiral_active_region_sm.png" /></a>
+<a href="http://erewhon.superkuh.com/gnuradio/spiral_active_region_2.png"><img src="http://erewhon.superkuh.com/gnuradio/spiral_active_region_2_sm.png" /></a><br /><img src="http://erewhon.superkuh.com/gnuradio/2200Mhz_active_region.png" />
+
+<p>All these inexact calculations of the active region were done assuming the full speed of light in air and the first mode. But in coaxial cable the velocity factor will be lower by some fraction. I am not yet sure if this is important. If it is, the active regions will be smaller in radius.</p>
+<!--
+<pre>Lower frequency limit:
+(2*pi*0.365m)/1.25 = 1.834m = 163.5 Mhz
+
+To get 150 Mhz: (1.25*1.998)/2*pi= 39.7cm radius
+(39.7cm-0.5cm)/3cm = 13 turns for 150 Mhz</pre>
+-->
+
+<h3>Infinite balun feeds</h3>
+
+<img src="http://erewhon.superkuh.com/gnuradio/coax_spiral_antenna.png" /><img src="http://erewhon.superkuh.com/gnuradio/modernantennadesign_fig11_4.png" />
+
+<p>The feed coaxial cable has the rtlsdr dongle on the end. It's inner conductor connects to the outer shield/braid of the second coaxial cable. In this way the outer shield of the second coax acts as one spiral arm and the outer shield of the feed coax acts as the other. The inner surface of the feed coax will act as a transmission line but upon reaching the end the current will flip to the outside of the shield conductor and flow normally. This is called an 'infinite balun'.</p>
+
+
+<p class="quote">"We can make a balun by using the truncation property of the spiral where the current attenuates rapidly beyond the active region. The balun prevents currents excited on the outside of a coax from reaching the input. In Figure 11-4 we solder the coax feeder to one of the arms. Since the antenna does not radiate in the direction of the expanding arms, it does not excite currents on the structure after the active region; conversely, no currents excited on the structure beyond the active region will reach the input. The coax feeder outer shield becomes part of the antenna. We solder a dummy coax on the
+second arm to maintain symmetry. Because the balun uses the active region limitation on currents of the antenna, its bandwidth matches that of the antenna."</p>
+
+<p>-- Modern Antenna Design by Thomas A Milligan, 2005, p.557</p>
+
+<!--
+<a href="http://erewhon.superkuh.com/gnuradio/spiral_feedpoint.png"><img src="http://erewhon.superkuh.com/gnuradio/spiral_feedpoint_sm.png" /></a>
+
+<p>Rather than extending the inner wire of the feed coax as the bridge wire, or using some other conductor, I think extending the shield/braid of the secondary coax is better due to it's diameter being larger, and so closer to the gap spacing and inner radius. The transition from the ~5mm diameter of the shield to the ~1mm of the inner 18AWG wire should be gradual and symmetric. But then the secondary arm would seem ~4cm longer? Or would the tiny region of wire exposed be the new inner radius r_1? The bridge is not meant to be part of the antenna, just a way to hook up the other spiral arm to the coaxial feed line.</p> -->
+
+<h3>Feed bridge wire, symmetry and balance?</h3>
+
+<img src="http://erewhon.superkuh.com/gnuradio/bridgewire_feed_point_2.png" />
+
+<p class="quote">"In regards to hooking the inner cable of the feed cable to the outer conductor of the second cable, it is important - but for higher frequencies. If you want to extend your bandwidth (in the higher range, not the lower range) - then symmetry in the feed and the more exactness/tightness of the sprial near the feed becomes important. However, if the wavelength of interest is much larger than the dimensions of the feed, then it won't matter too much."
+<p class="quote">"On the question of the bridge wire: ... Generally it doesn't matter but should be kept short, in general. Again this comes into play at the higher frequencies. But the ratio of the diameters shouldn't matter much."</p>
+<p>--<a href="http://antenna-theory.com/phpbb2/viewtopic.php?p=1041#1041">bigSteve</a></p>
+<pre>c/(2.2 Ghz*4) = 3.4cm 
+inner radius = 0.5cm
+offset of electrical connection from center: ~2mm</pre>
+<p>I will assume that since 3.4cm is so much larger than inner diameter (1cm) and the ~2mm inbalance in the electrical contact will not matter enough to change the design. To connect the secondary coax, extend the 18 AWG (~1mm) inner wire of the feed coax across the 1cm gap and only expand it to the 5mm outer shield on the secondary coax. The outer shield/braid of the secondary cable can be tightly wrapped to the bridgewire from the feed coax with thin copper wire and then the entire mess soldered with care taken not to touch the secondary coaxial cable's inner conductor.</p>
+
+<p>Since the current decreases exponentially along the spiral hooking the radio receiver directly to the end has little effect on the radiation pattern.</p>
+
+<a href="http://erewhon.superkuh.com/gnuradio/spiral_schem_05_2_lg.jpg"><img src="http://erewhon.superkuh.com/gnuradio/spiral_schem_05_2.jpg" /></a>
+
+<!--<a href="http://erewhon.superkuh.com/gnuradio/dongletocoax.jpg"><img src="http://erewhon.superkuh.com/gnuradio/dongletocoax_sm.jpg" /></a>-->
+
+<img src="http://erewhon.superkuh.com/gnuradio/spiral-to-dongle.jpg" />
+
+<p>USB Dongle IEC-169-2 connector -&gt; PAL Male to F-Connector Female</a> -&gt; Spiral Antenna coaxial feed arm (darker gray in these sketches).</p>
+
+
+<!--<img src="http://erewhon.superkuh.com/gnuradio/280_3700Mhz_spiral.png" />
+<pre>280-3700Mhz, 6 turn, (2cm r_1 / 0.5 cm w) = 4, (s/w) = 1.5
+
+r_1 = inner radius = 0.02m
+r_2 = outer radius = 0.17m
+a = 0.025m
+
+w = arm width of spiral conductor = 0.005m (5mm)
+s = spacing between each turn = 0.0075m  (~7.5mm)
+N = number of turns = 6
+Length of coax in one spiral arm: 3.59m
+
+the speed of light / (4 * 0.02 m) = 3740 Mhz
+the speed of light / (2 * pi * (0.02m+(6*0.025m))) = 280 Mhz
+3700 / 280 = 13.2</pre>
+-->
+
+<!--280-3700Mhz, 5 turn, (2cm r_1 / 0.5 cm w) = 4, (s/w) = 2
+
+r_1 = inner radius = 0.02m
+r_2 = outer radius = 0.17m
+a = 0.03m
+
+w = arm width of spiral conductor = 0.005m (5mm)
+s = spacing between each turn = 0.01m (10mm)
+N = number of turns = 5
+Length of coax in one spiral arm: 2.98m
+
+the speed of light / (4 * 0.02 m) = 3740 Mhz
+the speed of light / (2 * pi * (0.02m+(5*0.03m))) = 280 Mhz
+_____________________________________________________________
+-->
+
+<h3>Construction and materials</h3>
+<a href="http://erewhon.superkuh.com/gnuradio/measurement_marks_2.png"><img style="float:right;margin-left:1em" src="http://erewhon.superkuh.com/gnuradio/measurement_marks_2_sm.png" /></a>
+
+<h4>Materials</h4>
+<ul>
+	<li>2 * 102 cm lengths of 1/2" PVC pipe</li>
+	<li>2 * 13 m lengths of coaxial cable</li>
+	<li>1 * 290 cm length of string</li>
+	<li>100 * plastic zip ties for coax attachment to pvc</li>
+	<li>100 * plastic zip ties for intra-arm spacing</li>
+	<li>1 * 10cm length of thin bare copper wire</li>
+</ul>
+
+
+
+<h4>Construction</h4>
+
+<p>The real result will probably be more wavy and/or square'ish towards the outside of the spiral because of the increasing gap between supports. That is minimized with the string support arms and a chain of zip tie zip tie spacers at the mid-point between pvc tubes.</p>
+
+<p>My design assumes ~0.6cm diameter cable with 0.5cm diameter outer conductor and 1mm diameter inner conductor but use the thickest coaxial cable you can bend smoothly to the desired 0.5cm inner radius. The precise length of the spiral element is closer to 12.83m than 13m. But there's errror and the feed coaxial cable's inner conductor should extend 4cm longer that this to reach the other other coax. Both spirals must have exactly the same length of outer shield conductor acting as the antenna elements.</p>
+
+<a href="http://erewhon.superkuh.com/gnuradio/spiral_support.png"><img src="http://erewhon.superkuh.com/gnuradio/spiral_support_sm.png" /></a>
+
+<p>The outer string, 289cm long, is attached at four places to the outer ring of coaxial cable in the mid-points between the pvc arms. The intention is to put he outer string under tension and pull outwards on the cable towards a more round shape. That outer ring of coax is connected to the next layer in with a zip tie tightened to the correct spacing. And that layer to the next, and so on inward until all are rings of coax and spaced and suspended from the outer string being pulled tight.</p>
+
+<!--<li>Two 72cm ((35*2)+2) long 1/2" PVC pipes for support. I think using cross of a broad plastic tape over the top and bottom of the spiral 45 degrees from the pvc supports could approximately used to maintain the gap spacing in between the PVC. </li>-->
+<!--<li>Two 102cm long 1/2" PVC pipes for support. The spiral rings will go out to 35cm, taking up ~73cm pipe length. Lines are tied from the ends of the pipes to the mid-points between the spiral arms with string. The supported mid-point suspends a chain of string, or plastic zip ties, from ring to ring maintaining gap spacing.</li></ul>
+-->
+
+<a href="http://erewhon.superkuh.com/gnuradio/150_3000_spiral_stringsupport_top.png"><img src="http://erewhon.superkuh.com/gnuradio/150_3000_spiral_stringsupport_top_sm.png" /></a>
+
+<p>To generate the measurement marks for the coax crossing on the pvc support arms I wrote a perl script. It only works for full of half numbers of turns, and only 4 arms. The other spiral is just the same distances but rotated 180 degrees. So Arm 1 becomes Arm 3, Arm 2 becomes 4, and vice versa.</p>
+
+<pre>./<a href="/archimedesspiralarms.pl">archimedesspiralarms.pl</a> r1 0.005 -a 0.03 -t 11.5 -arms 4
+Measurements are from arbitrary center point and all units are in meters.
+Arm 1
+	0.005, 0
+	0.035, 1
+	0.065, 2
+	0.095, 3
+	0.125, 4
+	0.155, 5
+	0.185, 6
+	0.215, 7
+	0.245, 8
+	0.275, 9
+	0.305, 10
+	0.335, 11
+Arm 2
+	0.0125, 0
+	0.0425, 1
+	0.0725, 2
+	0.1025, 3
+	0.1325, 4
+	0.1625, 5
+	0.1925, 6
+	0.2225, 7
+	0.2525, 8
+	0.2825, 9
+	0.3125, 10
+	0.3425, 11
+*	0.3575, 11.5
+Arm 3
+	0.02, 0
+	0.05, 1
+	0.08, 2
+	0.11, 3
+	0.14, 4
+	0.17, 5
+	0.2, 6
+	0.23, 7
+	0.26, 8
+	0.29, 9
+	0.32, 10
+	0.35, 11
+*	0.365, 11.5
+Arm 4
+	0.0275, 0
+	0.0575, 1
+	0.0875, 2
+	0.1175, 3
+	0.1475, 4
+	0.1775, 5
+	0.2075, 6
+	0.2375, 7
+	0.2675, 8
+	0.2975, 9
+	0.3275, 10
+	0.3575, 11</pre>
+
+
+<!--
+<h4>Distance from center of PVC to make coax alignment marks</h4>
+<img src="http://erewhon.superkuh.com/gnuradio/spiral_pipe_marks.png" />
+<p>All marks include 2cm inner radius so "Arm 0.0" first mark, "2cm", is shown as the circle in the above image.</p>
+<pre>Arm 0.0: (((0.02 m) + (N * 0.03 m))))
+	2cm, 5cm, 8cm, 11cm, 14cm, 17cm, 20cm, 23cm, 26cm, 29cm, 32cm  
+
+Arm 1.0: (((0.02 m + 0.0075m) + (N * 0.03 m))))
+	2.75cm, 5.75cm, 8.75cm, 11.75cm, 14.75cm, 17.75cm, 20.75cm, 23.75cm, 26.75cm, 29.75cm, 32.75cm 
+
+Arm 0.1: (((0.02 m + ((0.0075m ⋅ 2)) + (N * 0.03 m))))
+	3.5cm, 6.5cm, 9.5cm, 12.5cm, 15.5cm, 18.5cm, 21.5cm, 24.5cm, 27.5cm, 30.5cm, 33.5cm 
+
+Arm 1.1: (((0.02 m + ((0.0075m ⋅ 3)) + (N * 0.03 m))))
+	4.25cm, 7.25cm, 10.25cm, 13.25cm, 16.25cm, 19.25cm, 22.25cm, 25.25cm, 28.25cm, 31.25cm, 34.25cm 
+</pre>
+-->
+
+<!-- <img src="http://erewhon.superkuh.com/gnuradio/spiral_materials.jpg" /> -->
+
+
+<hr />
+<h3>Misc notes</h3>
+<p class="quote">"Although Archimedean and exponential spirals have different equations defining them, practice shows that their characteristics do not differ by very much. The Archimedean spiral arm lengths can be long and produce high circuit losses at low frequencies. The wrap angle of an Archimedean spiral changes from a high value in the center to a low value on the outside. The high wrap rate in the center excites more higher-order modes at high frequencies. The low wrap rate at the outer diameter improves pattern shape at low frequencies. Although an exponential spiral has more uniform characteristics over the entire frequency range, an Archimedean spiral is useful."</p>
+<p>-- Modern Antenna Design by Thomas A Milligan, 2005, p.545</p>
+<a href="http://erewhon.superkuh.com/gnuradio/equiangular_vs_archimedean.png"><img src="http://erewhon.superkuh.com/gnuradio/equiangular_vs_archimedean_sm.png" /></a>
+<p><a href="http://superkuh.com/library/Electromagnetics/Spiral%20Antenna/1,5%20-%2040%20GHz%20Meander%20Spiral%20Antenna%20Simulation%20and%20Design_%20Fabrizio%20Trotta.pdf">1,5 - 40 GHz Meander Spiral Antenna Simulation and Design_ Fabrizio Trotta</a></p>
+
+<!--
+<pre>
+Inner radius = 4 cm 
+Outer radius = 90cm
+Number of turns: 10
+Distance per turn: 8.8cm
+Gap between different spiral arms: 4.4 cm
+Length of coax in one spiral arm: ~28.81m
+speed of light / (2*pi*90cm) = 53 Mhz = lowest frequency
+speed of light / (4*4cm) = 1874 Mhz = highest frequency
+RHCP in "up" direction</pre>
+-->
+
+<!--<p><a href="http://erewhon.superkuh.com/library/Electromagnetics/Spiral%20Antenna/Analysis%20of%20Archimedean%20Spiral%20Antenna_%20Chapter%202_%20Caswell.pdf">Analysis of Archimedean Spiral Antenna</a> (pdf page 5/51) - "When the inner radius is less than the arm width the real part of the input impedance is less than the desired 188 ohms, and when the inner radius is greater than the arm width the real part of the input impedance is greater than expected. Also, when the inner radius is not equal to the arm width, both the real and imaginary parts of the input impedance vary greatly with frequency. For a frequency-independent, self-complementary spiral the input impedance should be 188 ohms and flat over a wide frequency range. This behavior is best achieved in NEC4 when the inner radius is equal to the arm width, r_1 = w"</p>
+<p>" Another important parameter in setting up the NEC4 simulation is the value of the inner radius, r1 .Through trial and error it was found that frequency independent behavior was achieved only when the inner radius was equal to the strip width or spacing between turns, r1 = w = s . Solving (2.6) for the inner radius equal to the width gives, r_1 = (r_2/(4N+1))"</p>-->
+<!--<img style="float:left;margin-right:1em" src="http://erewhon.superkuh.com/gnuradio/coax_spiral_antenna.png" />-->
+
+</div>
+
+	<div id="left" class="column">
+
+		<a href="/"><img src="/tech_avatar.jpeg" class="u-photo" /></a>
+<!--
+		<h4>Spaceweather</h4>
+		<ul class="navlist">
+	
+		<li><a href="http://erewhon.superkuh.com/spaceweather/">Aggregator</a>
+			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/spaceweather/load.html">&lt;Load only on Scroll&gt;</a></li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/quicklook.html">Quicklook</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/heliosphere.html">Heliosphere/Magnetosphere</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/lightandparticle.html">Light/Particle fluxes</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/irradiancetrends.html">Irradiance and Trends</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/radio.html">Radio</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic.html">Geomagnetic</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/geomagnetic2.html">Geomagnetic 2</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solarmagnetic.html">Solar Magnetic/Spots</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/solardisk.html">Solar Disk/Corona Imaging</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/sdoaia.html">SDO AIA and HMI</li>
+			<li><a href="http://erewhon.superkuh.com/spaceweather/unsorted.html">Unsorted</a></li>
+			</ul>		
+		</li>
+
+		<li>Source Code
+			<ul class="navlist">
+			<li><a href="/spaceweather.pl">spaceweather.pl</a></li>
+			<li><a href="/spaceweather_oncedaily.pl">spaceweather_oncedaily.pl</a></li>
+			<li><a href="/arforecastmovie.pl">arforecastmovie.pl</a></li>
+			<li><a href="/solisarmirror.pl">solisarmirror.pl</a></li>
+			</ul>
+		</li>
+-->
+
+
+<!--
+		<li><a href="http://erewhon.superkuh.com/gnuradio/live/load.html">52-2200 Mhz Radio Monitor</a>
+			<ul class="navlist">
+			<li><a href="http://superkuh.com/rtlsdr.html#pyrtlsdr_logger">Explanation and Code</a></li>
+			<li><a href="http://superkuh.com/gnuplottimeseries.html#realdata">Learning Gnuplot</a>
+			</ul>
+		</li>
+-->
+
+
+
+<!--		<li>Sunspot Photos
+		<ul class="navlist">
+			<li><a href="/sunspot.jpg">2011-09-28 4:45pm CST</a></li>
+		</ul>
+		</li> -->
+<!--
+		<li><a href="/solarandspaceweather.html">Links</a></li>
+		<li><a href="/library/Space/Solar">Resources</a></li>
+		</ul>
+-->
+
+
+		<h4>Interests</h4>
+		<ul class="navlist">
+		<li><a href="/rtlsdr.html">RTLSDR/GNU Radio</a>
+
+		<li><a href="/radio/?C=N&O=D">70-1000 MHz Radio Archive</a>
+			<ul class="navlist">
+			<li>Frequency hopping scans, directory list, an <a href="http://www.superkuh.com/radio/2014-12-07_06-39_70-1000_32k/">example</a>.</li>
+			</ul>
+		</li>
+
+		<li>Planar PCB Radio Filters<ul class="navlist">
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			</ul>
+
+		</li>
+
+<!--			<ul class="navlist">
+			<li><a href="http://erewhon.superkuh.com/gnuradio/live/">(Not)Live Frequency Monitor</a></li>
+			</ul>
+-->
+
+		<li><a href="/rtlsdrinterferometer.html">11 GHz Interferometer</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/thisurlnamehasnothingtodowiththeactualtopicijustnameditthisforkicks.html">Broadband Antenna</a>
+<!--			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/">Resources</a></li>
+			</ul>
+-->
+		</li>
+
+
+		<li><a href="/pyroelectricacceleration.html">Pyroelectric Particle Acceleration</a>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/library/Physics/Pyroelectric%20Acceleration/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li><a href="/spiralantenna.html">Spiral Antenna</a>
+			<ul class="navlist">
+			<li><a href="/library/Electromagnetics/Spiral%20Antenna/">Resources</a></li>
+			</ul>
+		</li>
+
+<!--		<li><a href="/cloudchamber.html">Cloud Chamber Particle Detector</a></li> -->
+<!--		<li><a href="/solarpolarimeter.html">Infrared Solar Polarimeter</a>
+			<ul class="navlist">
+			<li><a href="/library/Space/Solar%20Polarimeter%20Design/">Resources</a></li>
+			</ul>
+		</li>
+-->
+<!--		<li>TEA CO2 Laser
+			<ul class="navlist">
+			<li><a href="/library/Light/TEA%20CO2/co2laser_build.jpg">recovered pic</a></li>
+			<li><a href="/library/Light/TEA%20CO2/">Resources</a></li>
+			</ul>
+		</li>
+		<li>20.1Mhz Radio Telescope
+			<ul class="navlist">
+			<li>Ten-tec 1056</li>
+			<li>Useful Programs</li>
+			<li><a href="/library/Space/Radio%20Astronomy/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Gas Electron Multiplier Particle Detector
+			<ul class="navlist">
+			<li><a href="/library/Physics/Particle%20Detection/">Resources</a></li>
+			</ul>
+		</li>
+
+		<li>Air Vortex Cannon
+			<ul class="navlist">
+			<li>Resources</li>
+			</ul>
+		</li>
+		<li>Galvanic Vestibular Stimulation
+			<ul class="navlist">
+			<li><a href="/library/Neuroscience/Vestibular%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Transcranial Magnetic Stimulation
+			<ul class="navlist">
+			<li>Electrical Design</li>
+			<li><a href="/library/Neuroscience/Magnetic%20Stimulation/">Resources</a></li>
+			</ul>
+		</li>
+		<li>Agrobacterium
+			<ul class="navlist">
+			<li><a href="/library/Biology/Agrobacterium/">Resources</a></li>
+			</ul>
+		</li>
+		</ul>
+
+		<li>Electrotactile Interfaces
+			<ul class="navlist">
+			<li>Theory</li>
+			<li><a href="/library/">Resources</a></li>
+			</ul>
+		</li>
+-->
+		</ul> 
+
+		<h4>Other</h4>
+		<ul class="navlist">
+		<li><a href="/tktts.html">TkTTS</a>
+			<ul class="navlist">A Gnome2/Nautilus-script GUI frontend for text to speech apps. Includes a few extra text processing utilities. <a href="/TkTTS.png">Screenshot</a>.</ul>
+		</li>
+		<li><a href="/epub2text.pl">epub2text</a>
+			<ul class="navlist">I wrote this because I didn't know about calibre's <a href="http://manual.calibre-ebook.com/cli/ebook-convert.html">ebook-convert cli functionality</a>. It is not good at what it does. Use ebook-covert.</ul>
+		</li>
+		<!-- http://www.1001skins.com/skin_details.html?skin_id=1633 -->
+		<li><a href="/ajaxgoogleapis.html">Host googleapis ajax locally</a></li>
+		<li><a href="/opera-sessions-to-tab-number.pl.txt">opera-sessions-to-tab-number.pl</a>
+			<ul class="navlist">This prints the number of tabs in every browser session file in a directory. It reads both Opera text and binary session file formats &lt;12.x and Firefox session files.</ul>
+		</li>
+		<li><a href="/conical-spiral-antenna.html">Conical Spiral Antenna</a></li>
+		<li><a href="/bicone.html">Biconical Antenna w/tensegrity prism</a></li>
+		<li><a href="/shortbackfire-archerytarget.html">Archery Target 5.8 GHz Antenna</a></li>
+		<li><a href="/k-antenna.html">K-Antenna TEM horn</a></li>
+		<li><a href="/dpf.html">Dense Plasma Focus</a>
+			<ul class="navlist">
+			<li><a href="/library/Physics/Dense%20Plasma%20Focus/">Resources</a></li>
+			</ul>
+		</li>
+		<li><a href="/simulatedwoodtype.html">Skins and Scrobbling with Audacious 2.x</a></li>
+		<li><a href="/bitcoin.html">Ubuntu 10.04 ATI Bitcoin mining guide</a></li>
+		<li><a href="/monero.html">Ubuntu 14.04 AMD GPU Monero mining guide</a></li>
+		<li><a href="/openparsec.html">Compile OpenParsec on Ubuntu 10.04</a></li>
+		<li><a href="/operadnstunnel.html">Tunnel DNS over SSH w/Opera on linux</a></li>
+		<li><a href="/btfihkal.html">nginx bandwidth throttling</a></li>
+		<li><a href="/mate-debian-menu.html">Debian menu on MATE</a></li>
+<!--		<li><a href="http://hennigbuam.de/georg/gimp.html">Gimp Astronomy Plugin</a>, <a href="/gimp-plugin-astronomy_0.6-1_amd64.deb">Ubuntu 10.04 AMD64 deb</a></li> -->
+		<!--<li><a href="/ath-ad700-cable.html">ATH-AD700 Stiff Cable</a></li>-->
+		<li><a href="/opticsplanetinc.html">OpticsPlanet, Inc: Scammers</a></li>
+		</ul>
+
+<!--
+		<h4>Old Photos</h4>
+		<ul class="navlist">
+		<li><a href="http://superkuh.com/photos/web/">Gallery</a> (small size)</li>
+		<li><a href="http://superkuh.com/photos/">Index List</a> (full size)</li>
+		</ul>
+-->
+	
+		<h4>Good Books</h4>	
+		<ul class="navlist"><!--<li><a href="/library/MiscText/Douglas%20Hofstadter%20-%20Godel,%20Escher,%20Bash_%20An%20Eternal%20Golden%20Braid.pdf" >Douglas Hofstadter - G&ouml;del, Escher, Bach: An Eternal Golden Braid</a></li>-->
+		<li><a href="/library/Neuroscience/I%20of%20the%20Vortex_%20From%20Neurons%20to%20Self_%20Rodolfo%20R%20Llinas.pdf">Rodolfo R Llin&aacute;s - I of the Vortex: From Neurons to Self</a>
+		<!--<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202000.pdf">Alexandre T Filippov - The Versatile Soliton</a></li>-->
+		<li><a href="/library/Physics/The%20Versatile%20Soliton_%20Alexandre%20T%20Filippov_%202010.djvu">Alexandre T Filippov - The Versatile Soliton</a></li>
+		<li><a href="/library/Chemistry/Crystals_%20Growth,%20Morphology,%20and%20Perfection_%20Ichiro%20Sunagawa.pdf">Ichiro Sunagawa - Crystals: Growth, Morphology, and Perfection</a>
+		</ul>
+
+<p class="smalltext">Type, "/@say/Your message here." after the end of <em>any URL</em> on my site and hit enter to leave a comment. You can <a href="/hello/">view them here.</a> An example would be, http://superkuh.com/rtlsdr.html/@say/Your message here.</p>
+
+<a href="http://internetdefenseleague.org"><img src="/idl.png" alt="Member of The Internet Defense League" /></a>
+
+	<h4>Legal Bullshit</h4>
+	<p class="smalltext"><a href="/dmca.txt">DMCA Requests</a></p>
+
+	<h5>Terms of Use:</h5>
+	<p class="smalltext"> You may not access or use the site superkuh.com if you are under 90 years of age. If you do not agree then you must leave now.</p> 
+
+	<p class="smalltext">The US Dept. of Justice has <a href="https://www.eff.org/deeplinks/2013/04/are-you-teenager-who-reads-news-online-according-justice-department-you-may-be">determined</a> that violating a website's terms of service is a felony under CFAA <a href="http://www.law.cornell.edu/uscode/text/18/1030#a_2">1030(a)2</a>(c). Under this same law I can declare that you may only use one IP address to access this site; circumvention <a href="http://www.volokh.com/2013/08/18/district-court-holds-that-intentionally-circumventing-ip-address-block-is-unauthorized-access-under-the-cfaa/">is a felony</a>. <b>Absurd</b>, isn't <a href="/pictures/computer-criminal.jpg">it</a>?</p>
+
+<p class="smalltext">It is my policy to regularly delete server logs. I don't log at all for the tor hidden service.</p>
+
+<p class="smalltext"><a href="/bellcop.html">bellcop</a>.</p>
+
+<p class="smalltext"><a href="https://cse.google.com/cse?cx=011526838479131502816:mdfmegcoe2q">search</a>.</p>
+
+<p class="smalltext"><a href="/not-all-doors-lead-somewhere.jpg">door.</a>
+
+
+	</div>
+
+
+
+		<!-- <li><a href="/processactogram.pl">ProcessActogram</a>
+			<ul class="navlist">Generates a color coded activity graph of which xwindows were focused/being used at any given second of the day. A visualization of what you do on your graphical shell.</ul></li> -->
+		<!-- <li>xchat2megahal</li> -->
+		<!--<li><a href="/zoneplate.pl">zoneplate.pl</a></li>-->
+
+
+	<div id="right" class="column">
+		<img src="/xraykuh.jpg"/>
+
+		<h3><a href="/blog/blog.html">blog</a></h3>	
+	
+		<h4>About</h4>
+		<p>I enjoy recursion, dissipating local energy gradients, lipid bilayers, particle acceleration, heliophysics instrumentation and generally anything with a high rate of change in electrical current. This site is a combination of my efforts to archive what I find interesting and my shoddy attempts to implement it as cheap as possible.</p>
+
+<!-- <p>I believe the nerve action potential is an electrical manipulation of reversible abrupt phase changes in the lipid bilayer of neurons.</p><p>This is an example of the electrocaloric effect in which a change in an applied electric field produces a change in entropy and, consequently, a change in temperature. The electrical field is produced by changes in the concentration of divalent calcium_2+ ions. The entropy is reduced in the phospholipid bilayer because of their carboxyl head's affinity for the Ca2+ ion over the sodium Na+1. The exchange creates ordering because multiple lipids (~3) bond to Ca2+ but only one bonds to Na+.</p> -->
+
+		<h4>Recent Music</h4>
+<!--		<h4><a href="/np.html">Recent Music</a></h4>-->
+		np: Mogwai - Travel Is Dangerous
+<!--
+		<ul class="navlist">
+		<li><a href="http://alpha.libre.fm/user/superkuh2">Libre.fm</a> (old)</li>
+		<li><a href="http://www.last.fm/user/superkuh">Last.fm</a> (old)</li>
+		</ul>
+-->
+
+		<h4>Recently Read</h4>
+		<ul class="navlist">
+
+<!--	<li>Eric Flint - 1632, 1633, 1634, 1635</li>
+	<li>Ken MacLeod - The Execution Channel</li>
+	<li>Larry Correia - Monster Hunter [International, Vendetta, Alpha, Legion, Nemesis, Siege]</li>
+	<li>David Brin - The Practice Effect</li>
+	<li>Mur Lafferty - Six Wakes</li>
+	<li>Alastair Reynolds - Elysium Fire</li>
+	<li>Stargate - Sacrifice Moon - Julie Fortune</li>
+	<li>Stargate - A Matter of Honor - Sally Malcolm</li>
+	<li>Scott Meyer - Off to Be the Wizard</li>
+	<li>Evan Currie - Warrior King, Odysseus Awakening</li>
+	<li>Greg Egan - The Discrete Charm of the Turing Machine</li>
+	<li>Rudy Rucker - Master of Space and Time</li>
+	<li>Linda Nagata - The Martian Obelisk</li>
+	<li>Kim Stanley Robinson - Blue Mars</li>
+	<li>Eliezer Yudkowsky - Three Worlds Collide</li>
+	<li>Greg Egan - Uncanny Valley</li>
+	<li>Anatoly Dnieprov - The Maxwell Equations</li>
+	<li>John Birmingham - Weapons of Choice</li>
+	<li>Gregory Benford - The Sunborn</li>
+-->
+
+	<li>Michael Crichton - The Terminal Man</li>
+	<li>Rudy Rucker - Inertia</li>
+	<li>Peter Watts - The Freeze-Frame Revolution</li>
+	<li>Geoffrey A Landis - A Walk in the Sun</li>
+	<li>Scott Meyer - An Unwelcome Quest</li>
+	<li>Gregory Benford - Cosm</li>
+	<li>Dennis E Taylor - All These Worlds</li>
+	<li>Olan Thorensen - Cast Under an Alien Sun</li>
+	<li>Larry Niven - The Legacy of Heorot</li>
+	<li>Poul Anderson - The Boat of a Million Years</li>
+	<li>Greg Egan - Phoresis</li>
+	<li>Kim Stanley Robinson - Red Moon</li>
+	<li>Daniel Suarez - Delta-V</li>
+	<li>Adrian Tchaikovsky - Children of Ruin</li>
+	<li>Michael Grant - BZRK Trilogy</li>
+	<li>Adam Roberts - Bete</li>
+
+ 		</ul>
+
+		<p><a href="http://superkuh.com/rss-feeds-2020.opml"><h5>RSS Feeds I Read (opml)</h5></a></p>
+<!--		<p><a href="http://superkuh.com/rss-feeds-2019.opml"><h5>RSS Feeds I Read (opml)</h5></a></p> -->
+		<p><a href="http://superkuh.com/feeds2.html"><h5>RSS Feeds I Read (html)</h5></a></p>
+
+		<h4>Contact</h4>
+		<p>I get all email sent to @superkuh.com</p>
+		<p>Make-up any address *@superkuh.com</p>
+		<!-- <p><a href="https://www.superkuh.com/pubkey.asc">PGP Key</a></p> -->
+		<a href="/bitcoin.txt"><img src="/bitcoin.png" /></a>
+		<!--<p><a href="https://github.com/prof7bit/TorChat">TorChat</a>: fri6mj44l5bujjyp</p>-->
+<!--		<p>Ask me about Retroshare.</p> -->
+		<h5>IRC as 'superkuh'</h5>
+		<ul class="indenterwtfimeanwhonamestheircssclassesshitlikethisreally">
+		<li>Freenode</li>
+		<li>OFTC</li>
+		<li>ShadowWorld</li>
+		<li>SlashNET</li>
+		<li>Quakenet</li>
+		<li>Undernet</li>
+		<li>EFNet</li>
+		<li>EsperNet</li>
+		<li>P2P-Net</li>
+		<li>Snoonet</li>
+		<li><s>Starchat</s> (dead)</li>
+		<li>Darenet</li>
+		<li>The-Agency</li>
+		<li>MBRnet</li>
+		<li>Rizon</li>
+		<li>DALnet</li>
+		<li>Chatspike</li>
+		</ul>
+
+		<!--<h4>History</h4>
+		<p>This site was previously located at superkuh.ath.cx, but that subdomain system was shut down.</p>
+		<p>Then it was at superkuh.com for a while until all data was lost. Now it's back, same place, <s>much less content</s>.</p>
+		<p><a href="http://superkuh.bit/">superkuh.bit</a> on <a href="http://dot-bit.org/Main_Page">namecoin</a> DNS.</p>
+		-->
+
+		
+	</div>
+
+</body>
+</html>
+

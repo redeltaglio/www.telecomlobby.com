@@ -1,0 +1,72 @@
+User-agent: *
+Allow: /
+Allow: /spaceweather/
+
+# Bots tend to get bogged down and try to download the 3 TB and tens of millions of png images
+User-agent: *
+Disallow: /radio/
+
+User-agent: MJ12bot
+Disallow: /ajax/
+
+User-agent: Cloudflare-AMP
+Disallow: /
+
+User-agent: Pinterest
+Disallow: /
+
+User-agent: idmarch
+Disallow: /
+
+User-agent: TurnitinBot
+Disallow: /
+
+User-Agent: NPBot
+Disallow: /
+
+User-Agent: SlySearch
+Disallow: /
+
+User-agent: ias_crawler
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: *
+Disallow: /library/
+
+User-agent: *
+Disallow: /library/*
+
+User-agent: *
+Disallow: /library/*.pdf$
+
+User-agent: *
+Disallow: /library/*.djvu$
+
+User-agent: *
+Disallow: /library/*.txt$
+
+User-agent: *
+Disallow: /library/*.epub$
+
+User-agent: *
+Disallow: /library/*.lit$
+
+User-agent: *
+Disallow: /library/*.chm$
+
+User-agent: Zombies
+Disallow: /brains
+
+User-agent: Killer AI
+Disallow: /~superkuh/
+
+User-agent: The person who is reacting to the lame jokes that is reading this robots.txt right now. Yes, you.
+Allow: /hello/awarenessofthemeta/
+
+User-agent: Unscrupulous algorithms
+Disallow: /visitingthisurlisasignalthatyouarealgorithmicseriouslypleasedontvisitthisturlactualpeople/
+
+#  http headers for unicode art, dns TXT records for inspirational messages

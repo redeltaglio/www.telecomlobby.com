@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet title="CSS_formatting" type="text/css" href="http://www.interglacial.com/rss/rss.css"?>
+<rss version="2.0"
+  xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+><channel>
+<!-- Generated with Perl's XML::RSS::SimpleGen v11.11 -->
+
+<link>http://127.0.0.1/recent7.html</link>
+<title>superkuh</title>
+<description>recently added technical documents</description>
+<language>en</language>
+<lastBuildDate>Fri, 07 Aug 2020 13:00:01 GMT</lastBuildDate>
+<skipHours><hour>0</hour><hour>1</hour><hour>2</hour><hour>3</hour><hour>4</hour><hour>5</hour><hour>6</hour><hour>7</hour><hour>8</hour><hour>9</hour><hour>10</hour><hour>11</hour><hour>12</hour><hour>14</hour><hour>15</hour><hour>16</hour><hour>17</hour><hour>18</hour><hour>19</hour><hour>20</hour><hour>21</hour><hour>22</hour><hour>23</hour></skipHours>
+<sy:updateFrequency>1</sy:updateFrequency>
+<sy:updatePeriod>daily</sy:updatePeriod>
+<sy:updateBase>1970-01-01T13:10+00:00</sy:updateBase>
+<ttl>1440</ttl>
+<webMaster>rss@superkuh.com</webMaster>
+<docs>http://www.interglacial.com/rss/about.html</docs>
+
+<item>
+  <title>library/Electromagnetics/Software Defined Radio/SDR.png</title>
+  <link>http://www.superkuh.com/library/Electromagnetics/Software%20Defined%20Radio/SDR.png</link>
+  <description>(298 kB at Wed Aug 5 22:43:29 2020)</description>
+</item>
+
+<item>
+  <title>library/Biology/Coronavirus/Clinical Course and Molecular Viral Shedding Among Asymptomatic and Symptomatic Patients With SARS-CoV-2 Infection in a Community Treatment Center in the Republic of Korea_ Eunjung Lee et al_ JAMA Intern Med 2020.pdf</title>
+  <link>http://www.superkuh.com/library/Biology/Coronavirus/Clinical%20Course%20and%20Molecular%20Viral%20Shedding%20Among%20Asymptomatic%20and%20Symptomatic%20Patients%20With%20SARS-CoV-2%20Infection%20in%20a%20Community%20Treatment%20Center%20in%20the%20Republic%20of%20Korea_%20Eunjung%20Lee%20et%20al_%20JAMA%20Intern%20Med%202020.pdf</link>
+  <description>(359 kB at Thu Aug 6 11:16:43 2020)</description>
+</item>
+
+<item>
+  <title>library/Biology/Coronavirus/Viable SARS-CoV-2 in the air of a hospital room with COVID-19 patients_ J A Lednicky et al_ 2020.pdf</title>
+  <link>http://www.superkuh.com/library/Biology/Coronavirus/Viable%20SARS-CoV-2%20in%20the%20air%20of%20a%20hospital%20room%20with%20COVID-19%20patients_%20J%20A%20Lednicky%20et%20al_%202020.pdf</link>
+  <description>(312 kB at Thu Aug 6 14:07:55 2020)</description>
+</item>
+
+
+</channel></rss>

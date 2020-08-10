@@ -1,0 +1,53 @@
+<html><head><title>Stepped Impedance Bandstop Filters</title></head>
+<body>
+<link rel="webmention" href="http://superkuh.com/webmention" />
+<p><a href="/">Home</a>: Planar PCB Radio Filters<p>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			<li><a href="/interdigital-combline-bandpass-filter.html">Interdigital Combline Bandpass</a></li>
+			</ul>
+
+<!--<img style="float:right;margin-left:1em;" src="/rf-filter-animation.gif">-->
+
+<h1>Experiments in Stepped Impedance Bandstop Filters</h1>
+<h2>From Sonnet EM Simulator to Kicad to PCB fab to VNA</h2>
+
+<h3>tldr;</h3>
+<p>This design uses the reflections at the ends of ~1/4 wavelength long (in terms of the effective dielectric constant) microstrip traces to redirect the energy of a particular frequency to resonator elements (long skinny inductor, fat/wide cap) which then prevent it from flowing through. </p>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/stepped-impedance-bandstop-filter.html" type="hidden"></p>
+		</form>
+
+
+
+<!--<img style="float:left;margin-right:1em;" src="/dgs-model.png">-->
+
+<!--<p>In order to tune them you increase the capacitance by making the slot thinner and increase the inductance by making the mouth of the c-shape larger.</p>-->
+
+<h3>Simulation and design</h3>
+
+<img src="/the-widest-bandstop-but-70db-down-at-460MHz.png">
+<img src="/folded-curved-stepped-impedance-bandstop-460MHz.png">
+
+<h3>Fabrication and measurement</h3>
+
+<img src="/stepped-impedance-bandpass-folded-curved.jpg">
+<img src="/1st-batch-filters.jpg">
+<img src="/physical-sparams-measured-folded-curved-stepped-impedance-bandstop-460MHz.png">
+
+
+
+</body>
+</html>
+

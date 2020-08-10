@@ -1,0 +1,26 @@
+
+		<hr><a name="2019-11-06-1">
+		<div><h3>opml to html, or, I know you're not supposed to use regexes but fuck it</h3>
+		<h5><a href="2019-11-06-1.html">2019-11-06-1 #1</a></h5>
+		<p>I tried to do it the right way. I tried all the xml manipulation libraries. But they all failed. Or I failed them. Either way it was just faster and far easier to do it with regex than attempt to learn some new xml module. So here is the dirty result that makes <a href="/feeds.html">/feeds.html</a> on my site from the opml that QuiteRSS spits out.</p>
+<pre>#!/usr/bin/perl -w
+# Usage: regexopmltohtml.pl foo.opml &gt; bar.html
+use strict;
+my $opmlfiletoparse = shift;
+open( THEFILE, "&lt;$opmlfiletoparse") or die "Can't open file $opmlfiletoparse $!";
+while(&lt;THEFILE&gt;) {
+	if ( m{&lt;outline text=\"(.+)\"&gt;\n}sg) {
+		my $name = $1;
+		print qq[&lt;hr /&gt;];
+		print qq[&lt;h3&gt;$name&lt;/h3&gt;];
+	} elsif ( m{&lt;outline text=\"(.+)\" type=\".+?\" htmlUrl=\"(.+)?\" xmlUrl=\"(.+)\"/&gt;}sg) {
+		#print "1: $1, 2: $2, 3: $3\n" if $1;
+		my($name,$htmlurl,$xmlurl) = ($1,$2,$3);
+		print qq[&lt;p&gt;];
+		print qq[&lt;a href="$xmlurl"&gt;&lt;img src="/rss.png" border="0" /&gt;&lt;/a&gt;\n];
+		print qq[&lt;a href="$htmlurl"&gt;$name&lt;/a&gt;&lt;/p&gt;];
+	}	
+}</pre>
+		</div>
+
+

@@ -1,0 +1,49 @@
+<html><head><title>Interdigital Combline Bandpass Filter</title></head>
+<body>
+<link rel="webmention" href="http://superkuh.com/webmention" />
+<p><a href="/">Home</a>: Planar PCB Radio Filters<p>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			<li><a href="/interdigital-combline-bandpass-filter.html">Interdigital Combline Bandpass</a></li>
+			</ul>
+
+
+<h1>Tweaking an Interdigital Combline Bandpass Filter</h1>
+<h2>From Sonnet EM Simulator to Kicad to PCB fab to VNA</h2>
+
+<h3>tldr;</h3>
+<p>This was not my design. A friend designed the basics for a Deuterium line filter and then I just tuned the tap point of the filter for max in-band return loss. So, I'm not going to make much write-up here. Just some screenshots and a photo of the end result.</p>
+
+<p>After I sent the gerbers off to him he sent them to his choice of fab. When they came back they needed to be trimmed manually a bit (about -5mm off the ends) for max return loss. I haven't actually connectorized or tested by boards from my fab company yet. But in the past Sonnet has been perfect about frequency so my guess is the dielectric constant of my friend's fab's FR4 is slightly different from my fab's FR4.</p>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/interdigital-combline-bandpass-filter.html" type="hidden"></p>
+		</form>
+
+
+
+<hr />
+
+<img src="/patch-tap-height.png">
+
+<img src="/patch-tap-height2.png">
+
+<img src="/patch-comb-3-tap42mm-comb120mm-kicad.png">
+
+<img src="/interdigital-combline-patch.jpg">
+
+
+
+</body>
+</html>
+

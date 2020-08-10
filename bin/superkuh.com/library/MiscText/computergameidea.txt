@@ -1,0 +1,7 @@
+I have an idea for a game - but this is a game with a limited market. Programmers. If you're a programmer, you know the feeling. Stuck in a job, itching to do something creative with your powers, but stuck in the soup that is what passes for organization in your organization. Free yourselves, and prepare for The Realm!
+
+The general idea is thus: you are given the operating system to your space ship. It has a rudimentary command line or partially graphical interface, allowing you to interact in a basic way with the "universe" this multiplayer game places you in. From there, you can code your ship in any number of ways - inventing new purpulsion methods (several already being supplied as "modules"), weapons systems, targing systems, scanners, you name it. The thing is - you have to write it yourself, or use existing open-source code to get what you want.
+
+Take the example of Dash Riprock. This poor soul has nothing but the basic ship - impulse purpulsion for in- system travel, and a fairly standard warp system for system-to-system travel, running at around 20c. Weapons are standard X-Ray lasers, and a missile pod. Communications are where it gets specific - and real world. OGG audio w/ DIVX video, using GPG public/ private key encryption. P2P (line of sight) communications are automatically secure. Fleets of ships can share processing power - distributed computing at a galactic (digital) level.
+
+- GothAlice of kyhmforums.

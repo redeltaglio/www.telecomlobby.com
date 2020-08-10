@@ -1,0 +1,53 @@
+
+		<hr><a name="2019-11-07-1">
+		<div><h3>Microwave ferrites: can they be made DIY? No. But I learned I was asking the wrong question.</h3>
+		<h5><a href="2019-11-07-1.html">2019-11-07-1 #1</a></h5>
+		<p>Most of the cost of a magnetron reflection amplifier is in the circulator. High power circulators are weird and expensive but you can't build a reflection amplifier without them. Even just ordering special microwave ferrite material is almost as expensive as the finished circulator (if they'll sell to you at all). So naturally I wondered if I could make a ferrite disk, and from it a circulator, cheaply at home. Nickle ferrites are the most applicable because they can be worked in air. The two feasible options seem to be water chemistry nanoparticles, pressing, then sintering or low temp curing pourable magnetic composites made of expensive monomers, permalloy powder, and powdered oriented-strand 3M magnetic sheet.</p>
+		<p>But in the process I learned <em>there's nothing special about garnet or other microwave ferrites</em>. They just have a small resonance line width leading to low loss. The same non-reciprocal ferrimagnetic resonance happens even mass produced cheap iron ferrite rods and might work for an extremely lossy demo</em>. Or at at high power but low duty cycle when you don't care about energy efficiency...like if you had a injection locked magnetron and bursty power to spare.</p>
+		<p><b>tldr: Home manufacture of microwave ferrites might be cheaply feasible *but* reuse of common cheap ferrites as lossy circulator elements certainly is and it's immediately accessible.</b><!-- Use of common nickle ferrites means that an above resonance design is required for 2.4 GHz. Being far above the resonance also minimizes problems with loss from the broad resonance of cheap ferrites. The question is just <em>how far</em> above the resonance can you be and still get the gyromagnetic effect? Above resonance ferrite circulators also require higher magnetic field strengths but high powered magnets are cheap now.--></p>
+
+		<hr style="width:50%;" />
+		<h5>Circulator theory</h5>
+
+		<p>A circulator uses some non-reciprocal material that allow transmissions lines to work differently depending on which direction the RF is traveling. In electromagnetics non-reciprocity is almost exclusively obtained through Zeeman splitting in (ferrite) ferromagnetic materials using a static magnetic bias that splits degenerate atomic states with opposite spin. These opposite spins have slightly different energy and so different frequency. In the plot on the right below this frequency difference is represent as advance or retreat of phase.<!-- I *<em>think</em>* the difference between their frequencies is the useful ferrimagnetic resonance.--> <!-- It's often represented as phase shift but what is an advance of phase but an increase in frequency?--></p>
+		<img src="/zeeman-splitting-ferrite.png"><img src="/ferrimagnetic-resonance.jpg"><img src="/below-vs-above-resonance-ferrite.jpg">
+		<p>For circulators made of ferrites there are two ways main ways to use this. <b>1</b>, <a href="https://en.wikipedia.org/wiki/Magic_tee">magic-tee</a> waveguides connected by two paths where one path is loaded with ferrite that causes faraday rotation of polarization (equiv to 180 deg phase shift) causing <a href="https://www.youtube.com/watch?v=tmP_3kiIyZY">two-path interference in one direction but not the other</a> (youtube link).</p>
+		<img src="/thatonecirculatordiagrameveryoneuses.png"><img src="/nonreciprocal-faraday-rotation-phase-shifter.jpg"> 
+
+		<p>And <b>2</b>, Y-junction transmission lines with ferrite resonators disks that have standing waves with nulls that can be rotated by an external magnetic field to so that the voltages at different angles around the perimeter of the resonator can be maximized and minimized.</p>
+		<img src="/ferrite-circulator-efield-sim_sm.jpg"><img src="/standing-wave-circulator.jpg"><img src="/magnitude-of-electrical-field-around-periphery-of-junction-circulator.jpg"><br />
+
+
+		<p>The standing wave is actually two counter-rotating wave patterns. When there's no external magnetic field they rotate at the same frequency. When an external magnetic field is introduced the frequency of one is shifted and the resulting interference pattern is rotated. Despite the complexity of the physics in terms of mechanical construction a round ferrite waveguide based Y-junction circulator is by far the easiest design to make. And it's the easiest with which to connect a low power magnetron. The most straightfoward approach is the traditional <a href="/microwaveovenwaveguide.png">80*40mm TE_01 waveguide</a> dimensions for the three arms.</p>
+
+		<img src="/waveguide-y-junction-circulator.jpg">
+
+		<h5>Ferrite chemistry and mechanical production</h5>
+
+		<p>The actual ferrimagnetic resonance is a frequency where the circulators *don't* work and they have to be designed with the target frequency either above the resonance in frequency or below it. Above or below resonance operation, depending on if the precession frequency is higher or lower than the RF frequency. The size of the the resonance in frequency span is called the line width and it determines the loss of the material. Expensive, densely pressed garnet ferrites have very low line widths and work over a broader range at lower loss.</p>
+		<p>But this doesn't neccessarily mean that homemade nickel ferrite would have no use in a circulator. It'd only be lossy. So what I'm thinking about here is using <a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Circulators/Preparation%20and%20Characterization%20of%20Nickel%20ferrite%20Nanoparticles%20via%20Co-precipitation%20Method_%20S%20Sagadevan_%20Z%20Z%20Chowdhury_%20R%20F%20Rafique_%202018.pdf">simple water based chemistry with ferrite chloride and nickel chloride chelated to co-precipitate a nickle ferrite</a> and attempt to manufacture the a homemade waveguide y-junction circulator.<!-- Or, if the material isn't good enough, a faraday rotation based phase shifter for a magic-tee circulator.--></p>
+
+		<img src="/nickel-ferrite-synthesis.jpg">
+	
+		<blockquote><p>Nickel Ferrites may be the least complicated ferrite from the processing point of view. The nickel remains essentially in the Ni++ state so that air is almost always used as the firing atmosphere.</p></blockquote>
+
+		<a href="https://www.youtube.com/watch?v=L7rX-_iQdmY"><img src="/bottle-jack-press.png"></a>
+
+		<p>For co-precipitated "ready" powders, like the above example, sintering temperatures can be as low as 900 C. That's plausible to do with a cheap induction heater like I have. The press could probably be a simple hydraulic press. Papers quote pressures around 100 MPa, so for a 3cm diameter disk and a 2 metric ton press thats: (2 tonne)⋅(9.8m/s^2)⋅10/(pi⋅1.5cm^2) = ~200 MPa. Plenty of margin. A $20 hydraulic bottle jack for trucks does about 6 ton. Though I imagine the limiting factor would be the threaded rod and nuts used to make the press frame. But it'd probably still have voids without proper compaction machines and the effective line width would be higher. So much higher that an improperly home-pressed nickle ferrite would probably be no less lossy than an industrial pressed iron ferrite availably commonly for cheap prices.</p>
+
+		<h5>Pourable ferrite composites with no press and low temperature curing</h5>
+
+		<img src="/3m-sheet-ferrite-permalloy-powder-castable-ferrite.jpg">
+
+		<p>But even a cheap press is an expense and a somewhat bulky and dangerous thing. And sintering at 900 C is hard in implementation. There are some papers about pourable low-temperature cured pourable magnetic composites. <!--The most exciting use things like ferroelectric PVDF polymer.--> But most of these have terrible specs. Except one 2019 paper, <a href="http://erewhon.superkuh.com/library/Electromagnetics/Magnetron/Circulators/A%20Permalloy%20+%20NiZn%20Ferrite%20Moldable%20Magnetic%20Composite%20for%20Heterogeneous%20Integration%20of%20Power%20Electronics_%20Chao%20Ding_%20Yunhui%20Mei_%20Khai%20D%20T%20Ngo_%20Guoquan%20Lu_%202019.pdf">A (Permalloy + NiZn Ferrite) Moldable Magnetic Composite for Heterogeneous Integration of Power Electronics</a> that has both decent performance *<em>and</em>* it's easily manufactured DIY. It's a mix of expensive (but feasible) permalloy magnetic powder with NiZn ferrite from crushed up <a href="https://www.digikey.com/product-detail/en/3m/EM15TF-012-4/3M156473-ND/7652407">3M Flux Field Directional sheet</a> and expensive and infeasible to get trimethylolpropane triacrylate (TMPTA) monomer. If a source of that last one that sells to individuals could be found it might just work.</p>
+
+		<!--<p>After hearing about traditionally grown (pulled from molten pool) single crystal garnet ferrites I wondered if there might be some ferrite chemistry that would be applicable for hydrothermal single crystal growth. That'd bypass the need for press densification. But at least with the search keywords I've used I don't think anyone has found a way to do this.</p>-->
+
+<!--		<a href="http://67.225.133.110/~gbpprorg/mil/emp3/index.html"><img src="/microwaveovenwaveguide.png"></a> -->
+
+
+<!--		<p>Faraday rotation circulators use two paths in which one has a directional phase shift so the same signal traveling in two paths cancels out at some output ports and adds in others. You should stop reading this and just watch <a href="https://www.youtube.com/watch?v=tmP_3kiIyZY">this video on youtube</a>. These use a particular arrangement of three H mode ports and 1 E mode port at the top: <a href="https://en.wikipedia.org/wiki/Magic_tee">magic tee</a> circulators. The magic is in the ferrite loading one of the transmission line paths. In one direction it rotates the polarization on one path so things add up at one H mode port and cancel at the E mode port. But in the reverse direction of the already rotated wave is flipped back to match the other pair resulting in cancelization at the one input port.</p>
+-->
+		</div>
+
+

@@ -1,0 +1,31 @@
+	<article class="h-entry">
+		<link rel="webmention" href="http://superkuh.com/webmention" />
+		<hr><a name="2020-02-22-1">
+		<h3 class="p-name">Web security fetishism where it isn't required does more harm than good.</h3></a>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2020-02-22-1.html" class="u-url"><time class="dt-published" datetime="2020-02-22">2020-02-22-1</time></a></h5>
+
+		<p>There are two mutually exclusive views of the web. As a set of protocols set to allow individual humans to share information about things they love and the web as a set of protocols to make a living.</p>
+
+		<p>Profit motivated web presences want views, they want attention, they need nine 9s uptime, need to be able to do monetary transactions absolutely securely, and they want to be an application not a document. They live and die on the eternal wave of walled garden's recommendation engines because that's the network effect and that's where money flows. It doesn't matter if this means extremely high barriers to entry because money solves everything. </p>
+
+		<p>Individuals' websites are freeform presentations about the things that person is interested in. They are the backyard gardens of the mind and the most important thing is lowering the friction from thought to posting. There's no need to get tons of traffic instantly (or ever), they're mostly time insensitive.</p>
+
+		<p>Year by year browsers' evolution into another OS are creating new barriers to entry for those wishing to host personal website. Just one tiny example of this is browsers (and search engines, and etc) requiring HTTPS and not just SSL certs but <a href="https://scotthelme.co.uk/certificate-lifetime-capped-to-1-year-from-sep-2020/">only certs with lifetimes less than 1 year</a>. All this piles on, destroys access to old web content, and generally creates cyber gentrification. With the WC3 now marginalized and corporate run web standards groups (ie <a href="https://en.wikipedia.org/wiki/WHATWG">whatwg</a>) setting the protocols there may soon come a time where it's infeasible to run a website without relying on a third party entity to do <em>some</em> part of it for you.</p>
+
+		<p class="sm"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p class="sm"><b>[webmention/pingback]</b> Did you respond to this post? What's the URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="submit">
+  		<input name="target" value="http://superkuh.com/blog/2020-02-22-1.html" type="hidden"></p>
+		</form>
+
+		<pre>█▓▒░ Comments ░▒▓█</pre>
+
+		<blockquote>20:54:11, Tue Feb 25, 2020 : <a href="/blog/blog.html">/blog/blog.html/</a>, Re: web security fetishism. Without HTTPS, an adversary can man-in-the-middle your connection and do all kinds of nasty things, from surveillance, to denying access, to altering the content, to running arbitrary javascript exploits against users' browsers. Given that certbot is free and now auto-renews your certificate for you on most platforms, I can't say that it is an especially high barrier to rule out this class of attacks, which may not be a personal threat to you, but can have severe consequences for the vulnerable. And although it does require trust in a 3rd party, which is not ideal, everybody is better off with it than without it.</blockquote>
+	
+		<p>re: random commenter above, as you can see from this site of mine I do like and use HTTPS. But I think HTTP has a valuable and essential place beside it. Going <em>only</em> HTTPS is bad. Going HTTP and HTTPS is great. Browsers and search engines punishing, hiding, and demonizing HTTP sites in their listings or notifications does more damage than then some potential downgrade attacks.</p>
+
+		<p>Reliance on third parties is also a bad idea. Sure, letsencrypt is great, but it's also causing extreme centralization of the web since it's so nice. The .org situation shows that no matter how benevolent and longstanding institutions that have power will be corrupted. And no matter how "easy" it is, acme2 is not a <em>simple</em> protocol. There's tons of complexity hidden behind that "easy" that has to be supported over time and changing software stacks.</p>
+
+		</div>
+	</article>

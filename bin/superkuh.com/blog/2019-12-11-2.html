@@ -1,0 +1,14 @@
+	<article class="h-entry">
+		<hr><a name="2019-12-11-2">
+		<h3 class="p-name">CSS in HTTP Headers</a></h3>
+		<div class="e-content">
+		<h5><a href="http://superkuh.com/" rel="author" class="p-author h-card">superkuh</a> on <a href="http://superkuh.com/blog/blog.html">blog</a> at <a href="2019-12-11-2.html" class="u-url">2019-12-11-2</a></h5>
+		<img src="/css-in-http-headers-banner.jpg" alt="css, css everywhere!">
+		<p>I found out you can put links to CSS in webserver HTTP header responses. I've got /header.css linked in this servers HTTP headers now. All it's doing is resizing images but it's kind of handy for the blog pages where embeding css in each would be a hassle. For nginx this is easy to do in your .conf,</p>
+		<pre>add_header Link "&lt;//superkuh.com/header.css&gt;; REL=stylesheet";</pre>
+		<p>The // instead of a full or specific URL is for portability re: HTTP and HTTPS. Do a,</p>
+		<pre>$ curl -I superkuh.com</pre>
+		<p>to see. Most browsers don't support header linked CSS but most browsers suck shit and people shouldn't use them. I'm looking at you Chrome. This does work in standards based browsers like Firefox and it's forks.</p>
+		</div>
+	</article>
+

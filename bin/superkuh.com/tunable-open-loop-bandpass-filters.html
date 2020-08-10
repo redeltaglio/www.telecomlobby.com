@@ -1,0 +1,304 @@
+<html><head><title>*More* Experiments in Open Loop Resonator Bandpass Filters</title></head>
+<body>
+<link rel="webmention" href="http://superkuh.com/webmention" />
+<p><a href="/">Home</a>: Planar PCB Radio Filters<p>
+			<ul class="navlist">
+			<!-- <li>Theory</li>
+			<li><a href="http://superkuh.com/pyroelectricacceleration.html">Build Log</a></li> -->
+			<li><a href="/radio-filter-simulations.html">Dual-Coupled Combline Bandstop</a></li>
+			<li><a href="/stepped-impedance-bandstop-filter.html">Stepped Impedance Bandstop</a></li>
+			<li><a href="/dgs-bandpass-filter.html">Defected Ground Structure Open-Loop and Split-Ring Resonator Bandpasses</a></li>
+			<li><a href="/tunable-open-loop-bandpass-filters.html">Tunable Open-Loop Resonator Bandpass</a></li>
+			<li><a href="/tunable-combline-bandpass-filters.html">Tunable Combline Bandpass</a></li>
+			<li><a href="/siw-coaxial-cavity-bandpass.html">Substrated Integrated Waveguide Coaxial Cavity Bandpass</a></li>
+			<li><a href="/interdigital-combline-bandpass-filter.html">Interdigital Combline Bandpass</a></li>
+			</ul>
+
+<!--<img style="float:right;margin-left:1em;" src="/rf-filter-animation.gif">-->
+
+<h1>*More* Experiments in Open Loop Resonator Bandpass Filters</h1>
+<h3>Now with tunability.</h3>
+<!--<h2>From Paper to Sonnet EM Simulator to Kicad to PCB fab to Soldering to VNA</h2>-->
+<img src="/under_construction.gif">
+<p>I've <a href="http://superkuh.com/dgs-bandpass-filter.html">done open loop bandpass filters before</a> but my prior design had no way to tune anything. It was just one band per design.</p>
+
+<p>This is my attempt to implement a tunable radio frequency bandpass filter based off a paper I read. It uses planar PCB resonators that are tuned by a "digitally tunable capacitor" IC controlled by an esp8266 microcontroller.</p>
+
+<p>I'm basically implementing the paper, "<a href="/library/Electromagnetics/A%20UHF%20Third%20Order%205-bit%20Digital%20Tunable%20Bandpass%20Filter%20Based%20on%20Mixed%20Coupled%20Open%20Ring%20Resonators_%20M-Y%20Fu_%20Q-Y%20Xiang_%20D%20Zhang_%20D-Y%20Tian_%20Q-Y%20Feng_%202016.pdf">A UHF Third Order 5-bit Digital Tunable Bandpass Filter Based on Mixed Coupled Open Ring Resonators</a>" by Ming-Ye Fu, Qian-Yin Xiang, Dan Zhang, Deng-Yao Tian, and Quan-Yuan Feng. But I translated the intent of the design from 0.8mm expensive (Er 2.65) PCB material to cheap 1.6mm thick FR4 PCB (Er 4.4) and I'm rolling my own microcontroller setup since theirs is not described.</p>
+
+<ul>
+<li><a href="#openloop">Open Loop Resonators</a></li>
+<li><a href="#dtc">Digitally Tunable Capacitors</a></li>
+<li><a href="#sim">PCB RF Simulation and Design</a>
+<ol>
+<li><a href="#capgap">Spacing between top capacitor patches</a>
+<li><a href="#capcap">Vertical height of the top capacitor patches</a>
+<li><a href="#aspect">Total height/aspect ratio of the loops and length of coupling lines</a>
+<li><a href="#sidegap">Resonator 2 side coupling gaps</a>
+<li><a href="#rangeandfreq">Improved tuning range, higher freq</a>
+<li><a href="#oopsvias">Oops. My vias were going to the ceiling: redesign and final gerbers</a>
+</ol>
+</li>
+<li><a href="#esp">esp8266 Hardware and Software</a></li>
+</ul>
+
+		<link rel="webmention" href="http://superkuh.com/webmention" >
+		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[<a href="/hello/?posted">comment</a> on this post]</b> Append "/<b>@say</b>/your message here" to the URL in the location bar and hit enter.</p>
+		<form action="/webmention" method="POST">
+  		<p style="font-size: 0.75em; margin-bottom: 0.2em;margin-top: 0.2em;"><b>[webmention/pingback]</b> Did you respond to this URL? What's your URL? <input type="text" name="source" value="http://yoursite.net/response"><input type="submit" value="send">
+  		<input name="target" value="http://superkuh.com/tunable-open-loop-bandpass-filters.html" type="hidden"></p>
+		</form>
+
+
+
+<a name="openloop">
+<h2>Open Loop Resonators</h2>
+
+<img src="/open-loop-coupling.png">
+
+<p>In open loop resonators very close to each other the type of coupling, either electric of magnetic, is a function of the location on the loop(s). At resonance the maximum electrical field density is across the gap and the maximum magnetic field density at the opposite side. So for magnetic coupling they are put "back" to "back" and for electric "face" to "face". By turning them so neither the max electric nor max magnetic field densities are close to the other the contribution of electric and magnetic coupling is about the same. The balance can also be altered by displacing them out of alignment. This is called mixed coupling.</p>
+
+<img src="/tunable-open-ring-coupling-diagram3.png">
+
+<p>In this particular design RF energy takes two paths using the same start.</p>
+
+<ul>
+<li>The skinny, inductive, lines that trace the outer perimeter of the first  open loop resonator is initially exposed to "mixed" coupling but then continues all across the top where the peak magnetic field density is. This magnetic coupling dominates the weaker mixed coupling and it is mostly magnetic from source to open loop resonator 1, 2, 3, and the other out coupling line then load.</li>
+<li>The second path uses the outer coupling line with the large rectangle "capacitors" up top as resonators and each side's coupling to the other. But signals over this path experience with a phase shift which causes destructive interference at frequencies who's phase is offset from the resonant by 90 deg.</li>
+</ul>
+
+<a name="dtc">
+<h2>Digital Cap Tuning</h2>
+
+<img style="float:left;margin-right:1em;" src="/dtc-diagram.png">
+
+<p>The tunability comes from using some really neat Peregrine Semiconductor IC called the PE64904; a "Digitally Tunable Capacitor" that works from 100-3000 MHz and spans 0.6 to 4.6 pF. This IC is put in the open end of the open ring resonators to tune them. It is controlled over the 3-wire SPI protocol which necessitates a microcontroller of some sort. I've chosen to use the cheap esp8266 series esp12e boards (~$5) because they come with wifi and I already have experience with them.</p>
+
+<p>The commands it takes are very simple. You pull the chip select (CS) line low then send a message containing a hex number from 0 to 31 and return the CS high.</p>
+
+<p style="font-size:70%;">You may be thinking, "Why not use varactors instead? Then you don't need a computer you just need a variable voltage. It's much simpler." And it is in an absolute way. But the complexity of using a digital computer to control things is something I'm used to while designing a variable 0-30 voltage source that's precise and repeatable is not. And most importantly: the guys in the paper did it this way.</p>
+
+<!--<img style="float:left;margin-right:1em;" src="/dgs-model.png">-->
+
+<!--<p>In order to tune them you increase the capacitance by making the slot thinner and increase the inductance by making the mouth of the c-shape larger.</p>-->
+<a name="sim">
+<h2>Simulation and Design</h2>
+
+<p>Below is the design as I implemented it on 1.6mm 4.4 dielectric FR4. For scale, the input port microstrip is 2.5mm wide (~55 Ohm). I compromised on a grid size of 0.125 mm and this led to a sim time of about 5 minutes (i5 3750K processor). The granularity of the grid to get this decent iteration time made directly copying dimensions infeasible even if they hadn't used 0.8 mm 2.65 dielectric F4B-2 substrate.</p>
+
+<p>I ended up spending a bit of time using an <a href="http://www.emtalk.com/mscalc.php">online microstrip electrical length/phase calculator</a> to translate the intent of the shapes to my different PCB material. And then a bit of fiddling back and forth with values when it didn't quite work.</p>
+
+<p>The little square pad with a via in it is for the PE64904 footpad ground. The two 0.75mm bits at the throat of the open loop are also to conform to the IC pads. I also tried adding the other IC footprint traces but the distance between them was very small and when I tried approximations with just one it didn't have much effect.</p>
+
+<p>I set all the capacitors to the same variable, Caps, then did a parameter sweep of Caps from 0.6 to 4.6 mm at step size of 0.125 pF which is 32 steps and matches the PE64904 step size of 0.13 pF. Every other step is shown in the scattering parameters plot (0.25 pF step, 16 total).</p>
+
+<p>The results matched the response reported in the paper pretty darn well.</p>
+
+<img src="/tunable-open-ring-sim-design.png">
+<img src="/tunable-open-ring-sim-sparams.png">
+
+<h3>Figuring out what controls what with parameter sweeps.</h3>
+
+<p>I ran some parameter sweeps of the various heights and gaps in the design to see what effected what.</p>
+<a name="capgap">
+<h4>Spacing between top capacitor patches</h4>
+<img src="/dtc-open-ring-bandpass-capspacing.png">
+
+
+<p>First I tried the spacing between the two capacitors up top. This did not effect the S11/return loss in any significant way. But it did have a significant effect on S21/insertion loss curves. Nominal spacing was 0.5mm and I covered 0.125 to 1 in 0.125 mm steps. With lower spacing (higher coupling) the 'zero' provided by destructive interference along this path shifted down in frequency towards the resonant freq. With higher spacing (lower coupling) the 'zero' moved up in frequency relative to the resonant freq. Over the parameter span the lower stopband insertion loss moved up and down by about 10 dB and the upper stopband by almost 20 dB in parts.</p>
+<a name="capcap">
+<h4>Vertical height of the top capacitor patches</h4>
+<img src="/dtc-open-ring-bandpass-cap-height.png">
+
+
+<p>Optimal seems to be about 8.5-9.0 mm based on return loss (S11). The effect is less important on insertion loss (S21) but with increasing cap height (and so capacitance) the lower stopband drops off more slowly after -15dB down. With decreasing cap height the upper stopband pops back up higher after the high side zero but again only when it's already below -25 dB so not that important.</p>
+<a name="aspect">
+<h4>Total height/aspect ratio of the loops and length of coupling lines</h4>
+<img src="/dtc-open-ring-bandpass-height.png">
+
+
+<p>Then I tried altering the height of all the open loop resonators. This had a dramatic effect with a cliff in performance change after just a couple mm reduction in height. So resonator height/aspect ratio matters *a* lot. To be clear, the "height" parameter moved all the tops of the loops, the caps, and the coupling lines together. It kept their relative spacings exactly the same.</p>
+
+<p>But maybe I did the scaling wrong and forgot to click some edge vertices or something. That would explain the sudden change if something began overlapping. I'll have to do this sweep again manually.</p>
+<a name="sidegap">
+<h4>Resonator 2 side coupling gaps</h4>
+<img src="/dtc-open-ring-bandpass-r2gaps.png">
+
+<h4>Resonator 2 Height Offset</h4>
+
+<p>The results of shifting resonator 2's offset from the others was not very dramatic. There was little effect so I'm not going to put the plot up here.</p>
+<a name="rangeandfreq">
+<h4>Improved tuning range, higher freq</h4>
+
+<p>Some not so small tweaks in total height and coupling gaps eventually lead towards a version of the filter that would perform okay at 902-928 MHz. The total effective range is about 400 to 1000 MHz now but with some marginal performance on the high end (ie, -10dB S11 abd -3dB S21 for 915 MHz).</p>
+
+<img src="/dtc-open-ring-bandpass-smaller-tuning-range.png">
+
+<p>The large surface area shared between the metallic box and the PCB top metallization creates a significant paracitic capacitance. The closer the PCB metallization is to the conductive box ground the lower the impedance. This effect can be seen in the shift of the high frequency behavior of the transmission loss and in the decrease of the impedance of the microstrip ports from ~55 to ~52 Ohm.</p> 
+
+<img src="/dtc-open-ring-bandpass-boxheight.png">
+<a name="oopsvias">
+<h2>Oops. My vias were going to the ceiling.</h2>
+
+<p>It turns out I accidentally set a config preference to send vias up by default instead of down a layer or down to ground. That meant in a lot of the filters I designed recently were not completely realistic. So I had to go back and re-make them to tune them for performance with the proper vias and not some wire going 10mm up to the box walls.</p>
+
+<h4>Balancing the resonators</h4>
+
+<p>It was actually easier to tune the open loop resonators with the vias going to the right place. I made a series of single parameter sweeps tweaking the line widths and gaps to see how the 3 dip peaks make up a single S11 notch moved. The balance of these was an S11 sweep with two resonances at either end of the tunable frequency range. At the high frequency end the contribution of one of the resonances is discarded to make the other two line up better.</p>
+
+<p>The pass band is made asymmetric but this offsets for the increase relative bandwidth of the resonators with higher frequency. Instead only two peaks contribute and it's narrower but kind of shouldery and ugly. At the higher end this makes it so there are gaps between -15 to -15 db S11 passbands per DTC capacitance step.</p>
+
+<p>The tradeoff is between having the small gaps in perfect passband coverage at the high end and the extended frequency range and better S11 the from overlaping only the 2 higher frequency dip peaks at higher frequencies. It'd be nice to get all 3 lined up at both low and high frequency ends but I can't figure that out.</p>
+
+<!--
+<p>tdlr: the 3 resonators responses are tuned so they balance at the low end where bandwidth is small and 1 of the three is detuned at higher frequencies off the others so they can overlap better.<p>
+-->
+
+<p>The end result is pretty good, I think. It uses high 1cm box ceilings which I'll have to make myself out of tin rather than use an RF shield can. The final filter has a *simulated* range of 410-1000 MHz -15 db reflection loss and 1.5~3.25 dB insertion loss over that span.</p>
+
+<p>The arrows on the vias now point down.</p>
+
+<img src="/dtc-open-ring-bandpass-fixedvia-closeup.png">
+
+<!--<img src="/dtc-open-ring-bandpass-fixedvia.png">-->
+
+<img src="/dtc-open-ring-bandpass-pinsnpinout-v2.png">
+
+<img src="/dtc-open-ring-bandpass-pinsnpinout-v2-gerber-kicad.png">
+<img src="/dtc-open-ring-bandpass-pinsnpinout-v2-gerberpcb.png">
+<img src="/open-loop-dtc-filter-board.jpg">
+<img src="http://erewhon.superkuh.com/electrically-good-but-not-surebottomgroundtraceisflowed.jpg">
+
+
+
+<a name="esp">
+<h2>esp8266 Hardware and Software</h2>
+
+<h4>esp8266 using nodemcu lua: software for 3-wire SPI control over wifi+tcp socket.</h4>
+
+<p>This lua code connects to to a hard coded wifi ssid then once it has an IP it connects to a TCP server running on a hardcoded IP and port. From there it waits for text instructions. On receiving anything in the form of a number from 0 to 31 it converts it to hex and sends it out the configured HSPI port to the digitally tunable capacitor.</p>
+
+<p>Normally GPIO15 (pin D8) is used as a SPI 'Chip Select' line. But this requires adding external resistors in order to not trigger some boot issue. Additionally people on the forums have reported HSPI CS not working with NodeMCU. So since the PE64904 only requires 3 wires I instead disable the HSPI CS (GPIO15/D8) and the HSPI MOSI (GPIO13/D7) by setting their mode back to normal GPIO. Then I use the HSPI MOSI pin as a GPIO and manually pull it low as a chip select command before spi.send() then manually set it high after.</p>
+
+<p>For a server on the computer it connects to I use use netcat like,</p>
+<pre>nc -l 6005</pre>
+<p>and then type, say, 15 and hit enter. If it works it responds "ok".</p>
+<pre>15
+ok</pre>
+
+<pre>-- esp8266 mediated wifi:telnet control of PE64904 SPI based digitally tuned capacitor.
+
+-- Config				esp12e		PE64904
+-- -- Default HSPI for CLK and MISO
+-- local CLK = 5           	 --> GPIO14 D5 | MISO, PIN 7 (SDA)
+-- local MISO = 6            	 --> GPIO12 D6 | SCL,  PIN 5 (SCL)
+-- -- Manual CS/SEN for chip select
+local CS = 7              	 --> GPIO13 D7 | SEN,  PIN 6 (SEN)
+local duration = 3000     --> 3 seconds
+local i = 0
+local result = 0
+
+-- Turn on HSPI (dev 1) SPI at (80 MHz/8) 10 MHz
+spi.setup(1, spi.MASTER, spi.CPOL_LOW, spi.CPHA_LOW, 8, 8)
+
+-- Manual CS Pin (instead of HSPI CS)
+gpio.mode(CS, gpio.OUTPUT)
+gpio.write(CS, gpio.HIGH)
+
+-- Need to disable HSPI CS D8/GPIO15 from being toggled. 
+-- Set pull-up to prevent potential issues.
+-- ref: https://nodemcu.readthedocs.io/en/master/en/modules/spi/#spisetup
+gpio.mode(8, gpio.INPUT, gpio.PULLUP)
+
+function string.fromhex(str)
+	return (str:gsub('..', function (cc)
+		return string.char(tonumber(cc, 16))
+	end))
+end
+function string.tohex(str)
+	return (str:gsub('.', function (c)
+		return string.format('%02X', string.byte(c))
+	end))
+end
+
+-- Connect to wifi
+print(wifi.sta.getip())
+wifi.setmode(wifi.STATION)
+wifi.sta.config("ssid","password")
+print(wifi.sta.getip())
+
+-- Connect to control server
+local flagClientTcpConnected=false;
+print("Start TCP Client");
+tmr.alarm(3, 5000, 1, function()
+	if flagClientTcpConnected==false then
+		print("Trying to connect to server");
+		local conn=net.createConnection(net.TCP, false) 
+		conn:connect(6005,"192.168.1.125");
+		conn:on("connection",function(c) 
+			print("TCPClient:connected to server");
+			flagClientTcpConnected = true;
+		end) 
+		conn:on("disconnection",function(c) 
+			flagClientTcpConnected = false;
+			conn=nil;
+			collectgarbage();
+        	end) 
+		conn:on("receive", function(conn, m) 
+			print("TCPClient:"..m);
+			for i = 0,31 do
+				if string==i then
+					hexval = i.tohex()
+					gpio.write(CS, gpio.LOW)      -->Activate the SPI chip
+              				tmr.delay(1)                  -->1us Delay
+					wrote = spi.send(1,hexval)    -->Write hex value
+					gpio.write(CS,gpio.HIGH)      -->De-activate the SPI chip
+					print("Started SPI DTC Control");
+					conn:send("ok\r\n");
+					tmr.delay(100)
+				end
+			end
+		end) 
+	end 
+end)</pre>
+
+<p>For the init.lua file I use one I cribbed from the DoitCar demo from www.doit.am bbs.doit.am. Change "spiviaweb-nogpio15-v1.lua" to whatever matches.</p>
+
+<pre>--DoitCar Ctronl Demo
+--sta mode
+--Created @ 2015/05/14 by Doit Studio
+--Modified: null
+--http://www.doit.am/
+--http://www.smartarduino.com/
+--http://szdoit.taobao.com/
+--bbs: bbs.doit.am
+-- 
+
+print("\n")
+print("ESP8266 Started")
+
+local exefile="sta"
+local luaFile = {exefile..".lua","spiviaweb-nogpio15-v1.lua"}
+for i, f in ipairs(luaFile) do
+	if file.open(f) then
+      file.close()
+      print("Compile File:"..f)
+      node.compile(f)
+	  print("Remove File:"..f)
+      file.remove(f)
+	end
+ end
+
+if file.open(exefile..".lc") then
+	dofile(exefile..".lc")
+else
+	print(exefile..".lc not exist")
+end
+exefile=nil;luaFile = nil
+collectgarbage()</pre>
+
+<img src="/NODEMCU_DEVKIT_V1.0_PINMAP.png">
+
+</body>
+</html>
+
