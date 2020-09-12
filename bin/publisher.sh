@@ -153,6 +153,8 @@ do
                                 cat $FOOTER_SPANISH >> $TMPPAGE
 			elif [ $namemd = "nombres_apellidos" ]; then
                                 cat $FOOTER_SPANISH >> $TMPPAGE
+			elif [ $namemd = "derecho_internacional_torturas" ]; then
+                                cat $FOOTER_SPANISH >> $TMPPAGE
 			else
 				cat $FOOTER >> $TMPPAGE
 			fi
