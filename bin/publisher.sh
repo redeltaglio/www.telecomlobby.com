@@ -169,7 +169,7 @@ if [[ $2 == "output" ]]; then
 	rm -rf $WWWOUTPUT*
 fi
 
-chown -R wwwftp:www $OUTPUT
+doas chown -R wwwftp:www $OUTPUT
 
 for html_file in $(ls $OUTPUT)
 do
