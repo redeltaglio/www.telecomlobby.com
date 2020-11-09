@@ -169,6 +169,8 @@ if [[ $2 == "output" ]]; then
 	rm -rf $WWWOUTPUT*
 fi
 
+chown -R wwwftp:www $OUTPUT
+
 for html_file in $(ls $OUTPUT)
 do
 	perl ./links.pl $OUTPUT$html_file > /tmp/$html_file
