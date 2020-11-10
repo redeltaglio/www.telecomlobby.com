@@ -169,7 +169,8 @@ if [[ $2 == "output" ]]; then
 	rm -rf $WWWOUTPUT*
 fi
 
-doas chown -R wwwftp:www $OUTPUT
+#doas chown -R wwwftp:www $OUTPUT
+#doas chmod -R g+w $OUTPUT
 
 for html_file in $(ls $OUTPUT)
 do
@@ -179,44 +180,44 @@ do
 		case $1 in 
 			"riccardo_giuntoli")
 				imgsubdomain $1 /tmp/$html_file
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork")
 				imgsubdomain targetindividual /tmp/$html_file
 				if [[ $html_file == "sexual_harassment.htm"  ]]; then
-					mv /tmp/$html_file $SPIDERDIR/$html_file  
+					mv -f /tmp/$html_file $SPIDERDIR/$html_file  
 				else
-					mv /tmp/$html_file $WWWDIR$1/$html_file 
+					mv -f /tmp/$html_file $WWWDIR$1/$html_file 
 				fi ;;
 			"RNMnetwork/considerations")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES")
 				imgsubdomain mindgames /tmp/$html_file
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"opensource_guides")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES/gangstalking")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/ES/get_access")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia/sect")
-                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+                                mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"radioham")
-                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+                                mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/technomafia/crimes_deaths_laws_health")
-				mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+				mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 			"RNMnetwork/electrosmog")
-                                mv /tmp/$html_file $WWWDIR$1/$html_file ;;
+                                mv -f /tmp/$html_file $WWWDIR$1/$html_file ;;
 		esac
 	elif [[ $2 == "eswww" ]]; then
 		case $1 in
 			"es.telecomlobby.com/riccardo_giuntoli")
-				mv /tmp/$html_file $ESWWWDIR"riccardo_giuntoli"/$html_file ;;
+				mv -f /tmp/$html_file $ESWWWDIR"riccardo_giuntoli"/$html_file ;;
 			"es.telecomlobby.com/barcelona_carcelona")
-				mv /tmp/$html_file $ESWWWDIR"barcelona_carcelona"/$html_file ;;
+				mv -f /tmp/$html_file $ESWWWDIR"barcelona_carcelona"/$html_file ;;
 			"es.telecomlobby.com/esclavitud_moderna")
-				mv /tmp/$html_file $ESWWWDIR"esclavitud_moderna"/$html_file ;;
+				mv -f /tmp/$html_file $ESWWWDIR"esclavitud_moderna"/$html_file ;;
 		esac
 	elif [[ $2 == "output" ]]; then
 		doas cp $OUTPUT$html_file $WWWOUTPUT
